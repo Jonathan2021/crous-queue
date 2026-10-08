@@ -1,0 +1,397 @@
+[
+  {
+    "name": "crous-queue",
+    "version": "0.1.2",
+    "license_expression": null,
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": []
+  },
+  {
+    "name": "alembic",
+    "version": "1.20.0",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://alembic.sqlalchemy.org",
+      "Documentation, https://alembic.sqlalchemy.org/en/latest/",
+      "Changelog, https://alembic.sqlalchemy.org/en/latest/changelog.html",
+      "Source, https://github.com/sqlalchemy/alembic/",
+      "Issue Tracker, https://github.com/sqlalchemy/alembic/issues/"
+    ]
+  },
+  {
+    "name": "SQLAlchemy",
+    "version": "2.0.54",
+    "license_expression": null,
+    "license_classifiers": [],
+    "homepage": "https://www.sqlalchemy.org",
+    "project_urls": [
+      "Documentation, https://docs.sqlalchemy.org",
+      "Issue Tracker, https://github.com/sqlalchemy/sqlalchemy/"
+    ]
+  },
+  {
+    "name": "greenlet",
+    "version": "3.5.6",
+    "license_expression": "MIT AND PSF-2.0",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://greenlet.readthedocs.io",
+      "Documentation, https://greenlet.readthedocs.io",
+      "Repository, https://github.com/python-greenlet/greenlet",
+      "Issues, https://github.com/python-greenlet/greenlet/issues",
+      "Changelog, https://greenlet.readthedocs.io/en/latest/changes.html"
+    ]
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0",
+    "license_expression": "PSF-2.0",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Bug Tracker, https://github.com/python/typing_extensions/issues",
+      "Changes, https://github.com/python/typing_extensions/blob/main/CHANGELOG.md",
+      "Documentation, https://typing-extensions.readthedocs.io/",
+      "Home, https://github.com/python/typing_extensions",
+      "Q & A, https://github.com/python/typing/discussions",
+      "Repository, https://github.com/python/typing_extensions"
+    ]
+  },
+  {
+    "name": "Mako",
+    "version": "1.4.3",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://www.makotemplates.org/",
+      "Documentation, https://docs.makotemplates.org",
+      "Issue Tracker, https://github.com/sqlalchemy/mako"
+    ]
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.4",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Donate, https://palletsprojects.com/donate",
+      "Documentation, https://markupsafe.palletsprojects.com/",
+      "Changes, https://markupsafe.palletsprojects.com/page/changes/",
+      "Source, https://github.com/pallets/markupsafe/",
+      "Chat, https://discord.gg/pallets"
+    ]
+  },
+  {
+    "name": "defusedxml",
+    "version": "0.7.1",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: Python Software Foundation License"
+    ],
+    "homepage": "https://github.com/tiran/defusedxml",
+    "project_urls": []
+  },
+  {
+    "name": "fastapi",
+    "version": "0.142.2",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/fastapi/fastapi",
+      "Documentation, https://fastapi.tiangolo.com/",
+      "Repository, https://github.com/fastapi/fastapi",
+      "Issues, https://github.com/fastapi/fastapi/issues",
+      "Changelog, https://fastapi.tiangolo.com/release-notes/"
+    ]
+  },
+  {
+    "name": "starlette",
+    "version": "1.7.0",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/Kludex/starlette",
+      "Documentation, https://starlette.dev/",
+      "Changelog, https://starlette.dev/release-notes/",
+      "Funding, https://github.com/sponsors/Kludex",
+      "Source, https://github.com/Kludex/starlette"
+    ]
+  },
+  {
+    "name": "anyio",
+    "version": "4.15.1",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Documentation, https://anyio.readthedocs.io/en/latest/",
+      "Changelog, https://anyio.readthedocs.io/en/stable/versionhistory.html",
+      "Source code, https://github.com/agronholm/anyio",
+      "Issue tracker, https://github.com/agronholm/anyio/issues"
+    ]
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Changelog, https://github.com/kjd/idna/blob/master/HISTORY.md",
+      "Issue tracker, https://github.com/kjd/idna/issues",
+      "Source, https://github.com/kjd/idna"
+    ]
+  },
+  {
+    "name": "pydantic",
+    "version": "2.13.5",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/pydantic",
+      "Documentation, https://docs.pydantic.dev",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Source, https://github.com/pydantic/pydantic",
+      "Changelog, https://docs.pydantic.dev/latest/changelog/"
+    ]
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license_expression": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/annotated-types/annotated-types",
+      "Source, https://github.com/annotated-types/annotated-types",
+      "Changelog, https://github.com/annotated-types/annotated-types/releases"
+    ]
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.46.5",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": "https://github.com/pydantic/pydantic",
+    "project_urls": [
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Homepage, https://github.com/pydantic",
+      "Source, https://github.com/pydantic/pydantic/tree/main/pydantic-core"
+    ]
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/typing-inspection",
+      "Documentation, https://pydantic.github.io/typing-inspection/dev/",
+      "Source, https://github.com/pydantic/typing-inspection",
+      "Changelog, https://github.com/pydantic/typing-inspection/blob/main/HISTORY.md"
+    ]
+  },
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5",
+    "license_expression": "MIT",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/fastapi/annotated-doc",
+      "Documentation, https://github.com/fastapi/annotated-doc",
+      "Repository, https://github.com/fastapi/annotated-doc",
+      "Issues, https://github.com/fastapi/annotated-doc/issues",
+      "Changelog, https://github.com/fastapi/annotated-doc/release-notes.md"
+    ]
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.45.1",
+    "license_expression": "Apache-2.0",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/open-telemetry/opentelemetry-python/tree/main/opentelemetry-api",
+      "Repository, https://github.com/open-telemetry/opentelemetry-python"
+    ]
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Changelog, https://github.com/encode/httpx/blob/master/CHANGELOG.md",
+      "Documentation, https://www.python-httpx.org",
+      "Homepage, https://github.com/encode/httpx",
+      "Source, https://github.com/encode/httpx"
+    ]
+  },
+  {
+    "name": "certifi",
+    "version": "2026.7.22",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
+    ],
+    "homepage": "https://github.com/certifi/python-certifi",
+    "project_urls": [
+      "Source, https://github.com/certifi/python-certifi"
+    ]
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Documentation, https://www.encode.io/httpcore",
+      "Homepage, https://www.encode.io/httpcore/",
+      "Source, https://github.com/encode/httpcore"
+    ]
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "homepage": "https://github.com/python-hyper/h11",
+    "project_urls": []
+  },
+  {
+    "name": "itsdangerous",
+    "version": "2.2.0",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Changes, https://itsdangerous.palletsprojects.com/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://itsdangerous.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/itsdangerous/"
+    ]
+  },
+  {
+    "name": "Jinja2",
+    "version": "3.1.6",
+    "license_expression": null,
+    "license_classifiers": [
+      "License :: OSI Approved :: BSD License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Changes, https://jinja.palletsprojects.com/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://jinja.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/jinja/"
+    ]
+  },
+  {
+    "name": "psycopg",
+    "version": "3.3.6",
+    "license_expression": "LGPL-3.0-only",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://psycopg.org/",
+      "Documentation, https://psycopg.org/psycopg3/docs/",
+      "Changes, https://psycopg.org/psycopg3/docs/news.html",
+      "Code, https://github.com/psycopg/psycopg",
+      "Issue Tracker, https://github.com/psycopg/psycopg/issues",
+      "Funding, https://github.com/sponsors/dvarrazzo"
+    ]
+  },
+  {
+    "name": "pydantic-settings",
+    "version": "2.15.0",
+    "license_expression": "MIT",
+    "license_classifiers": [
+      "License :: OSI Approved :: MIT License"
+    ],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://github.com/pydantic/pydantic-settings",
+      "Funding, https://github.com/sponsors/samuelcolvin",
+      "Source, https://github.com/pydantic/pydantic-settings",
+      "Changelog, https://github.com/pydantic/pydantic-settings/releases",
+      "Documentation, https://docs.pydantic.dev/dev-v2/concepts/pydantic_settings/"
+    ]
+  },
+  {
+    "name": "python-dotenv",
+    "version": "1.2.4",
+    "license_expression": null,
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Source, https://github.com/theskumar/python-dotenv"
+    ]
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Changelog, https://uvicorn.dev/release-notes",
+      "Funding, https://github.com/sponsors/Kludex",
+      "Homepage, https://uvicorn.dev/",
+      "Source, https://github.com/Kludex/uvicorn"
+    ]
+  },
+  {
+    "name": "click",
+    "version": "8.5.0",
+    "license_expression": "BSD-3-Clause",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Changes, https://click.palletsprojects.com/page/changes/",
+      "Chat, https://discord.gg/pallets",
+      "Documentation, https://click.palletsprojects.com/",
+      "Donate, https://palletsprojects.com/donate",
+      "Source, https://github.com/pallets/click/"
+    ]
+  },
+  {
+    "name": "psycopg-binary",
+    "version": "3.3.6",
+    "license_expression": "LGPL-3.0-only",
+    "license_classifiers": [],
+    "homepage": null,
+    "project_urls": [
+      "Homepage, https://psycopg.org/",
+      "Documentation, https://psycopg.org/psycopg3/docs/",
+      "Changes, https://psycopg.org/psycopg3/docs/news.html",
+      "Code, https://github.com/psycopg/psycopg",
+      "Issue Tracker, https://github.com/psycopg/psycopg/issues",
+      "Funding, https://github.com/sponsors/dvarrazzo"
+    ]
+  }
+]

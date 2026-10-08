@@ -1,0 +1,60 @@
+uv sync --locked
+Using CPython 3.13.5
+Creating virtual environment at: .venv
+Resolved 50 packages in 0.86ms
+   Building crous-queue @ file:///tmp/crous-q07-candidate-vlt6Qg
+      Built crous-queue @ file:///tmp/crous-q07-candidate-vlt6Qg
+Prepared 1 package in 292ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 47 packages in 7.03s
+ + alembic==1.20.0
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + certifi==2026.7.22
+ + click==8.5.0
+ + crous-queue==0.1.2 (from file:///tmp/crous-q07-candidate-vlt6Qg)
+ + defusedxml==0.7.1
+ + fastapi==0.142.2
+ + greenlet==3.5.6
+ + h11==0.16.0
+ + httpcore==1.0.9
+ + httpcore2==2.13.1
+ + httpx==0.28.1
+ + httpx2==2.13.1
+ + idna==3.20
+ + iniconfig==2.3.1
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + librt==0.16.0
+ + mako==1.4.3
+ + markupsafe==3.0.4
+ + mypy==1.20.2
+ + mypy-extensions==1.1.0
+ + opentelemetry-api==1.45.1
+ + packaging==26.3
+ + pathspec==1.1.1
+ + playwright==1.63.0
+ + pluggy==1.6.0
+ + psycopg==3.3.6
+ + psycopg-binary==3.3.6
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pydantic-settings==2.15.0
+ + pyee==13.0.1
+ + pygments==2.21.0
+ + pytest==9.1.1
+ + python-dotenv==1.2.4
+ + ruff==0.16.10
+ + sqlalchemy==2.0.54
+ + starlette==1.7.0
+ + truststore==0.10.4
+ + types-defusedxml==0.7.0.20260504
+ + types-itsdangerous==1.1.6
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + uvicorn==0.54.0
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.

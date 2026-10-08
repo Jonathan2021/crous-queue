@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "uv",
+    "run",
+    "python",
+    "scripts/verify_release.py"
+  ],
+  "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+  "started_utc": "2026-10-08T10:55:52.931397+00:00",
+  "exit": 0,
+  "elapsed_seconds": 31.302
+}

@@ -1,0 +1,24 @@
+uv run ruff check src tests scripts alembic
+All checks passed!
+uv run ruff format --check src tests scripts alembic
+43 files already formatted
+uv run mypy
+Success: no issues found in 20 source files
+uv run pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 22 items
+
+tests/unit/test_aggregation.py ..                                        [  9%]
+tests/unit/test_pilot_summary.py ..                                      [ 18%]
+tests/integration/test_directory.py ....                                 [ 36%]
+tests/integration/test_pilot_records.py ...                              [ 50%]
+tests/integration/test_release.py ...                                    [ 63%]
+tests/integration/test_reports.py ....                                   [ 81%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 22 passed in 12.59s ==============================

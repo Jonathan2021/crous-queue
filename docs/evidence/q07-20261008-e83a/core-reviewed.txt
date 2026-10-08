@@ -1,0 +1,48 @@
+uv run --locked ruff check src tests scripts alembic
+I001 [*] Import block is un-sorted or un-formatted
+  --> scripts/release_manifest.py:3:1
+   |
+ 1 |   """Inspect current release artifacts without publishing or including operator data."""
+ 2 |
+ 3 | / import argparse
+ 4 | | from hashlib import sha256
+ 5 | | import json
+ 6 | | from pathlib import Path
+ 7 | | import tarfile
+ 8 | | import zipfile
+ 9 | |
+10 | | from crous_queue import __version__
+   | |___________________________________^
+help: Organize imports
+  |
+3 | import argparse
+  - from hashlib import sha256
+4 | import json
+  - from pathlib import Path
+5 | import tarfile
+6 | import zipfile
+7 + from hashlib import sha256
+8 + from pathlib import Path
+9 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/integration/test_distribution.py:44:5
+   |
+43 |   def test_manifest_drift_fails_locked_install_without_network(tmp_path):
+44 | /     import subprocess
+45 | |     from tests.conftest import ROOT
+   | |___________________________________^
+46 |
+47 |       project = (
+   |
+help: Organize imports
+   |
+44 |     import subprocess
+45 +
+46 |     from tests.conftest import ROOT
+   |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+make: *** [Makefile:6: check] Error 1

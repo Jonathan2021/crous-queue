@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 24 items
+
+tests/unit/test_aggregation.py ..                                        [  8%]
+tests/unit/test_pilot_summary.py ..                                      [ 16%]
+tests/integration/test_directory.py ....                                 [ 33%]
+tests/integration/test_distribution.py ..                                [ 41%]
+tests/integration/test_pilot_records.py ...                              [ 54%]
+tests/integration/test_release.py ...                                    [ 66%]
+tests/integration/test_reports.py ....                                   [ 83%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 24 passed in 14.48s ==============================

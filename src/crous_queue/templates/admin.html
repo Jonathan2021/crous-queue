@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block title %}Modération · Crous Queue{% endblock %}{% block content %}
+<section class="privacy"><span class="eyebrow">ESPACE OPÉRATEUR</span><h1>Modération</h1><p>La clé d’administration reste en mémoire dans cet onglet. Elle n’est pas enregistrée dans le navigateur.</p><form id="admin-login"><label>Clé d’administration<input id="admin-key" type="password" autocomplete="off" required></label><button class="primary" type="submit">Ouvrir la modération</button></form><p id="admin-status" role="status"></p><p id="admin-metrics"></p><div id="admin-list"></div><button class="secondary" id="admin-more" hidden>Voir la suite</button></section><script src="/static/admin.js" defer></script>
+{% endblock %}

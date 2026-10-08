@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+___________ ERROR collecting tests/integration/test_distribution.py ____________
+ImportError while importing test module '/home/jonathan/startup_lab/crous-queue/tests/integration/test_distribution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../.local/share/uv/python/cpython-3.13.5-linux-x86_64-gnu/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_distribution.py:9: in <module>
+    from crous_queue.distribution import directory_snapshot, migration_configuration
+E   ModuleNotFoundError: No module named 'crous_queue.distribution'
+=========================== short test summary info ============================
+ERROR tests/integration/test_distribution.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.20s ===============================

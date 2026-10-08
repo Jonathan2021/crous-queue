@@ -1,0 +1,10 @@
+error: unexpected argument '--locked' found
+
+  tip: to pass '--locked' as a value, use '-- --locked'
+
+Usage: uv build [OPTIONS] [SRC]
+
+For more information, try '--help'.
+7dc96cd3eec8dcbb8d5dbfef0eb96bb44c09083b8a66773ac18b1129423e8404  crous-queue-0.1.2-local.tar.gz
+04b288ab9adbfdba4c119f22781ef08a3d0490f9ad4c2c7dac07a159e38f3b3e  crous_queue-0.1.2-py3-none-any.whl
+fa293e2cc101b5b623e30ae4f4e088b0ac50a46a2286a4d762775bdcee6b056b  crous_queue-0.1.2.tar.gz

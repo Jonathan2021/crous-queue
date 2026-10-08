@@ -1,0 +1,233 @@
+{
+  "checked_on": "2026-10-07",
+  "dataset_url": "https://www.data.gouv.fr/datasets/restaurants-brasseries-et-cafeterias-des-crous",
+  "license": "fr-lo",
+  "resources": [
+    {
+      "region": "versailles",
+      "count": 65,
+      "sha256": "598dbd7110116ce550e2d78949289f9cb109e37ed0475b4aa86530c6b607efc2",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/versailles/externe/resto.xml"
+    },
+    {
+      "region": "toulouse",
+      "count": 44,
+      "sha256": "04e4503fa41b8d46f5317d5dbd573766a403e83bb0e20887302eb98b0a11d7fe",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/toulouse/externe/resto.xml"
+    },
+    {
+      "region": "strasbourg",
+      "count": 33,
+      "sha256": "7e292947060c2c3860bc98a7a77fcbcc03ccb66cd6e6c21b077f29b9c5e7d9ec",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/strasbourg/externe/resto.xml"
+    },
+    {
+      "region": "normandie",
+      "count": 56,
+      "sha256": "0e524d7b93c1faa2686d3a58e8b612a94b58e276ccb1808bf2057f63e2f74a24",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/normandie/externe/resto.xml"
+    },
+    {
+      "region": "reunion",
+      "count": 12,
+      "sha256": "5ba2f7e0f8c10659f621aee0bc27f1f3009320c3dd43c12a38063c2db9ff5f64",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/reunion/externe/resto.xml"
+    },
+    {
+      "region": "rennes",
+      "count": 39,
+      "sha256": "5ac959bfe1ecbf683c247744e46a4aa808102de132ad9bafde36556d8645eaf3",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/rennes/externe/resto.xml"
+    },
+    {
+      "region": "reims",
+      "count": 19,
+      "sha256": "d9764e9dd393ba66d7511faba6cd3a134836b3b30882694182899bcfadb86bc1",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/reims/externe/resto.xml"
+    },
+    {
+      "region": "poitiers",
+      "count": 29,
+      "sha256": "6867181e4bb3e82bfbe7353f8745b64bedbdca5153db764b2d28199ada11123e",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/poitiers/externe/resto.xml"
+    },
+    {
+      "region": "paris",
+      "count": 75,
+      "sha256": "15a9c45041991dde1dfe67e27597417c0751e67a8c22e5c503c1aeeeccd4d4ad",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    },
+    {
+      "region": "orleans.tours",
+      "count": 34,
+      "sha256": "701f5c902d47908c7d2c88750845639e30c186f0c108579ee8f99334edd88a69",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/orleans.tours/externe/resto.xml"
+    },
+    {
+      "region": "nice",
+      "count": 20,
+      "sha256": "5122523b7b2e0adb550329e6281f04faf5c80c290c81add20671b53d3b13fa91",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/nice/externe/resto.xml"
+    },
+    {
+      "region": "nantes",
+      "count": 61,
+      "sha256": "e4091febddd08667b21b435bdb22842e268f8697d254769a7d3f00080620eb53",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/nantes/externe/resto.xml"
+    },
+    {
+      "region": "nancy.metz",
+      "count": 37,
+      "sha256": "949cbc832d70c7700b65cd87fc37379f1d01b0c3e866dc0d58ac37609479787a",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/nancy.metz/externe/resto.xml"
+    },
+    {
+      "region": "montpellier",
+      "count": 36,
+      "sha256": "a311b6ce08db3134f093335ccca80c966c81471fc68b7d9c573055e3c8a107ef",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/montpellier/externe/resto.xml"
+    },
+    {
+      "region": "lyon",
+      "count": 36,
+      "sha256": "daa3133d97009444f87d6afa13349930f6600407964d69ff1d0f9ac55bd9b63d",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/lyon/externe/resto.xml"
+    },
+    {
+      "region": "limoges",
+      "count": 14,
+      "sha256": "6db6b70d44b59c93e378c7641a02fc92b891943c3fc69b2fddcbd611cf140fb9",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/limoges/externe/resto.xml"
+    },
+    {
+      "region": "lille",
+      "count": 64,
+      "sha256": "e7c1b867df2ffff47c33241d10009e94f74fab0bd47a1a6a2b6ba70f427288d7",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/lille/externe/resto.xml"
+    },
+    {
+      "region": "grenoble",
+      "count": 54,
+      "sha256": "2e8c4b1406a3a1ff140635fe9754104c78bbb62f2ca99dfe614960f69d842848",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/grenoble/externe/resto.xml"
+    },
+    {
+      "region": "bfc",
+      "count": 45,
+      "sha256": "522d2d53329b3ce331f96dc63d993313dec46bd4ca5dd80b2f19be3a4be18e31",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/bfc/externe/resto.xml"
+    },
+    {
+      "region": "creteil",
+      "count": 38,
+      "sha256": "578cdf691d4fff19962e0508641b3af493e6865627f61796c77eb9e474431d97",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/creteil/externe/resto.xml"
+    },
+    {
+      "region": "corte",
+      "count": 5,
+      "sha256": "f1f647b4e91792e3764c3b9f4ac11477313d2171d127b1c988e3d6754cbb24d6",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/corte/externe/resto.xml"
+    },
+    {
+      "region": "clermont.ferrand",
+      "count": 25,
+      "sha256": "75ec179be563bd7cd79c12e8007fa07b778d9727db4331dd39fd6c176b97caae",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/clermont.ferrand/externe/resto.xml"
+    },
+    {
+      "region": "bordeaux",
+      "count": 43,
+      "sha256": "2ee88a55e949945c21b0e60455c6f2bb43816b5a6a136a64c70685f8ed716405",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/bordeaux/externe/resto.xml"
+    },
+    {
+      "region": "antilles.guyane",
+      "count": 10,
+      "sha256": "d898a927aa5cea628a4f3aa699aaf74541671403eeabf1fba33f5b3912480e55",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/antilles.guyane/externe/resto.xml"
+    },
+    {
+      "region": "amiens",
+      "count": 30,
+      "sha256": "c1431fe2d992e28b0ebb7401ba5ba1ec5bb38376e0852c4092c3e93d11bd3d85",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/amiens/externe/resto.xml"
+    },
+    {
+      "region": "aix.marseille",
+      "count": 48,
+      "sha256": "18ecfcebdbdd41787ca770660b0c2791ae8d862ec528f30ae2f465da8a0bdd80",
+      "url": "http://webservices-v2.crous-mobile.fr/feed/aix.marseille/externe/resto.xml"
+    }
+  ],
+  "total_rows": 972,
+  "unique_ids": 972,
+  "missing_coordinates": 0,
+  "pilot_rows": [
+    {
+      "id": "paris:r175",
+      "source_id": "r175",
+      "region": "paris",
+      "name": "RU Châtelet",
+      "type": "Restaurant",
+      "lat": "48.8417435",
+      "lon": "2.34854300000006",
+      "zone": "Paris 05",
+      "closing": "0",
+      "opening": "010,010,010,010,010,000,000",
+      "source_url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    },
+    {
+      "id": "paris:r177",
+      "source_id": "r177",
+      "region": "paris",
+      "name": "RU Cuvier",
+      "type": "Restaurant",
+      "lat": "48.84752",
+      "lon": "2.354047",
+      "zone": "Paris 05",
+      "closing": "0",
+      "opening": "010,010,010,010,010,000,000",
+      "source_url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    },
+    {
+      "id": "paris:r889",
+      "source_id": "r889",
+      "region": "paris",
+      "name": "Cafétéria Cuvier",
+      "type": "Cafétéria",
+      "lat": "48.84752",
+      "lon": "2.354047",
+      "zone": "Paris 05",
+      "closing": "0",
+      "opening": "010,010,010,010,010,000,000",
+      "source_url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    },
+    {
+      "id": "paris:r1149",
+      "source_id": "r1149",
+      "region": "paris",
+      "name": "Restaurant administratif Jussieu",
+      "type": "Restaurant",
+      "lat": "48.84752",
+      "lon": "2.354047",
+      "zone": "Sorbonne Université",
+      "closing": "0",
+      "opening": "010,010,010,010,010,000,000",
+      "source_url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    },
+    {
+      "id": "paris:r1155",
+      "source_id": "r1155",
+      "region": "paris",
+      "name": "Cafétéria Jussieu",
+      "type": "Cafétéria",
+      "lat": "48.84752",
+      "lon": "2.354047",
+      "zone": "Paris 05",
+      "closing": "1",
+      "opening": "010,010,010,010,010,000,000",
+      "source_url": "http://webservices-v2.crous-mobile.fr/feed/paris/externe/resto.xml"
+    }
+  ]
+}

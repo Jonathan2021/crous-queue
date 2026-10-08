@@ -1,0 +1,656 @@
+{
+  "kind": "synthetic_rehearsal_not_real_usefulness",
+  "summary": {
+    "schema_version": 2,
+    "pilot_id": "synthetic-five-lunch-q06",
+    "environment": "demo",
+    "data_mode": "synthetic",
+    "planned_checks": 40,
+    "actual_checks": 38,
+    "missing_checks": 2,
+    "missing_slots": [
+      "d3-1215"
+    ],
+    "late_slots": 0,
+    "states": {
+      "unknown": 19,
+      "single": 15,
+      "recent": 0,
+      "conflicting": 4
+    },
+    "fresh_estimate_contributions": 23,
+    "fresh_over_actual": {
+      "numerator": 19,
+      "denominator": 38,
+      "rate": 0.5
+    },
+    "fresh_over_planned": {
+      "numerator": 19,
+      "denominator": 40,
+      "rate": 0.475
+    },
+    "distinct_day_device_reuse_7d_max": 1,
+    "friction": {
+      "recorded_attempts": 3,
+      "outcomes": {
+        "completed": 1,
+        "abandoned": 1,
+        "error": 1
+      },
+      "timed_attempts": 2,
+      "interaction_counted_attempts": 2,
+      "median_seconds": 14.0,
+      "median_interactions": 2.0
+    }
+  },
+  "checks": [
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d1-1145",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-12T09:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 0,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d1-1215",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-12T10:15:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "conflicting",
+            "report_count": 2,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 0,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d1-1245",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-12T10:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          }
+        ],
+        "returning_devices_7d": 0,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d1-1315",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-12T11:17:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 0,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d2-1145",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-13T09:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d2-1215",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-13T10:15:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "conflicting",
+            "report_count": 2,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d2-1245",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-13T10:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d2-1315",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-13T11:17:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d3-1145",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-14T09:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d3-1245",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-14T10:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d3-1315",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-14T11:17:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d4-1145",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-15T09:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d4-1215",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-15T10:15:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "conflicting",
+            "report_count": 2,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d4-1245",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-15T10:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d4-1315",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-15T11:17:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d5-1145",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-16T09:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d5-1215",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-16T10:15:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "conflicting",
+            "report_count": 2,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d5-1245",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-16T10:45:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    },
+    {
+      "pilot_id": "synthetic-five-lunch-q06",
+      "slot_id": "d5-1315",
+      "snapshot": {
+        "schema_version": 2,
+        "environment": "demo",
+        "data_mode": "synthetic",
+        "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+        "checked_at": "2026-10-16T11:17:00Z",
+        "venues": [
+          {
+            "venue_id": "paris:r177",
+            "queue_kind": "student",
+            "state": "single",
+            "report_count": 1,
+            "newest_age_seconds": 0.0
+          },
+          {
+            "venue_id": "paris:r175",
+            "queue_kind": "student",
+            "state": "unknown",
+            "report_count": 0,
+            "newest_age_seconds": null
+          }
+        ],
+        "returning_devices_7d": 1,
+        "fresh_checks": 1,
+        "total_checks": 2
+      }
+    }
+  ],
+  "friction": [
+    {
+      "schema_version": 2,
+      "environment": "demo",
+      "data_mode": "synthetic",
+      "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+      "pilot_id": "synthetic-five-lunch-q06",
+      "venue_id": "paris:r177",
+      "outcome": "completed",
+      "duration_seconds": 8.0,
+      "interactions": 3
+    },
+    {
+      "schema_version": 2,
+      "environment": "demo",
+      "data_mode": "synthetic",
+      "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+      "pilot_id": "synthetic-five-lunch-q06",
+      "venue_id": "paris:r175",
+      "outcome": "abandoned",
+      "duration_seconds": null,
+      "interactions": 1
+    },
+    {
+      "schema_version": 2,
+      "environment": "demo",
+      "data_mode": "synthetic",
+      "store_id": "251ef417f249a395f57b716a08ec41697e831a66d52057c21a013526720c58d5",
+      "pilot_id": "synthetic-five-lunch-q06",
+      "venue_id": "paris:r177",
+      "outcome": "error",
+      "duration_seconds": 20.0,
+      "interactions": null
+    }
+  ],
+  "demo_restore_and_exact_expiry": "passed",
+  "non_demo_seed_refused": true,
+  "other_store_reports": 0
+}

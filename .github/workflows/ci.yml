@@ -1,0 +1,63 @@
+name: Local MVP verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      UV_LOCKED: 'true'
+      UV_PYTHON: '3.13'
+      CQ_EVIDENCE_PREFIX: ci-${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.11.29'
+          python-version: '3.13'
+          enable-cache: false
+      - name: Enforce committed lock and install
+        run: uv sync --locked
+      - name: Lint, formatting, strict types and core acceptance
+        run: make check
+      - name: Install explicit Chromium prerequisites
+        run: uv run --locked playwright install --with-deps chromium
+      - name: Actual mobile, retry, expiry, moderation and release-cache flows
+        run: uv run --locked pytest tests/browser
+      - name: Build both supported distributions
+        run: |
+          mkdir -p dist
+          uv export --locked --no-dev --no-emit-project --output-file dist/runtime-requirements.txt
+          uv build
+          uv run --locked python scripts/package_release.py
+      - name: Verify standalone wheel outside checkout
+        run: uv run --locked python scripts/verify_wheel.py --output wheel-verification.json
+      - name: Verify complete source kit and recovery outside checkout
+        run: uv run --locked python scripts/verify_release.py
+      - name: Inspect distributions and emit checksums
+        run: uv run --locked python scripts/release_manifest.py --output dist/release-manifest.json
+      - name: Retain private artifacts briefly
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crous-queue-${{ github.sha }}
+          path: |
+            dist/crous_queue-0.1.2-py3-none-any.whl
+            dist/crous-queue-0.1.2-local.tar.gz
+            dist/release-manifest.json
+            dist/runtime-requirements.txt
+            wheel-verification.json
+          retention-days: 7
+          compression-level: 9
+          if-no-files-found: error

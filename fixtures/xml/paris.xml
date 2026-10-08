@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<root><resto id="r177"><nom><![CDATA[<b>RU Cuvier</b>]]></nom><type>Restaurant</type><lat>48.84752</lat><lon>2.354047</lon><zone>Paris 05</zone><adresse><![CDATA[4 place Jussieu]]></adresse><acces><![CDATA[Étudiants Sorbonne Université]]></acces><horaires><![CDATA[<script>alert(1)</script><p>Lundi au vendredi</p><img src="https://never-fetch.test/a">]]></horaires><opening>010</opening><closing>0</closing></resto></root>

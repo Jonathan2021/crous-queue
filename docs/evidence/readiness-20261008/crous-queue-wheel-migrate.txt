@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/wheel-crous-queue/env/bin/crous-queue", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/wheel-crous-queue/env/lib/python3.13/site-packages/crous_queue/cli.py", line 50, in main
+    command.upgrade(config, "head")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/wheel-crous-queue/env/lib/python3.13/site-packages/alembic/command.py", line 467, in upgrade
+    script = ScriptDirectory.from_config(config)
+  File "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/wheel-crous-queue/env/lib/python3.13/site-packages/alembic/script/base.py", line 165, in from_config
+    raise util.CommandError(
+        "No 'script_location' key found in configuration."
+    )
+alembic.util.exc.CommandError: No 'script_location' key found in configuration.

@@ -1,0 +1,2 @@
+uv run python scripts/seed_demo.py
+Synthetic demo ready. Start: uv run --env-file .local/demo.env crous-queue serve

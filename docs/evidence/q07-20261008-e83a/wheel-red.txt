@@ -1,0 +1,28 @@
+
+Traceback (most recent call last):
+  File "/tmp/crous-wheel-only-3fhfse13/venv/bin/crous-queue", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/tmp/crous-wheel-only-3fhfse13/venv/lib/python3.13/site-packages/crous_queue/cli.py", line 50, in main
+    command.upgrade(config, "head")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/tmp/crous-wheel-only-3fhfse13/venv/lib/python3.13/site-packages/alembic/command.py", line 467, in upgrade
+    script = ScriptDirectory.from_config(config)
+  File "/tmp/crous-wheel-only-3fhfse13/venv/lib/python3.13/site-packages/alembic/script/base.py", line 165, in from_config
+    raise util.CommandError(
+        "No 'script_location' key found in configuration."
+    )
+alembic.util.exc.CommandError: No 'script_location' key found in configuration.
+
+Traceback (most recent call last):
+  File "/home/jonathan/startup_lab/crous-queue/scripts/verify_wheel.py", line 77, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/home/jonathan/startup_lab/crous-queue/scripts/verify_wheel.py", line 71, in main
+    result=verify(args.wheel)
+  File "/home/jonathan/startup_lab/crous-queue/scripts/verify_wheel.py", line 43, in verify
+    run([cli,'migrate']);run([cli,'import-directory'])
+    ~~~^^^^^^^^^^^^^^^^^
+  File "/home/jonathan/startup_lab/crous-queue/scripts/verify_wheel.py", line 37, in run
+    raise RuntimeError('Installed-wheel verification failed: '+str(argv[-1]))
+RuntimeError: Installed-wheel verification failed: migrate

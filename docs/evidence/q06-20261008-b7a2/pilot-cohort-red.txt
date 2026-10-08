@@ -1,0 +1,39 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 1 item
+
+tests/integration/test_pilot_records.py F                                [100%]
+
+=================================== FAILURES ===================================
+_____________ test_only_selected_sites_count_as_returning_devices ______________
+
+engine = Engine(sqlite:////tmp/pytest-of-jonathan/pytest-17/test_only_selected_sites_count0/test-crous.db)
+
+    def test_only_selected_sites_count_as_returning_devices(engine):
+        from datetime import timedelta
+        from crous_queue.contracts import ReportInput
+        from crous_queue.security import Identity
+        from crous_queue.services.pilot import pilot_check
+        from crous_queue.services.waits import WaitService
+        DirectoryImporter(engine,lambda:NOW).import_snapshot(ROOT/'fixtures/venues-2026-10-07.json')
+        current=[NOW]
+        for day in range(2):
+            current[0]=NOW+timedelta(days=day)
+            for device,venue,queue in [('pilot','paris:r177','student'),('elsewhere','lyon:r352','unspecified')]:
+                # Pick an actual other region identity from the retained snapshot below.
+                if device=='elsewhere':
+                    from sqlalchemy import select
+                    from sqlalchemy.orm import Session
+                    from crous_queue.models import Venue
+                    with Session(engine) as db:venue=db.scalar(select(Venue.id).where(Venue.region=='lyon').limit(1))
+                WaitService(engine,lambda:current[0]).submit(Identity(device,'network'),venue,ReportInput(kind='estimate',minutes=0,observed_at=current[0],queue_kind=queue,idempotency_key=f'{device}_day_{day}'))
+>       assert pilot_check(engine,lambda:current[0],environment='test')['returning_devices_7d']==1
+E       assert 2 == 1
+
+tests/integration/test_pilot_records.py:79: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_pilot_records.py::test_only_selected_sites_count_as_returning_devices
+============================== 1 failed in 0.61s ===============================

@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 1 item
+
+tests/integration/test_pilot_records.py F                                [100%]
+
+=================================== FAILURES ===================================
+______________ test_pilot_logger_cannot_mix_demo_and_other_store _______________
+
+engine = Engine(sqlite:////tmp/pytest-of-jonathan/pytest-5/test_pilot_logger_cannot_mix_d0/test-crous.db)
+tmp_path = PosixPath('/tmp/pytest-of-jonathan/pytest-5/test_pilot_logger_cannot_mix_d0')
+
+    def test_pilot_logger_cannot_mix_demo_and_other_store(engine,tmp_path):
+        DirectoryImporter(engine,lambda:NOW).import_snapshot(ROOT/'fixtures/venues-2026-10-07.json')
+        demo=tmp_path/'demo-pilot.db';config=Config(str(ROOT/'alembic.ini'));config.set_main_option('sqlalchemy.url',f'sqlite:///{demo}');command.upgrade(config,'head')
+        settings=Settings(environment='demo',database_url=f'sqlite:///{demo}',session_secret='a'*40,ip_secret='b'*40)
+        seed_demo(settings,ROOT/'fixtures/venues-2026-10-07.json',lambda:NOW)
+        output=tmp_path/'.local/checks.jsonl'
+        def run(environment,url):
+            return subprocess.run([sys.executable,str(ROOT/'scripts/check_pilot.py'),'--output',str(output)],cwd=tmp_path,env={**os.environ,'CQ_ENVIRONMENT':environment,'CQ_DATABASE_URL':url,'CQ_SESSION_SECRET':'a'*40,'CQ_IP_SECRET':'b'*40},capture_output=True,text=True)
+        first=run('demo',settings.database_url);assert first.returncode==0,first.stderr
+        original=output.read_bytes()
+        second=run('test',str(engine.url))
+>       assert second.returncode!=0,'Logger accepted mixed demo/test measurements into one file'
+E       AssertionError: Logger accepted mixed demo/test measurements into one file
+E       assert 0 != 0
+E        +  where 0 = CompletedProcess(args=['/home/jonathan/startup_lab/crous-queue/.venv/bin/python3', '/home/jonathan/startup_lab/crous-q...s:r175", "state": "unknown", "report_count": 0, "newest_age_seconds": null}], "returning_devices_7d": 0}\n', stderr='').returncode
+
+tests/integration/test_pilot_records.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_pilot_records.py::test_pilot_logger_cannot_mix_demo_and_other_store
+============================== 1 failed in 2.05s ===============================

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/jonathan/startup_lab/crous-queue/scripts/release_manifest.py", line 73, in <module>
+    main()
+    ~~~~^^
+  File "/home/jonathan/startup_lab/crous-queue/scripts/release_manifest.py", line 61, in main
+    source_commit=os.getenv("GITHUB_SHA"),
+                  ^^
+NameError: name 'os' is not defined. Did you forget to import 'os'?

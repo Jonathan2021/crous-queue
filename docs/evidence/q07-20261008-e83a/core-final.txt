@@ -1,0 +1,14 @@
+uv run --locked ruff check src tests scripts alembic
+F821 Undefined name `os`
+  --> scripts/release_manifest.py:61:31
+   |
+59 |             dict(
+60 |                 version=__version__,
+61 |                 source_commit=os.getenv("GITHUB_SHA"),
+   |                               ^^
+62 |                 supported=["standalone-wheel", "complete-source-kit"],
+63 |                 artifacts=artifacts,
+   |
+
+Found 1 error.
+make: *** [Makefile:6: check] Error 1

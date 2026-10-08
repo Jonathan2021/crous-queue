@@ -1,0 +1,51 @@
+RUN make install
+uv sync --frozen
+uv run python scripts/configure.py
+Created local .env with independent development secrets.
+
+RUN make migrate
+uv run crous-queue migrate
+
+RUN uv run crous-queue import-directory
+Retained directory imported; no wait reports created.
+
+RUN make check
+uv run ruff check src tests scripts alembic
+All checks passed!
+uv run ruff format --check src tests scripts alembic
+43 files already formatted
+uv run mypy
+Success: no issues found in 20 source files
+uv run pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tmp/crous-release-b5b27hmn/crous-queue-0.1.1
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 22 items
+
+tests/unit/test_aggregation.py ..                                        [  9%]
+tests/unit/test_pilot_summary.py ..                                      [ 18%]
+tests/integration/test_directory.py ....                                 [ 36%]
+tests/integration/test_pilot_records.py ...                              [ 50%]
+tests/integration/test_release.py ...                                    [ 63%]
+tests/integration/test_reports.py ....                                   [ 81%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 22 passed in 12.28s ==============================
+
+RUN uv run crous-queue backup --output .local/development-backup.db
+Integrity-checked backup created, permissions 0600. Protect and rotate within 7 days.
+
+RUN uv run crous-queue restore --input .local/development-backup.db --output .local/development-restored.db
+Restored into new isolated path. Validate before changing database configuration.
+
+RUN uv run crous-queue retain
+{"timers": 0, "reports": 0, "flags": 0, "audits": 0, "rate_buckets": 0}
+
+RUN make seed-demo
+uv run python scripts/seed_demo.py
+Synthetic demo ready. Start: uv run --env-file .local/demo.env crous-queue serve
+
+{"release_smoke": "passed", "real_waits": "unknown", "standalone_without_foundry": true}

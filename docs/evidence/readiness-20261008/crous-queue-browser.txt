@@ -1,0 +1,12 @@
+uv run pytest tests/browser
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 7 items
+
+tests/browser/test_mobile.py ......                                      [ 85%]
+tests/browser/test_release_cache.py .                                    [100%]
+
+============================== 7 passed in 22.50s ==============================

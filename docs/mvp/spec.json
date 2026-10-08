@@ -1,0 +1,113 @@
+{
+  "name": "Crous Queue",
+  "venture": "f0b5abfe-0274-42f7-9c9a-72dcbe68c116",
+  "workspace": "81ee3117-de70-411e-9856-07420859ffad",
+  "goal": "Find a university restaurant and see or report a recent wait in seconds, with unknown/stale states that cannot be confused with zero waiting.",
+  "decision": "GO for a national-directory, crowd-reporting MVP. All 26 official feeds were fetched: 972 unique region-scoped venue IDs, including restaurants, cafeterias and other types. This is observed directory coverage, not proof every venue is open or every university restaurant is listed. Seed Cuvier/Châtelet for a local pilot without blocking the build on lunch observations.",
+  "evidence": "CNOUS feed license is fr-lo (Open Licence); all 26 current resource URLs returned parseable XML. Paris has separate RU Cuvier paris:r177, RU Châtelet paris:r175, Cuvier cafeteria paris:r889 and administrative Jussieu paris:r1149. Never merge these by coordinates. HTTPS on the legacy Paris feed returned 404 while the catalog-declared HTTP feed succeeded; import server-side with strict bounds and plain-text normalization. Existing Affluences and CrousRadar establish strong overlap; adoption remains an experiment.",
+  "sources": [
+    [
+      "Official national directory",
+      "https://www.data.gouv.fr/datasets/restaurants-brasseries-et-cafeterias-des-crous"
+    ],
+    [
+      "CrousRadar listing",
+      "https://apps.apple.com/fr/app/crousradar/id6755202143"
+    ],
+    [
+      "Affluences restaurant offering",
+      "https://www.pro.affluences.com/restaurant-universitaire"
+    ],
+    [
+      "RU Cuvier",
+      "https://www.crous-paris.fr/restaurant/ru-cuvier/"
+    ],
+    [
+      "RU Châtelet",
+      "https://www.crous-paris.fr/restaurant/ru-chatelet/"
+    ]
+  ],
+  "scope": "National searchable directory; restaurant/cafeteria filters; manual city/search selection with optional one-time approximate geolocation; favorite venues stored locally; recent crowd-reported wait; report current estimated remaining wait or start/finish an own wait timer; freshness, report count and disagreement; report-abuse action and small admin moderation view. No signup to view or contribute in initial MVP; signed pseudonymous device session and strict throttles.\n\nDo not infer seats, menus, queue length, future wait or walking-time savings. Do not import Affluences live data without an authorized feed. Menus and predictions are later options. Keep private/staff-only venues visibly identified when source access information is available. Public reports contain no names, free text, photos or location traces.",
+  "design": "Python FastAPI/SQLAlchemy/Alembic modular monolith; responsive server-rendered PWA shell, SQLite local and PostgreSQL for public concurrency. App owns no precise location-history table. DirectoryImporter interface: fixed catalog/resource allowlist, timeout, payload/row limits, XML parser with external entities disabled, reject nonfinite/out-of-range coordinates, normalize HTML to safe plain text, never fetch embedded image/contact URLs. Store source timestamp and fetched_at separately; catalog updated_at is not proof venue hours are current.\n\nVenue key is region + ':' + original_id, unique. Store source name/type/coordinates, cautiously normalized address/access/hours text, active/closed flags as source data, last_seen_at, source_url, license. Partial feed failure retains last-good region data and flags stale coverage; missing in one refresh is not deletion. Keep administrative/restaurant/cafeteria identities separate even at identical coordinates. Import all listed venues, default to restaurant type in UI and expose other types explicitly.\n\nWaitReport(id, venue_id, queue_kind, kind=estimate|completed, minutes, observed_at, received_at, source_window_start, device_hash, idempotency_key, visibility). Use server received time; client observation time cannot be >2min future or >60min old. Estimate: “how much longer do you think someone joining now would wait?” integer 0–120. Completed timer: measured own wait, preserve join and finish; label as completed experience ending X minutes ago and do not silently mix it with current estimates. Only estimate reports enter initial live median. A completed report remains a separate recent observation because its queue state may have changed while waiting.\n\nAggregation v1: only visible estimates with age <15min, latest per device+venue+queue; zero is a real report, no observations is unknown. One report is labeled unconfirmed single report. Two+ reports use median, show range/count and newest age; range >15min displays conflicting range instead of a precise aggregate. Timestamp expiry enforced on server reads and client timer, not only scheduled cleanup. Start with separate queues only where real queue classes are known; never pool staff/student reports.\n\nAbuse: signed random device cookie, one contribution per venue per 2min; report replaces that device's aggregate contribution; coarse salted IP rate limiting with short retention, aggregate counters, admin hide with audit. This limits repeats, not Sybil attacks. No device fingerprinting. Raw reports default 7-day retention, rate-limit identifiers <=24h; document any change. Moderation endpoint requires separate admin authentication. No blanket credibility score from number of reports.",
+  "api": "GET /venues?q=&region=&type=restaurant; GET /venues/{id}; GET /venues/{id}/waits; POST /venues/{id}/reports {kind, minutes, observed_at, queue_kind, idempotency_key}; POST /timers/start and /timers/{id}/finish bound to device; POST /reports/{id}/flags with enum reason; admin POST /reports/{id}/hide with rationale. Device/IP rate limits and payload validation apply before writes. No endpoint lists raw device identities.",
+  "ux": "Home: search university/city/restaurant and favorites. Venue: name, type/access, recent wait state, timestamp and report count, large “Report a wait” button, quick values 0/5/10/15/20/30 plus numeric input. Ask whether this is an estimate now or a completed wait. Empty state says “No recent report”, never “0 min”. Confirmation is one tap after value selection; show new aggregate and expiry. Cuvier cafeteria/admin rows are clearly distinguished in search. FR first, installable browser app, no app-store prerequisite.",
+  "packages": [
+    [
+      "Q01",
+      [],
+      "Import and search the national directory",
+      "Build strict importer from 26 declared feeds using the retained normalized snapshot and small XML fixtures. Save provenance, separate source fields and safe display fields.",
+      "972-row observed snapshot imports idempotently; Cuvier/Châtelet IDs resolve; coordinate duplicates remain distinct; malformed/failed region preserves last-good data; hostile CDATA is not executable."
+    ],
+    [
+      "Q02",
+      [
+        "Q01"
+      ],
+      "Reports, expiry and honest aggregation",
+      "Implement signed device session, request idempotency, estimate/completed split, throttles and exact 15-minute clock semantics. Unit test with injected UTC clock.",
+      "Empty != zero; 15min report excluded; latest same-device replaces older; conflicting 0/40 values show conflict; completed wait does not masquerade as live estimate; retries do not add votes."
+    ],
+    [
+      "Q03",
+      [
+        "Q02"
+      ],
+      "Mobile search/report/favorites experience",
+      "Build venue card/search and one-hand report form. Display counts, freshness and source limitations, with client expiry and offline read-only/error behavior.",
+      "At 390px user finds Cuvier and submits 10min in <=3 interactions after venue selection; browser clock advance expires estimate; offline retry cannot duplicate it; no location permission required."
+    ],
+    [
+      "Q04",
+      [
+        "Q03"
+      ],
+      "Moderation and public-readiness safeguards",
+      "Implement admin auth, hide/flag history, server limits, retention command, metrics without PII, backup/restore, and plain-language privacy page.",
+      "Two simultaneous duplicate writes create one report; hidden report removed from aggregates immediately; deletion job honors cutoffs; server logs contain no session token/precise location."
+    ],
+    [
+      "Q05",
+      [
+        "Q04"
+      ],
+      "Private pilot then explicit deployment checkpoint",
+      "Exercise Cuvier/Châtelet with synthetic data in demo and ordinary voluntary reports only when available. Prepare rollout config and cost/teardown document; do not seed public live feeds with invented waits.",
+      "National directory works with unknown waits everywhere; real and demo data are separate; launch authorization explicit. Measure fresh-report coverage and returning contributors, not just installs."
+    ]
+  ],
+  "pilot": "Five lunch days at Cuvier/Châtelet after a usable app exists: freshness coverage at fixed checks, estimate versus own completed wait (clearly different measures), contribution friction and repeat contributors. No mandatory interviews before implementation. National venue availability does not imply national live data. If reporting stays sparse, keep honest unknowns and test distribution rather than adding fictitious prediction.",
+  "cases": [
+    [
+      "expiry",
+      "report age exactly 15min",
+      "excluded"
+    ],
+    [
+      "zero",
+      "fresh estimate zero",
+      "display 0, single-report label"
+    ],
+    [
+      "separate_venues",
+      "same coordinates, three Cuvier/Jussieu IDs",
+      "independent reports"
+    ],
+    [
+      "device_repeat",
+      "same device reports 5 then 20",
+      "one latest contribution"
+    ],
+    [
+      "conflict",
+      "independent fresh 0 and 40",
+      "range/conflicting state"
+    ],
+    [
+      "partial_import",
+      "one region feed errors",
+      "retain prior region data"
+    ]
+  ],
+  "slug": "crous-queue"
+}

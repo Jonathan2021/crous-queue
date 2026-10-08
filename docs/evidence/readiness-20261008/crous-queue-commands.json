@@ -1,0 +1,102 @@
+[
+  {
+    "label": "install",
+    "argv": [
+      "make",
+      "install"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:51:40.034482+00:00",
+    "exit": 0,
+    "elapsed_seconds": 1.47,
+    "log": "crous-queue-install.txt"
+  },
+  {
+    "label": "migrate",
+    "argv": [
+      "make",
+      "migrate"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:51:41.504422+00:00",
+    "exit": 0,
+    "elapsed_seconds": 11.194,
+    "log": "crous-queue-migrate.txt"
+  },
+  {
+    "label": "directory",
+    "argv": [
+      "uv",
+      "run",
+      "crous-queue",
+      "import-directory"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:51:52.698339+00:00",
+    "exit": 0,
+    "elapsed_seconds": 2.943,
+    "log": "crous-queue-directory.txt"
+  },
+  {
+    "label": "seed",
+    "argv": [
+      "make",
+      "seed-demo"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:51:55.641785+00:00",
+    "exit": 0,
+    "elapsed_seconds": 10.646,
+    "log": "crous-queue-seed.txt"
+  },
+  {
+    "label": "check",
+    "argv": [
+      "make",
+      "check"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:52:06.288140+00:00",
+    "exit": 0,
+    "elapsed_seconds": 25.146,
+    "log": "crous-queue-check.txt"
+  },
+  {
+    "label": "browser",
+    "argv": [
+      "make",
+      "test-browser"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:52:31.434396+00:00",
+    "exit": 0,
+    "elapsed_seconds": 23.77,
+    "log": "crous-queue-browser.txt"
+  },
+  {
+    "label": "build",
+    "argv": [
+      "uv",
+      "build"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:52:55.205203+00:00",
+    "exit": 0,
+    "elapsed_seconds": 1.001,
+    "log": "crous-queue-build.txt"
+  },
+  {
+    "label": "source-package",
+    "argv": [
+      "uv",
+      "run",
+      "python",
+      "scripts/package_release.py"
+    ],
+    "cwd": "/home/jonathan/startup_lab/foundry/.foundry/runs/readiness-second-20261008/copies-kp4wo5t9/crous-queue",
+    "started_utc": "2026-10-08T10:52:56.206384+00:00",
+    "exit": 0,
+    "elapsed_seconds": 0.167,
+    "log": "crous-queue-source-package.txt"
+  }
+]

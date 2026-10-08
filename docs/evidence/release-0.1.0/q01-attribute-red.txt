@@ -1,0 +1,115 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 4 items
+
+tests/integration/test_directory.py ...F                                 [100%]
+
+=================================== FAILURES ===================================
+_________________ test_catalog_attribute_shape_and_plain_infos _________________
+
+region = 'paris'
+payload = b'<root><resto id="r177" title="RU Cuvier" type="Restaurant" lat="48.84752" lon="2.354047" zone="Paris 05" opening="01...s et personnels</p>]]></infos><contact><![CDATA[<h2>RU Cuvier</h2><p>4 place Jussieu</p>]]></contact></resto></root>\n'
+
+    def parse_feed(region: str, payload: bytes) -> list[DirectoryRow]:
+        if region not in ALLOWLIST or len(payload) > MAX_BYTES:
+            raise ValueError("Unknown region or payload exceeds 2 MB.")
+        try:
+            root = ElementTree.fromstring(
+                payload, forbid_dtd=True, forbid_entities=True, forbid_external=True
+            )
+            nodes = root.findall(".//resto")
+            if not nodes or len(nodes) > MAX_ROWS:
+                raise ValueError(
+                    "Feed is empty or exceeds the row limit; last-good data retained."
+                )
+            rows = []
+            for node in nodes:
+    
+                def field(name: str, node: Any = node) -> str:
+                    return str(node.findtext(name, default="") or "")
+    
+                rows.append(
+                    DirectoryRow(
+                        original_id=node.get("id", "") or field("id"),
+                        source_name=field("nom"),
+                        source_type=field("type"),
+>                       latitude=float(field("lat")),
+                                 ^^^^^^^^^^^^^^^^^^^
+                        longitude=float(field("lon")),
+                        zone=plain_text(field("zone")),
+                        address=plain_text(field("adresse")),
+                        access=plain_text(field("acces")),
+                        hours=plain_text(field("horaires")),
+                        closing=field("closing")[:100],
+                        opening=field("opening")[:300],
+                    )
+                )
+E               ValueError: could not convert string to float: ''
+
+src/crous_queue/services/directory.py:152: ValueError
+
+The above exception was the direct cause of the following exception:
+
+    def test_catalog_attribute_shape_and_plain_infos():
+>       rows = parse_feed('paris', (ROOT/'fixtures/xml/attribute-feed.xml').read_bytes())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/integration/test_directory.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+region = 'paris'
+payload = b'<root><resto id="r177" title="RU Cuvier" type="Restaurant" lat="48.84752" lon="2.354047" zone="Paris 05" opening="01...s et personnels</p>]]></infos><contact><![CDATA[<h2>RU Cuvier</h2><p>4 place Jussieu</p>]]></contact></resto></root>\n'
+
+    def parse_feed(region: str, payload: bytes) -> list[DirectoryRow]:
+        if region not in ALLOWLIST or len(payload) > MAX_BYTES:
+            raise ValueError("Unknown region or payload exceeds 2 MB.")
+        try:
+            root = ElementTree.fromstring(
+                payload, forbid_dtd=True, forbid_entities=True, forbid_external=True
+            )
+            nodes = root.findall(".//resto")
+            if not nodes or len(nodes) > MAX_ROWS:
+                raise ValueError(
+                    "Feed is empty or exceeds the row limit; last-good data retained."
+                )
+            rows = []
+            for node in nodes:
+    
+                def field(name: str, node: Any = node) -> str:
+                    return str(node.findtext(name, default="") or "")
+    
+                rows.append(
+                    DirectoryRow(
+                        original_id=node.get("id", "") or field("id"),
+                        source_name=field("nom"),
+                        source_type=field("type"),
+                        latitude=float(field("lat")),
+                        longitude=float(field("lon")),
+                        zone=plain_text(field("zone")),
+                        address=plain_text(field("adresse")),
+                        access=plain_text(field("acces")),
+                        hours=plain_text(field("horaires")),
+                        closing=field("closing")[:100],
+                        opening=field("opening")[:300],
+                    )
+                )
+            if len({row.original_id for row in rows}) != len(rows):
+                raise ValueError("Duplicate original IDs within feed.")
+            return rows
+        except Exception as error:
+>           raise ValueError("Invalid regional XML; last-good data retained.") from error
+E           ValueError: Invalid regional XML; last-good data retained.
+
+src/crous_queue/services/directory.py:166: ValueError
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/fastapi/testclient.py:1
+  /home/jonathan/startup_lab/crous-queue/.venv/lib/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_directory.py::test_catalog_attribute_shape_and_plain_infos
+==================== 1 failed, 3 passed, 1 warning in 2.03s ====================

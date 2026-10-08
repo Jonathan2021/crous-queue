@@ -1,0 +1,45 @@
+[project]
+name = "crous-queue"
+version = "0.1.2"
+description = "Honest crowd-reported university restaurant waits"
+requires-python = ">=3.13,<3.14"
+dependencies = ["fastapi>=0.115,<1", "pydantic-settings>=2.7,<3", "sqlalchemy>=2.0,<2.1", "alembic>=1.14,<2", "jinja2>=3.1,<4", "httpx>=0.28,<1", "defusedxml>=0.7,<1", "itsdangerous>=2.2,<3", "uvicorn>=0.34,<1", "psycopg[binary]>=3.2,<4"]
+
+[project.scripts]
+crous-queue = "crous_queue.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<10",
+    "ruff>=0.9,<1",
+    "mypy>=1.14,<2",
+    "playwright>=1.50,<2",
+    "types-defusedxml",
+    "types-itsdangerous",
+    "httpx2>=2.13.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit", "tests/integration"]
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["src"]
+
+[tool.ruff.lint.isort]
+known-third-party = ["alembic"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/crous_queue"]

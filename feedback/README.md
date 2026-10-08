@@ -1,0 +1,5 @@
+# Foundry dogfood feedback
+
+One immutable, sanitized JSON report per UUID. Use `python3 tools/foundry_agent.py feedback-template > .foundry/feedback-input.json`, edit it, then `python3 tools/foundry_agent.py feedback --input .foundry/feedback-input.json`. The bridge saves a local report before syncing it as evidence in Foundry’s own workspace. A `.receipt.json` means it was recorded, not triaged or fixed. Retry the same input after a failure. Never overwrite an existing ID; follow-ups get new IDs and refer to the old one.
+
+Report bug/friction/idea/positive with expected/actual behavior, exact reproduction, impact, attempted workaround and suggestion. Record blocker immediately; otherwise report at each package checkpoint (including “no new friction” as a positive report when true). No tokens, customer data, CVs, real chat content or secrets. Reports are not automatic permission for Foundry refactoring. A coordinator reviews recurrence/impact and links accepted improvements to work items.

@@ -1,0 +1,29 @@
+RUN make install
+uv sync --locked
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.
+
+RUN make migrate
+uv run --locked crous-queue migrate
+
+RUN uv run crous-queue import-directory
+Bundled retained directory dated 2026-10-07 imported; no wait reports created.
+
+RUN make check
+uv run --locked ruff check src tests scripts alembic
+F821 Undefined name `os`
+  --> scripts/release_manifest.py:61:31
+   |
+59 |             dict(
+60 |                 version=__version__,
+61 |                 source_commit=os.getenv("GITHUB_SHA"),
+   |                               ^^
+62 |                 supported=["standalone-wheel", "complete-source-kit"],
+63 |                 artifacts=artifacts,
+   |
+
+Found 1 error.
+
+warning: `VIRTUAL_ENV=/home/jonathan/startup_lab/crous-queue/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+make: *** [Makefile:6: check] Error 1
+

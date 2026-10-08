@@ -1,0 +1,42 @@
+uv run ruff check src tests scripts alembic
+E402 Module level import not at top of file
+  --> scripts/package_release.py:9:1
+   |
+ 8 | ROOT = Path(__file__).resolve().parents[1]
+ 9 | from crous_queue import __version__
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |
+11 | VERSION = __version__
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> scripts/verify_release.py:3:1
+   |
+ 1 |   """Replay documented setup inside a disposable release copy, no Foundry."""
+ 2 |
+ 3 | / import json
+ 4 | | import os
+ 5 | | import socket
+ 6 | | import subprocess
+ 7 | | import tarfile
+ 8 | | import tempfile
+ 9 | | import time
+10 | | from pathlib import Path
+11 | |
+12 | | import httpx
+13 | | from crous_queue import __version__
+   | |___________________________________^
+14 |
+15 |   ROOT = Path(__file__).resolve().parents[1]
+   |
+help: Organize imports
+   |
+12 | import httpx
+13 +
+14 | from crous_queue import __version__
+   |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+make: *** [Makefile:6: check] Error 1

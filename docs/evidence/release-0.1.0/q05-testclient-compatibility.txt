@@ -1,0 +1,10 @@
+Resolved 50 packages in 744ms
+   Building crous-queue @ file:///home/jonathan/startup_lab/crous-queue
+      Built crous-queue @ file:///home/jonathan/startup_lab/crous-queue
+Prepared 1 package in 2.38s
+Uninstalled 1 package in 19ms
+Installed 4 packages in 14ms
+ ~ crous-queue==0.1.0 (from file:///home/jonathan/startup_lab/crous-queue)
+ + httpcore2==2.13.1
+ + httpx2==2.13.1
+ + truststore==0.10.4

@@ -1,0 +1,7 @@
+error: unexpected argument '--locked' found
+
+  tip: to pass '--locked' as a value, use '-- --locked'
+
+Usage: uv build [OPTIONS] [SRC]
+
+For more information, try '--help'.

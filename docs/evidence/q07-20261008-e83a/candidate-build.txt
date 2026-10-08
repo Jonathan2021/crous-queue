@@ -1,0 +1,7 @@
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/crous_queue-0.1.2.tar.gz
+Successfully built dist/crous_queue-0.1.2-py3-none-any.whl
+f41d3695f6bdb33ecb284cd835f8af98cd9ded6223fe45f0f47123243920c5db  crous-queue-0.1.2-local.tar.gz
+4de4f9432c31d227542d3a7b801d20759b752e0dfa80219683708444f01e880b  crous_queue-0.1.2-py3-none-any.whl
+36263cc1f703b1cf30927a6d807f6e983ac2d88034073aaf41e85c4949079a49  crous_queue-0.1.2.tar.gz

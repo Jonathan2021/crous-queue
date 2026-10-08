@@ -1,0 +1,36 @@
+{
+  "status": "draft_not_authorized",
+  "application_version": "0.1.2",
+  "schema_head": "0003",
+  "host_provider_account": null,
+  "region": null,
+  "public_origin": null,
+  "build_sha256": null,
+  "postgresql_version_and_digest": null,
+  "operator_and_privacy_contact": null,
+  "monthly_budget_ceiling_eur": 25,
+  "approved_spend_eur": 0,
+  "resources": [
+    "one EU host <=2 vCPU/4 GiB/20 GiB",
+    "one app process",
+    "one private PostgreSQL database",
+    "TLS proxy",
+    "private rotating backups",
+    "independent retention and health jobs"
+  ],
+  "retention": {
+    "reports_days": 7,
+    "backups_days": 7,
+    "rate_identifiers_hours_max": 24
+  },
+  "approval": null,
+  "provision_and_teardown_commands": null,
+  "remaining_gates": [
+    "exact provider quote and resource IDs",
+    "selected PostgreSQL integration/restore checks",
+    "operator privacy contact",
+    "exact public launch payload authorization",
+    "R011 ordinary eligibility and exact private trial/intake arrangement"
+  ],
+  "build_manifest": "commit-specific release-manifest.json from successful private CI artifact"
+}
