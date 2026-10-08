@@ -88,3 +88,12 @@ PostgreSQL/public concurrency, public hosting and paid services remain gated.
 Foundry observed no new defect; complete-context coverage and pinned result
 review provide checkpoint traceability. Final review/feedback IDs belong in the
 actual immutable receipt rather than provisional preview IDs.
+
+Private initial commit `bbeb9b3db59d8943444db0661a5df6af5e5e97fe` was delivered
+through the existing SSH identity after OAuth rejected the workflow scope. The
+first CI run `37772085961` passed core checks but Chromium 153 rejected eval-based
+worker-control polling in the harness. Native `controllerchange` waiting with a
+five-second error bound repairs both worker tests; the offline test also asserts
+the product's strict CSP. No application CSP change or automation bypass. The
+failed CI log and subsequent seven-check local replay are retained independently;
+final delivery still requires the matching green CI run on the later commit.

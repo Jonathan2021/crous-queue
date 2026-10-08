@@ -1,0 +1,77 @@
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	﻿2026-10-08T11:45:51.7957606Z ##[group]Run uv run --locked pytest tests/browser
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.7958244Z ^[[36;1muv run --locked pytest tests/browser^[[0m
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8041745Z shell: /usr/bin/bash -e {0}
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8042145Z env:
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8042448Z   UV_LOCKED: true
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8042791Z   UV_PYTHON: 3.13
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8043143Z   CQ_EVIDENCE_PREFIX: ci-37772085961
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8043720Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:51.8044293Z ##[endgroup]
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0400051Z ============================= test session starts ==============================
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0419769Z platform linux -- Python 3.13.14, pytest-9.1.1, pluggy-1.6.0
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0429691Z rootdir: /home/runner/work/crous-queue/crous-queue
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0439582Z configfile: pyproject.toml
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0459477Z plugins: anyio-4.15.1
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0479567Z collected 7 items
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:45:53.0489399Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:12.5139322Z tests/browser/test_mobile.py ..F...                                      [ 85%]
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6065507Z tests/browser/test_release_cache.py .                                    [100%]
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6066450Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6066928Z =================================== FAILURES ===================================
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6067764Z ____________________________ test_pwa_offline_shell ____________________________
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6068367Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6070330Z browser_page = (<Page url='http://127.0.0.1:57533/'>, <BrowserContext browser=<Browser type=<BrowserType name=chromium executable_pat...ome/runner/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome> version=153.0.8010.12>>, 'http://127.0.0.1:57533')
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6072080Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6072442Z     def test_pwa_offline_shell(browser_page):
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6073208Z         page, context, origin = browser_page
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6073812Z         page.goto(origin + "/")
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6074540Z >       page.wait_for_function("navigator.serviceWorker.controller !== null")
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6075229Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6075528Z tests/browser/test_mobile.py:90: 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6076182Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6077173Z .venv/lib/python3.13/site-packages/playwright/sync_api/_generated.py:12809: in wait_for_function
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6078063Z     self._sync(
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6078800Z .venv/lib/python3.13/site-packages/playwright/_impl/_page.py:1153: in wait_for_function
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6080085Z     return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6080965Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6081857Z .venv/lib/python3.13/site-packages/playwright/_impl/_frame.py:941: in wait_for_function
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6082879Z     await self._channel.send("waitForFunction", self._timeout, params)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6083803Z .venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:76: in send
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6084659Z     return await self._connection.wrap_api_call(
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6085326Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6085852Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6086304Z self = <playwright._impl._connection.Connection object at 0x7f2f7ad14a50>
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6087211Z cb = <function Channel.send.<locals>.<lambda> at 0x7f2f7d27c040>
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6087918Z is_internal = False, title = None
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6088331Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6088623Z     async def wrap_api_call(
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6089587Z         self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6090341Z     ) -> Any:
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6090798Z         if self._api_zone.get():
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6091833Z             return await cb()
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6092398Z         task = asyncio.current_task(self._loop)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6093056Z         parsed_st = _attach_api_call_information(
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6094125Z             getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6094818Z             is_internal,
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6095351Z             title,
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6095809Z         )
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6096266Z         self._api_zone.set(parsed_st)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6096814Z         try:
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6097274Z             return await cb()
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6097813Z         except Exception as error:
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6098535Z >           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6100654Z E           playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6102371Z E           
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6102830Z E               at eval (<anonymous>)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6103507Z E               at predicate (eval at evaluate (:311:30), <anonymous>:4:60)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6104288Z E               at next (eval at evaluate (:311:30), <anonymous>:29:33)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6104819Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6105300Z .venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:632: Error
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6106189Z =========================== short test summary info ============================
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6108396Z FAILED tests/browser/test_mobile.py::test_pwa_offline_shell - playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'".
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6110460Z 
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6110754Z     at eval (<anonymous>)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6111386Z     at predicate (eval at evaluate (:311:30), <anonymous>:4:60)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6112127Z     at next (eval at evaluate (:311:30), <anonymous>:29:33)
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.6112888Z ========================= 1 failed, 6 passed in 22.50s =========================
+verify	Actual mobile, retry, expiry, moderation and release-cache flows	2026-10-08T11:46:15.7831520Z ##[error]Process completed with exit code 1.

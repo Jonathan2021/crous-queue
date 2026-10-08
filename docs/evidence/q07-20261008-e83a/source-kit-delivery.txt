@@ -1,0 +1,52 @@
+RUN make install
+uv sync --locked
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.
+
+RUN make migrate
+uv run --locked crous-queue migrate
+
+RUN uv run crous-queue import-directory
+Bundled retained directory dated 2026-10-07 imported; no wait reports created.
+
+RUN make check
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+54 files already formatted
+uv run --locked mypy
+Success: no issues found in 26 source files
+uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tmp/crous-release-gj85ztzf/crous-queue-0.1.2
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 25 items
+
+tests/unit/test_aggregation.py ..                                        [  8%]
+tests/unit/test_pilot_summary.py ..                                      [ 16%]
+tests/integration/test_directory.py ....                                 [ 32%]
+tests/integration/test_distribution.py ...                               [ 44%]
+tests/integration/test_pilot_records.py ...                              [ 56%]
+tests/integration/test_release.py ...                                    [ 68%]
+tests/integration/test_reports.py ....                                   [ 84%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 25 passed in 13.98s ==============================
+
+RUN uv run crous-queue backup --output .local/development-backup.db
+Integrity-checked backup created, permissions 0600. Protect and rotate within 7 days.
+
+RUN uv run crous-queue restore --input .local/development-backup.db --output .local/development-restored.db
+Restored into new isolated path. Validate before changing database configuration.
+
+RUN uv run crous-queue retain
+{"timers": 0, "reports": 0, "flags": 0, "audits": 0, "rate_buckets": 0}
+
+RUN make seed-demo
+uv run --locked python scripts/seed_demo.py
+Synthetic demo ready. Start: uv run --env-file .local/demo.env crous-queue serve
+
+{"release_smoke": "passed", "real_waits": "unknown", "standalone_without_foundry": true}

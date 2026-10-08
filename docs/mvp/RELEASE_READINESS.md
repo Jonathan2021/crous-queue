@@ -25,12 +25,12 @@ Earlier failures remain evidence, never replacements for green acceptance.
 | Upgraded Foundry and ownership | `python3 tools/foundry_agent.py doctor`; `doctor.json`: bridge/contract 2026-10-07.2, canonical helper matches. Q07 claim and complete context `9e344b61-f53f-5c03-987e-34724095b2d2`; all 14 evidence records read, full map separately fetched | R011 and blocked investigations retained |
 | Reproduce historical wheel failure before repair | `wheel-red.txt`, exit 1: 0.1.1 installed outside checkout fails migration; `resources-red.txt` is the red new specification | Source kit's earlier success remains valid |
 | Standalone installed distribution | `scripts/verify_wheel.py`: fresh venv, hash-enforced runtime dependencies, empty cwd, non-overwriting 0600 configuration, migrate/import, separate demo, backup/restore/retain, localhost HTTP, Foundry absent; `wheel-verified.txt`/JSON | No checkout resources copied; no live feed or real report |
-| Clean complete source distribution | `scripts/verify_release.py`: extracted kit install/migrate/import, `make check`, backup/restore/retain/demo and unknown-wait HTTP; `source-kit-verified.txt` | Disposable environment-marked stores only |
+| Clean complete source distribution | `scripts/verify_release.py`: extracted kit install/migrate/import, `make check`, backup/restore/retain/demo and unknown-wait HTTP; `source-kit-verified.txt`, updated harness replay `source-kit-delivery.txt` | Disposable environment-marked stores only |
 | Current code quality and acceptance | `make check`: Ruff/format, strict mypy, **25 core tests**; `core-verified.txt` and clean-candidate replay. Includes empty-cwd resources, actionable missing resources and locked-manifest drift with a successful unchanged control | No skips/xfails; SQLite coverage |
-| Actual user/browser behavior | `uv run --locked pytest tests/browser`: **seven Chromium checks**; `browser-reviewed.txt`, exit 0 | Mobile clicks, unknown/zero, exact expiry, retries, timer/favorites, moderation, asset update and offline read-only; no physical phone trial |
+| Actual user/browser behavior | `uv run --locked pytest tests/browser`: **seven Chromium checks**; `browser-delivery.txt`, exit 0 | Mobile clicks, unknown/zero, exact expiry, retries, timer/favorites, moderation, asset update and offline read-only; strict CSP retained; no physical phone trial |
 | Commit-matching private CI | [Pinned workflow](../../.github/workflows/ci.yml), [private Actions runs](https://github.com/Jonathan2021/crous-queue/actions/workflows/ci.yml): Python 3.13, `uv sync --locked`, core/browser, builds, both independent distribution replays, checksum inspection | Single Ubuntu job, 15-minute timeout, cancellation, read-only permissions, seven-day small artifacts; no publish/deploy/live provider |
 | Current docs and attribution | [Developer map](../DEVELOPMENT.md), [French usage](../USER_GUIDE.md), [release/install/update guide](../RELEASE.md), [operations/recovery](../OPERATIONS.md), [notices](../THIRD_PARTY_NOTICES.md) | 972 source identities observed 2026-10-07, 26 regions; no current opening/menu/access/wait claim |
-| Review and retained history | `before-hashes.json`, `preserved-evidence.json`: **131 existing evidence files checked, none changed**; `source-payload.json`, staged inventory and secret/data review | Q05/Q06 artifacts and local screenshots preserved |
+| Review and retained history | `before-hashes.json`, `preserved-evidence.json`: **131 existing evidence files checked, none changed**; `source-payload-delivery.json`, staged inventory and secret/data review | Q05/Q06 artifacts and local screenshots preserved |
 | Dependency review | `runtime-advisories.json`, `advisories.exit` 0; pip-audit 2.10.1, **29 runtime packages, no known vulnerabilities returned** on 2026-10-08; `third-party-inventory.json` | Dated lookup, not an exhaustive audit; no new app license inferred |
 
 The failed candidate lint/checksum outputs (`core-final.txt`, `source-kit-final.txt`,
@@ -38,6 +38,14 @@ The failed candidate lint/checksum outputs (`core-final.txt`, `source-kit-final.
 `build-verified.txt` records rejection of an unsupported `uv build --locked` flag.
 Both were corrected before the clean candidate/CI gates; installation, export and
 run use `--locked`, while the supported build command is `uv build`.
+
+The first pushed commit's [CI run](https://github.com/Jonathan2021/crous-queue/actions/runs/37772085961)
+passed core checks and six browser checks, then rejected the harness's eval-based
+service-worker polling under Chromium 153's strict CSP. `ci-first-browser-red.txt`
+retains that failure. The bounded native `controllerchange` wait now awaits actual
+worker ownership, and the offline test explicitly checks that the response still
+excludes `unsafe-eval`. No application CSP relaxation or browser bypass is used.
+The final commit must pass all seven checks and the release/recovery gates.
 
 ## Exact build identity
 
@@ -48,13 +56,14 @@ reviewed full commit SHAs; no repository write permission is required.
 
 `uv.lock` SHA-256:
 `7808d138e1c70e49cfa6abf57931692c19802ddbba7bc62cded7611409a47718`.
-The pre-delivery source payload SHA-256 is
-`6fcf7a5fef3a3f2a954578e0177f027b47a471309fe9812338ffcb028e7aa469`;
-`source-payload.json` defines its exact sorted per-file hash scope (runtime, tests,
+The final delivery source payload SHA-256 is
+`ad12b15c45c2ff78c54dbd9464bf58c745bdb01b375e15ae47e73c81c4c452b4`;
+`source-payload-delivery.json` defines its exact sorted per-file hash scope (runtime, tests,
 scripts, fixtures, acceptance, workflow and configuration/build/lock files).
 Documentation/self-referential evidence is outside that payload; Git's final
 commit covers every staged file. Local reviewed wheel SHA-256:
 `4de4f9432c31d227542d3a7b801d20759b752e0dfa80219683708444f01e880b`.
+Earlier source payloads remain dated evidence of the initial reviewed candidate.
 
 The authoritative final artifact hashes/sizes and SHA are generated **after the
 checkout/build** in `release-manifest.json`, retained with the matching private

@@ -10,6 +10,7 @@ import time
 import httpx
 from playwright.sync_api import expect, sync_playwright
 
+from tests.browser.worker import wait_for_worker_control
 from tests.conftest import ROOT
 
 
@@ -85,7 +86,7 @@ def create_app():
             context = browser.new_context(viewport={"width": 390, "height": 844})
             page = context.new_page()
             page.goto(origin + "/")
-            page.wait_for_function("navigator.serviceWorker.controller !== null")
+            wait_for_worker_control(page)
             page.reload()
             assert (
                 page.evaluate(

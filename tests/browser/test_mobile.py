@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
+from tests.browser.worker import wait_for_worker_control
 from tests.conftest import ROOT
 
 
@@ -86,8 +87,10 @@ def test_lost_response_retry_does_not_duplicate(browser_page, engine):
 
 def test_pwa_offline_shell(browser_page):
     page, context, origin = browser_page
-    page.goto(origin + "/")
-    page.wait_for_function("navigator.serviceWorker.controller !== null")
+    response = page.goto(origin + "/")
+    assert response is not None
+    assert "'unsafe-eval'" not in response.headers["content-security-policy"]
+    wait_for_worker_control(page)
     manifest = page.request.get(origin + "/static/manifest.webmanifest").json()
     assert manifest["display"] == "standalone"
     assert len(manifest["icons"]) == 2
