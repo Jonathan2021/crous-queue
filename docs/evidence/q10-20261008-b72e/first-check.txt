@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 3 items
+
+tests/integration/test_availability.py ...                               [100%]
+
+=============================== warnings summary ===============================
+tests/integration/test_availability.py::test_dimensions_conflict_recovery_expiry_and_zero
+tests/integration/test_availability.py::test_comment_review_escape_delete_hide_retention
+tests/integration/test_availability.py::test_validation_csrf_rates_and_old_retry
+  /home/jonathan/startup_lab/crous-queue/.venv/lib/python3.13/site-packages/alembic/operations/batch.py:298: UserWarning: Unnamed CHECK constraint on reflected table 'wait_reports' is being omitted from the table recreate; pass the constraint explicitly using batch_alter_table.table_args.  Naming CHECK constraints avoids this going forward.
+    util.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 3 passed, 3 warnings in 2.29s =========================

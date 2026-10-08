@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 12 items
+
+tests/browser/test_availability.py ..                                    [ 16%]
+tests/browser/test_hours.py .                                            [ 25%]
+tests/browser/test_map.py ..                                             [ 41%]
+tests/browser/test_mobile.py ......                                      [ 91%]
+tests/browser/test_release_cache.py .                                    [100%]
+
+============================= 12 passed in 41.30s ==============================

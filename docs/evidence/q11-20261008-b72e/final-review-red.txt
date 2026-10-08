@@ -1,0 +1,91 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 2 items
+
+tests/integration/test_delivery_review.py F                              [ 50%]
+tests/browser/test_hours.py F                                            [100%]
+
+=================================== FAILURES ===================================
+_________ test_hidden_report_comment_can_be_deleted_but_never_approved _________
+
+application = (<fastapi.applications.FastAPI object at 0x7efc49bac2f0>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_hidden_report_comment_can_be_deleted_but_never_approved(application):
+        from tests.integration.test_availability import ADMIN, post
+    
+        app, clock = application
+        with TestClient(app) as client:
+            client.get("/")
+            response, _ = post(client, clock, comment="Texte synthétique à effacer.")
+            rid = response.json()["report"]["id"]
+            assert client.post(
+                f"/admin/reports/{rid}/hide",
+                json=dict(rationale="Synthetic hidden report", expected_version=0),
+                headers=ADMIN,
+            ).status_code == 200
+            action = dict(action="approve", rationale="Synthetic delete check", expected_version=1)
+            path = f"/admin/reports/{rid}/comment"
+            assert client.post(path, json=action, headers=ADMIN).status_code == 422
+            action["action"] = "delete"
+>           assert client.post(path, json=action, headers=ADMIN).status_code == 200
+E           AssertionError: assert 422 == 200
+E            +  where 422 = <Response [422 Unprocessable Content]>.status_code
+E            +    where <Response [422 Unprocessable Content]> = post('/admin/reports/210eccb0-433f-4e87-8d62-ba4897c4e0d1/comment', json={'action': 'delete', 'rationale': 'Synthetic delete check', 'expected_version': 1}, headers={'X-CQ-Request': '1', 'Authorization': 'Bearer zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'})
+E            +      where post = <starlette.testclient.TestClient object at 0x7efc49b06510>.post
+
+tests/integration/test_delivery_review.py:57: AssertionError
+_____________ test_hours_refresh_replaces_intervals_and_check_time _____________
+
+browser_page = (<Page url='http://127.0.0.1:48355/v/paris:r177'>, <BrowserContext browser=<Browser type=<BrowserType name=chromium ex...e/jonathan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome> version=153.0.8010.12>>, 'http://127.0.0.1:48355')
+engine = Engine(sqlite:////tmp/pytest-of-jonathan/pytest-139/test_hours_refresh_replaces_in0/test-crous.db)
+
+    def test_hours_refresh_replaces_intervals_and_check_time(browser_page, engine):
+        page, _, origin = browser_page
+        HoursImporter(engine, lambda: datetime.now(UTC)).refresh(
+            FixtureHoursProvider({"paris:r177": HTML}), ["paris:r177"]
+        )
+        page.goto(origin + "/v/paris:r177")
+        updated = page.request.get(origin + "/venues/paris:r177/hours").json()
+        updated.update(intervals=["12:00–15:00"], checked_at="2026-10-08T09:17:00Z")
+        page.route("**/venues/*/hours", lambda route: route.fulfill(json=updated))
+        page.evaluate("window.dispatchEvent(new Event('online'))")
+        box = page.locator(".official-hours")
+>       expect(box).to_contain_text("12:00–15:00")
+E       AssertionError: Locator expected to contain text '12:00–15:00'
+E       Actual value: 
+E       Ouvert aujourd’hui · 2026-10-08 · Europe/Paris
+E       Fermé maintenant
+E       Service : 11:30–14:00
+E       Selon les horaires publiés ; une fermeture exceptionnelle non annoncée reste possible.
+E       Dernier relevé : 08/10/2026 17:51 UTC · Source officielle ↗
+E        
+E       Call log:
+E         - Expect "to_contain_text" locator(".official-hours") with timeout 5000ms
+E         - waiting for locator(".official-hours")
+E           14 × locator resolved to <div class="official-hours" data-hours="paris:r177" data-expiry="2026-10-09T00:00:00+02:00">…</div>
+E              - unexpected value "
+E       Ouvert aujourd’hui · 2026-10-08 · Europe/Paris
+E       Fermé maintenant
+E       Service : 11:30–14:00
+E       Selon les horaires publiés ; une fermeture exceptionnelle non annoncée reste possible.
+E       Dernier relevé : 08/10/2026 17:51 UTC · Source officielle ↗
+E       "
+E       
+E       Aria snapshot:
+E       - paragraph: Ouvert aujourd’hui · 2026-10-08 · Europe/Paris
+E       - paragraph: Fermé maintenant
+E       - paragraph: "Service : 11:30–14:00"
+E       - paragraph: Selon les horaires publiés ; une fermeture exceptionnelle non annoncée reste possible.
+E       - paragraph:
+E         - text: "Dernier relevé : 08/10/2026 17:51 UTC ·"
+E         - link "Source officielle ↗":
+E           - /url: https://www.crous-paris.fr/restaurant/ru-cuvier/
+
+tests/browser/test_hours.py:46: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_delivery_review.py::test_hidden_report_comment_can_be_deleted_but_never_approved
+FAILED tests/browser/test_hours.py::test_hours_refresh_replaces_intervals_and_check_time
+============================== 2 failed in 8.55s ===============================

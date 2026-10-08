@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 
 from playwright.sync_api import expect
 from sqlalchemy import func, select
@@ -32,7 +33,7 @@ def test_mobile_three_taps_favorites_expiry_offline(browser_page, engine):
     page.screenshot(
         path=str(
             ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'latest')}-mobile.png"
+            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-mobile.png"
         ),
         full_page=True,
     )
@@ -79,7 +80,7 @@ def test_lost_response_retry_does_not_duplicate(browser_page, engine):
     page.screenshot(
         path=str(
             ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'latest')}-desktop.png"
+            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-desktop.png"
         ),
         full_page=True,
     )
@@ -122,7 +123,7 @@ def test_flag_and_admin_hide_in_browser(browser_page):
     page.screenshot(
         path=str(
             ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'latest')}-admin.png"
+            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-admin.png"
         ),
         full_page=True,
     )

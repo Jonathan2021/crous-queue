@@ -1,0 +1,17 @@
+{
+  "bridge_version": "2026-10-08.1",
+  "agent_contract_version": "2026-10-08.1",
+  "kit_sha256": "3911d27334f0f05a4643913b3c0d681d77a6cd45a4ae6dcd9b5ca4b7b06a2e5e",
+  "manifest_hash_matches": true,
+  "workspace_id": "81ee3117-de70-411e-9856-07420859ffad",
+  "venture_id": "f0b5abfe-0274-42f7-9c9a-72dcbe68c116",
+  "configured_cli": [
+    "/home/jonathan/startup_lab/.venv/bin/foundry",
+    "--store",
+    "/home/jonathan/.local/share/startup-foundry/foundry.local.db"
+  ],
+  "timeout_seconds": 60,
+  "store_file_checked": true,
+  "database_opened": false,
+  "next_check": "Run resume to verify workspace records; doctor checks configuration only"
+}

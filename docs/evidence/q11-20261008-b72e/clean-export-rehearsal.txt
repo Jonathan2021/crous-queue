@@ -1,0 +1,143 @@
+RUN ['make', 'install']
+uv sync --locked
+Using CPython 3.13.5
+Creating virtual environment at: .venv
+Resolved 50 packages in 1ms
+   Building crous-queue @ file:///tmp/crous-q11-staged-frezxewi
+      Built crous-queue @ file:///tmp/crous-q11-staged-frezxewi
+Prepared 1 package in 473ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 47 packages in 142ms
+ + alembic==1.20.0
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + certifi==2026.7.22
+ + click==8.5.0
+ + crous-queue==0.2.0 (from file:///tmp/crous-q11-staged-frezxewi)
+ + defusedxml==0.7.1
+ + fastapi==0.142.2
+ + greenlet==3.5.6
+ + h11==0.16.0
+ + httpcore==1.0.9
+ + httpcore2==2.13.1
+ + httpx==0.28.1
+ + httpx2==2.13.1
+ + idna==3.20
+ + iniconfig==2.3.1
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + librt==0.16.0
+ + mako==1.4.3
+ + markupsafe==3.0.4
+ + mypy==1.20.2
+ + mypy-extensions==1.1.0
+ + opentelemetry-api==1.45.1
+ + packaging==26.3
+ + pathspec==1.1.1
+ + playwright==1.63.0
+ + pluggy==1.6.0
+ + psycopg==3.3.6
+ + psycopg-binary==3.3.6
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pydantic-settings==2.15.0
+ + pyee==13.0.1
+ + pygments==2.21.0
+ + pytest==9.1.1
+ + python-dotenv==1.2.4
+ + ruff==0.16.10
+ + sqlalchemy==2.0.54
+ + starlette==1.7.0
+ + truststore==0.10.4
+ + types-defusedxml==0.7.0.20260504
+ + types-itsdangerous==1.1.6
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + uvicorn==0.54.0
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.
+EXIT 0
+RUN ['uv', 'build']
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/crous_queue-0.2.0.tar.gz
+Successfully built dist/crous_queue-0.2.0-py3-none-any.whl
+EXIT 0
+RUN ['uv', 'run', '--locked', 'python', 'scripts/package_release.py']
+40da07077853287c34b549970177852e3589b8087017a3e085a6a14a4b7e0024  crous-queue-0.2.0-local.tar.gz
+f7e66d210c6c60483ae320a92f2527bca68e99c2279d4d89412ed606580ed2a7  crous_queue-0.2.0-py3-none-any.whl
+c027b2b3edfec3506f5c238facddb2063fe5063c1d5ff451eb231beab684354a  crous_queue-0.2.0.tar.gz
+EXIT 0
+RUN ['uv', 'run', '--locked', 'python', 'scripts/verify_wheel.py', '--output', 'dist/wheel-verification.json']
+{"browser": {"browser": "Chromium", "installed_core_flow": "passed", "providers": "synthetic/offline tiles"}, "restart_and_recovered_store": "passed", "contract": "standalone-wheel-with-locked-runtime-dependencies", "version": "0.2.0", "checkout_resources_copied": false, "foundry_absent": true, "commands": [{"command": "uv venv --python", "exit": 0}, {"command": "uv pip install", "exit": 0}, {"command": "uv pip install", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/python -c import importlib.util,pathlib,crous_queue; assert 'site-packages' in crous_queue.__file__; assert importlib.util.find_spec('startup_foundry') is None; assert not pathlib.Path('alembic.ini').exists(); assert not pathlib.Path('fixtures').exists()", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/python -c from crous_queue.config import load_settings; from crous_queue.db import make_engine; from crous_queue.services.hours import HoursImporter, FixtureHoursProvider; from datetime import datetime,UTC; s=load_settings(); p=FixtureHoursProvider({'paris:r177':b'<h1>RU Cuvier</h1><h3>Horaires</h3><p>Du lundi au vendredi de 11h30 a 14h00</p><h3>Adresse</h3>'}); assert HoursImporter(make_engine(s.database_url),lambda:datetime.now(UTC)).refresh(p,['paris:r177'])=={'paris:r177':'good'}", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}, {"command": "/tmp/crous-wheel-only-yk7dty0l/venv/bin/crous-queue", "exit": 0}], "http_smoke": "passed"}
+EXIT 0
+RUN ['uv', 'run', '--locked', 'python', 'scripts/verify_release.py']
+RUN make install
+uv sync --locked
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.
+
+RUN make migrate
+uv run --locked crous-queue migrate
+
+RUN uv run crous-queue import-directory
+Bundled retained directory dated 2026-10-07 imported; no wait reports created.
+
+RUN make check
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+71 files already formatted
+uv run --locked mypy
+Success: no issues found in 32 source files
+uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tmp/crous-release-3z085pql/crous-queue-0.2.0
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 40 items
+
+tests/unit/test_aggregation.py ..                                        [  5%]
+tests/unit/test_pilot_summary.py ..                                      [ 10%]
+tests/integration/test_assets.py .                                       [ 12%]
+tests/integration/test_availability.py ....                              [ 22%]
+tests/integration/test_availability_upgrade.py .                         [ 25%]
+tests/integration/test_delivery_review.py ...                            [ 32%]
+tests/integration/test_directory.py ....                                 [ 42%]
+tests/integration/test_distribution.py ...                               [ 50%]
+tests/integration/test_hours.py .....                                    [ 62%]
+tests/integration/test_map.py .                                          [ 65%]
+tests/integration/test_pilot_records.py ...                              [ 72%]
+tests/integration/test_release.py ...                                    [ 80%]
+tests/integration/test_reports.py ....                                   [ 90%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 40 passed in 22.90s ==============================
+
+RUN uv run crous-queue backup --output .local/development-backup.db
+Integrity-checked backup created, permissions 0600. Protect and rotate within 7 days.
+
+RUN uv run crous-queue restore --input .local/development-backup.db --output .local/development-restored.db
+Restored into new isolated path. Validate before changing database configuration.
+
+RUN uv run crous-queue retain
+{"timers": 0, "reports": 0, "flags": 0, "audits": 0, "rate_buckets": 0}
+
+RUN make seed-demo
+uv run --locked python scripts/seed_demo.py
+Synthetic demo ready. Start: uv run --env-file .local/demo.env crous-queue serve
+
+{"browser": "Chromium", "installed_core_flow": "passed", "providers": "synthetic/offline tiles"}
+{"release_smoke": "passed", "real_waits": "unknown", "standalone_without_foundry": true}
+EXIT 0
+RUN ['uv', 'run', '--locked', 'python', 'scripts/verify_upgrade.py', '--old-wheel', '/home/jonathan/startup_lab/crous-queue/dist/verified-699eebf/crous_queue-0.1.2-py3-none-any.whl', '--new-wheel', '/tmp/crous-q11-staged-frezxewi/dist/crous_queue-0.2.0-py3-none-any.whl', '--requirements', '/home/jonathan/startup_lab/crous-queue/dist/runtime-requirements.txt']
+{"old": "0.1.2", "new": "0.2.0", "old_artifact_install": "passed", "upgrade": "passed", "old_backup_restore_and_old_wheel_rollback": "passed", "data": "synthetic only", "foundry": "absent"}
+EXIT 0
+RUN ['uv', 'run', '--locked', 'python', 'scripts/release_manifest.py', '--output', 'dist/release-manifest.json']
+[{"name": "crous_queue-0.2.0-py3-none-any.whl", "sha256": "f7e66d210c6c60483ae320a92f2527bca68e99c2279d4d89412ed606580ed2a7", "bytes": 188804}, {"name": "crous-queue-0.2.0-local.tar.gz", "sha256": "40da07077853287c34b549970177852e3589b8087017a3e085a6a14a4b7e0024", "bytes": 322482}]
+EXIT 0

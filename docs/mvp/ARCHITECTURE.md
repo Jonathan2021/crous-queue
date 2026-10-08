@@ -30,3 +30,23 @@ The modular monolith is implemented under `src/crous_queue/`. Read [the actual m
 Installed CLI resolves authoritative package migrations and the dated snapshot independently of cwd. Wheel and full source kit are complete supported local distributions with separate configuration/data. Explicit migration remains required; app creation performs no DDL. Disposable core/browser and artifact harnesses establish the documented local behavior; external providers are retained/synthetic in routine verification. PostgreSQL/public concurrency and physical usefulness remain distinct unpassed gates.
 
 Initial Q01–Q05 build order and dated acceptance are preserved in `ROADMAP.md`, decision/ADRs and `IMPLEMENTATION_LOG.md`. Subsequent Q06/Q07 reviews retain observed failures and exact current checks rather than treating synthetic or prior green outputs as demand/field evidence. The current maintenance entry point is `DEVELOPMENT.md`; no pending scaffold instructions or unrelated venture-specific bundle apply.
+
+## Remarks continuation (2026-10-08)
+
+`services/hours.py` owns the replaceable `HoursProvider`, bounded website refresh,
+conservative website/feed interpretation and injected-clock local status. Migration
+0004 adds `official_hours` without altering the directory or wait data. See
+ADR-0006 for freshness, exceptions, timezone and source-priority rules. Opening
+status never consumes crowd reports. The user has authorized availability and
+moderated comments as a later independent dimension (Q10).
+
+Q09 adds `api/map.py` plus a self-hosted Leaflet adapter in `static/map.js`.
+The map and visible list share one dataset/clock and the existing wait aggregation.
+Venue coordinates only go to the public-data API. ADR-0007 specifies provider
+policy, queue palette, coincident identities, transient location and offline fallback.
+
+Q10 extends `ReportInput` and `WaitReport` via migration 0005 with nullable
+independent observations and bounded pending comments. `services/availability.py`
+owns per-dimension expiry/cohort rules; wait aggregation ignores availability-only
+reports. Existing moderation service adds versioned comment actions. ADR-0008
+defines public/private text boundaries, retry compatibility and migration recovery.

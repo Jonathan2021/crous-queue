@@ -6,7 +6,12 @@ from uuid import uuid4
 from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
-from crous_queue.contracts import FlagInput, HideInput, ReportView
+from crous_queue.contracts import (
+    CommentModerationInput,
+    FlagInput,
+    HideInput,
+    ReportView,
+)
 from crous_queue.models import ModerationAudit, ReportFlag, WaitReport
 from crous_queue.security import Identity
 from crous_queue.services.directory import plain_text
@@ -81,6 +86,52 @@ class ModerationService:
                 version=report.moderation_version,
             )
 
+    def moderate_comment(
+        self, report_id: str, payload: CommentModerationInput
+    ) -> dict[str, object]:
+        with Session(self.engine) as db, db.begin():
+            report = db.get(WaitReport, report_id, with_for_update=True)
+            if report is None:
+                raise DomainError(404, "report_not_found", "Signalement introuvable.")
+            if report.moderation_version != payload.expected_version:
+                raise DomainError(
+                    409, "moderation_conflict", "Le signalement a changé. Actualisez."
+                )
+            rationale = plain_text(payload.rationale)
+            if (
+                len(rationale) < 8
+                or not report.comment
+                or (report.visibility == "hidden" and payload.action != "delete")
+            ):
+                raise DomainError(
+                    422,
+                    "comment_unavailable",
+                    "Commentaire absent, supprimé ou signalement masqué ; vérifiez le motif.",
+                )
+            report.comment_status = {
+                "approve": "approved",
+                "hide": "hidden",
+                "delete": "deleted",
+            }[payload.action]
+            if payload.action == "delete":
+                report.comment = ""
+            report.moderation_version += 1
+            db.add(
+                ModerationAudit(
+                    id=str(uuid4()),
+                    report_id=report.id,
+                    action="comment_" + payload.action,
+                    rationale=rationale,
+                    created_at=self.clock(),
+                    version=report.moderation_version,
+                )
+            )
+            return dict(
+                id=report.id,
+                comment_status=report.comment_status,
+                version=report.moderation_version,
+            )
+
     def list_reports(self, offset: int = 0) -> dict[str, object]:
         with Session(self.engine) as db:
             reports = db.scalars(
@@ -108,6 +159,11 @@ class ModerationService:
                     {
                         **ReportView.model_validate(report).model_dump(mode="json"),
                         "visibility": report.visibility,
+                        "comment": report.comment,
+                        "availability": {
+                            name: getattr(report, name)
+                            for name in ("grill", "vegetarian", "standard", "seating")
+                        },
                         "version": report.moderation_version,
                         "flag_count": flags,
                         "history": [

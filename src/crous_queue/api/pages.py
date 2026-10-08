@@ -12,6 +12,7 @@ from starlette.responses import Response
 from crous_queue.contracts import VenueType
 from crous_queue.models import Coverage, Venue
 from crous_queue.services.directory import REGIONS, folded
+from crous_queue.services.hours import HoursState, hours_state
 from crous_queue.services.waits import queues_for
 
 router = APIRouter()
@@ -51,6 +52,9 @@ def home(
             name="home.html",
             context=dict(
                 venues=venues,
+                hours={
+                    v.id: hours_state(db, v, request.app.state.clock()) for v in venues
+                },
                 q=q,
                 region=region,
                 selected_type=type,
@@ -76,6 +80,7 @@ def detail(venue_id: str, request: Request) -> Response:
             name="venue.html",
             context=dict(
                 venue=venue,
+                hours=hours_state(db, venue, request.app.state.clock()),
                 coverage=coverage,
                 queue=queues_for(venue)[0],
                 types=TYPE_LABELS,
@@ -95,10 +100,16 @@ def offline(request: Request) -> Response:
 
 def worker_source(static_root: Path) -> str:
     digest = sha256()
-    files = sorted(path for path in static_root.iterdir() if path.is_file())
+    files = sorted(path for path in static_root.rglob("*") if path.is_file())
     files += [ROOT / "templates/base.html", ROOT / "templates/offline.html"]
     for path in files:
-        digest.update(path.name.encode())
+        digest.update(
+            str(
+                path.relative_to(static_root)
+                if path.is_relative_to(static_root)
+                else path.name
+            ).encode()
+        )
         digest.update(path.read_bytes())
     return (
         (static_root / "sw.js")
@@ -114,3 +125,12 @@ def worker() -> Response:
         media_type="application/javascript",
         headers={"Service-Worker-Allowed": "/"},
     )
+
+
+@router.get("/venues/{venue_id}/hours", response_model=HoursState)
+def official_hours(venue_id: str, request: Request) -> HoursState:
+    with Session(request.app.state.engine) as db:
+        venue = db.get(Venue, venue_id)
+        if venue is None:
+            raise HTTPException(404, detail="Restaurant introuvable.")
+        return hours_state(db, venue, request.app.state.clock())

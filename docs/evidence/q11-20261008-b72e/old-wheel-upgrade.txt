@@ -1,0 +1,1 @@
+{"old": "0.1.2", "new": "0.2.0", "old_artifact_install": "passed", "upgrade": "passed", "old_backup_restore_and_old_wheel_rollback": "passed", "data": "synthetic only", "foundry": "absent"}

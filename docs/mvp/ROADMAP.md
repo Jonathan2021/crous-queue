@@ -85,9 +85,23 @@ National directory works with unknown waits everywhere; real and demo data are s
 
 Checkpoint record: changed files and commit/dirty-state hash, exact commands and results, screenshots where applicable, known gaps, decision and proposed next package. Do not call it complete while required acceptance is red.
 
-## First chunk to execute now
+## Current continuation
 
-Q01: Build strict importer from 26 declared feeds using the retained normalized snapshot and small XML fixtures. Save provenance, separate source fields and safe display fields.
+Q01–Q10 are accepted packages. Q11 is the final delivery package; its acceptance
+receipt must include the actual pushed SHA and matching green CI.
+The following sequence is authorized; each later node remains conditional until
+the preceding package passes actual acceptance. See REMARKS_HANDOFF.md for the
+full acceptance and delivery contract.
+
+- Q08: official source-linked hours, local-time open today/now, honest freshness,
+  failure recovery, bounded provider and deterministic clock tests.
+- Q09 (depends on Q08): nearby map/list parity, accessible crowding states,
+  coincident identities, location denial and basemap failure fallback.
+- Q10 (depends on Q09): independent meal/seating observations, expiry/conflict,
+  moderated bounded text, idempotency/abuse controls and upgrade from 0.1.2.
+- Q11 (depends on Q10): complete installed/source/browser recovery rehearsal,
+  current documentation, scoped private commit/push, exact-SHA green Actions and
+  canonical checkout reconciliation. Human R011 and public release stay separate.
 
 ## Branches after MVP
 

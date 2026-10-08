@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-BRIDGE_VERSION = "2026-10-07.2"
+BRIDGE_VERSION = "2026-10-08.1"
 
 
 def write_new(path: Path, value: dict[str, Any]) -> None:

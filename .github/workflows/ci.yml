@@ -53,8 +53,8 @@ jobs:
         with:
           name: crous-queue-${{ github.sha }}
           path: |
-            dist/crous_queue-0.1.2-py3-none-any.whl
-            dist/crous-queue-0.1.2-local.tar.gz
+            dist/crous_queue-0.2.0-py3-none-any.whl
+            dist/crous-queue-0.2.0-local.tar.gz
             dist/release-manifest.json
             dist/runtime-requirements.txt
             wheel-verification.json

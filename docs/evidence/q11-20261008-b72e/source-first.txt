@@ -1,0 +1,59 @@
+RUN make install
+uv sync --locked
+uv run --locked python scripts/configure.py
+Development .env ready; existing secrets preserved.
+
+RUN make migrate
+uv run --locked crous-queue migrate
+
+RUN uv run crous-queue import-directory
+Bundled retained directory dated 2026-10-07 imported; no wait reports created.
+
+RUN make check
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+71 files already formatted
+uv run --locked mypy
+Success: no issues found in 32 source files
+uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tmp/crous-release-4ad9weub/crous-queue-0.2.0
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 39 items
+
+tests/unit/test_aggregation.py ..                                        [  5%]
+tests/unit/test_pilot_summary.py ..                                      [ 10%]
+tests/integration/test_assets.py .                                       [ 12%]
+tests/integration/test_availability.py ....                              [ 23%]
+tests/integration/test_availability_upgrade.py .                         [ 25%]
+tests/integration/test_delivery_review.py ..                             [ 30%]
+tests/integration/test_directory.py ....                                 [ 41%]
+tests/integration/test_distribution.py ...                               [ 48%]
+tests/integration/test_hours.py .....                                    [ 61%]
+tests/integration/test_map.py .                                          [ 64%]
+tests/integration/test_pilot_records.py ...                              [ 71%]
+tests/integration/test_release.py ...                                    [ 79%]
+tests/integration/test_reports.py ....                                   [ 89%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 39 passed in 22.16s ==============================
+
+RUN uv run crous-queue backup --output .local/development-backup.db
+Integrity-checked backup created, permissions 0600. Protect and rotate within 7 days.
+
+RUN uv run crous-queue restore --input .local/development-backup.db --output .local/development-restored.db
+Restored into new isolated path. Validate before changing database configuration.
+
+RUN uv run crous-queue retain
+{"timers": 0, "reports": 0, "flags": 0, "audits": 0, "rate_buckets": 0}
+
+RUN make seed-demo
+uv run --locked python scripts/seed_demo.py
+Synthetic demo ready. Start: uv run --env-file .local/demo.env crous-queue serve
+
+{"browser": "Chromium", "installed_core_flow": "passed", "providers": "synthetic/offline tiles"}
+{"release_smoke": "passed", "real_waits": "unknown", "standalone_without_foundry": true}

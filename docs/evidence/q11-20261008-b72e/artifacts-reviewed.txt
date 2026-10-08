@@ -1,0 +1,1 @@
+[{"name": "crous_queue-0.2.0-py3-none-any.whl", "sha256": "ea804a2e417007ee65549edc5e1d46d79df75360cd83bf68e6771cdfed376a35", "bytes": 188598}, {"name": "crous-queue-0.2.0-local.tar.gz", "sha256": "1ccfc8995e2b6dc2eec9812d62b9c2e9767ab48c6d38289da2557b09cb47d134", "bytes": 321362}]

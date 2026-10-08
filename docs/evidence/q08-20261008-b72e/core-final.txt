@@ -1,0 +1,26 @@
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+58 files already formatted
+uv run --locked mypy
+Success: no issues found in 28 source files
+uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 30 items
+
+tests/unit/test_aggregation.py ..                                        [  6%]
+tests/unit/test_pilot_summary.py ..                                      [ 13%]
+tests/integration/test_directory.py ....                                 [ 26%]
+tests/integration/test_distribution.py ...                               [ 36%]
+tests/integration/test_hours.py .....                                    [ 53%]
+tests/integration/test_pilot_records.py ...                              [ 63%]
+tests/integration/test_release.py ...                                    [ 73%]
+tests/integration/test_reports.py ....                                   [ 86%]
+tests/integration/test_safeguards.py ....                                [100%]
+
+============================= 30 passed in 16.00s ==============================

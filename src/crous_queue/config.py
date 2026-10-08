@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     admin_token: str = ""
     origin: str = "http://127.0.0.1:8000"
     secure_cookies: bool = False
+    map_tiles: Literal["osm", "none"] = "osm"
     port: int = Field(default=8000, ge=1024, le=65535)
 
     @model_validator(mode="after")

@@ -97,3 +97,21 @@ five-second error bound repairs both worker tests; the offline test also asserts
 the product's strict CSP. No application CSP change or automation bypass. The
 failed CI log and subsequent seven-check local replay are retained independently;
 final delivery still requires the matching green CI run on the later commit.
+
+
+## Q08–Q11 — user remarks continuation (2026-10-08)
+
+Foundry 2026-10-08.1 sequential receipts accept Q08 official hours
+(`b9c9bb11-f4d9-570b-bd44-e69ac41b34b3`), Q09 nearby map
+(`7a08217f-2130-5861-b1b7-323b22890db7`) and Q10 independent availability and
+moderated comments (`a96cc6cc-fda4-539a-9406-6f8137c81584`). Q11 owns final
+review, independent artifact recovery and authorized private Git/Actions delivery.
+Exact final acceptance, SHA, CI and artifacts are in its Foundry receipt and
+`.foundry/runs/remarks-20261008/delivery-final.json`, written after delivery.
+
+Current implementation/acceptance/source limits and the disclosed prior rolling
+screenshot preservation exception are in `docs/mvp/REMARKS_DELIVERY.md`.
+Evidence is retained separately under `docs/evidence/q08-20261008-b72e` through
+`q11-20261008-b72e`, including red specifications, green regressions, real browser
+replays and actual 0.1.2 wheel upgrade/backup recovery. Root remarks remain verbatim.
+No human trial, real lunch, demand or public deployment gate is cleared.

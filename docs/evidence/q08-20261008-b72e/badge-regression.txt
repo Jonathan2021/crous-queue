@@ -1,0 +1,182 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 5 items
+
+tests/integration/test_hours.py FF..F                                    [100%]
+
+=================================== FAILURES ===================================
+______________ test_official_identity_dates_and_failure_recovery _______________
+
+application = (<fastapi.applications.FastAPI object at 0x73bd1bb97e00>, [datetime.datetime(2026, 10, 8, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_official_identity_dates_and_failure_recovery(application):
+        app, clock = application
+        clock[0] = NOW
+        engine = app.state.engine
+>       assert refresh(engine) == {"paris:r177": "good"}
+               ^^^^^^^^^^^^^^^
+
+tests/integration/test_hours.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_hours.py:23: in refresh
+    return HoursImporter(engine, lambda: now).refresh(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <crous_queue.services.hours.HoursImporter object at 0x73bd1bc61a90>
+provider = <crous_queue.services.hours.FixtureHoursProvider object at 0x73bd1bc61be0>
+venue_ids = ['paris:r177']
+
+    def refresh(
+        self, provider: HoursProvider, venue_ids: Sequence[str] = tuple(MAPPINGS)
+    ) -> dict[str, str]:
+        if len(venue_ids) > 20 or any(v not in MAPPINGS for v in venue_ids):
+            raise ValueError(
+                "Refresh requires at most 20 reviewed venue IDs; edit MAPPINGS after identity review."
+            )
+        results: dict[str, str] = {}
+        for venue_id in venue_ids:
+            now = self.clock()
+            with Session(self.engine) as db, db.begin():
+                if db.get(Venue, venue_id) is None:
+                    raise ValueError(
+                        "Import the directory before refreshing official hours."
+                    )
+                cached = db.get(OfficialHours, venue_id) or OfficialHours(
+                    venue_id=venue_id,
+                    official_url=MAPPINGS[venue_id][0],
+                    provider="crous-paris-html-v1",
+                    raw_schedule="",
+                    normalized="null",
+                    payload_sha256="",
+                    error="",
+                )
+                cached.attempted_at = now
+                try:
+                    document = provider.fetch(venue_id)
+>                   raw, schedule = website_schedule(
+                        venue_id,
+                        document.payload,
+                        now.astimezone(ZoneInfo("Europe/Paris")).date().isoformat(),
+                    )
+E                   TypeError: website_schedule() takes 2 positional arguments but 3 were given
+
+src/crous_queue/services/hours.py:223: TypeError
+_______________ test_weekend_exceptions_dst_unknown_and_conflict _______________
+
+application = (<fastapi.applications.FastAPI object at 0x73bd1bc67d90>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_weekend_exceptions_dst_unknown_and_conflict(application):
+        app, _ = application
+        engine = app.state.engine
+        saturday = datetime(2026, 10, 10, 10, tzinfo=UTC)
+>       refresh(engine, saturday)
+
+tests/integration/test_hours.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_hours.py:23: in refresh
+    return HoursImporter(engine, lambda: now).refresh(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <crous_queue.services.hours.HoursImporter object at 0x73bd1bc647d0>
+provider = <crous_queue.services.hours.FixtureHoursProvider object at 0x73bd1bac87d0>
+venue_ids = ['paris:r177']
+
+    def refresh(
+        self, provider: HoursProvider, venue_ids: Sequence[str] = tuple(MAPPINGS)
+    ) -> dict[str, str]:
+        if len(venue_ids) > 20 or any(v not in MAPPINGS for v in venue_ids):
+            raise ValueError(
+                "Refresh requires at most 20 reviewed venue IDs; edit MAPPINGS after identity review."
+            )
+        results: dict[str, str] = {}
+        for venue_id in venue_ids:
+            now = self.clock()
+            with Session(self.engine) as db, db.begin():
+                if db.get(Venue, venue_id) is None:
+                    raise ValueError(
+                        "Import the directory before refreshing official hours."
+                    )
+                cached = db.get(OfficialHours, venue_id) or OfficialHours(
+                    venue_id=venue_id,
+                    official_url=MAPPINGS[venue_id][0],
+                    provider="crous-paris-html-v1",
+                    raw_schedule="",
+                    normalized="null",
+                    payload_sha256="",
+                    error="",
+                )
+                cached.attempted_at = now
+                try:
+                    document = provider.fetch(venue_id)
+>                   raw, schedule = website_schedule(
+                        venue_id,
+                        document.payload,
+                        now.astimezone(ZoneInfo("Europe/Paris")).date().isoformat(),
+                    )
+E                   TypeError: website_schedule() takes 2 positional arguments but 3 were given
+
+src/crous_queue/services/hours.py:223: TypeError
+______________ test_daily_closure_badge_overrides_weekly_service _______________
+
+application = (<fastapi.applications.FastAPI object at 0x73bd1bc67ed0>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_daily_closure_badge_overrides_weekly_service(application):
+        app, _ = application
+        body = HTML.replace(
+            b"RU Cuvier</h1>", b"RU Cuvier <span>Ferme aujourd'hui</span></h1>"
+        )
+>       refresh(app.state.engine, body=body)
+
+tests/integration/test_hours.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/integration/test_hours.py:23: in refresh
+    return HoursImporter(engine, lambda: now).refresh(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <crous_queue.services.hours.HoursImporter object at 0x73bd1bc647d0>
+provider = <crous_queue.services.hours.FixtureHoursProvider object at 0x73bd1bc679d0>
+venue_ids = ['paris:r177']
+
+    def refresh(
+        self, provider: HoursProvider, venue_ids: Sequence[str] = tuple(MAPPINGS)
+    ) -> dict[str, str]:
+        if len(venue_ids) > 20 or any(v not in MAPPINGS for v in venue_ids):
+            raise ValueError(
+                "Refresh requires at most 20 reviewed venue IDs; edit MAPPINGS after identity review."
+            )
+        results: dict[str, str] = {}
+        for venue_id in venue_ids:
+            now = self.clock()
+            with Session(self.engine) as db, db.begin():
+                if db.get(Venue, venue_id) is None:
+                    raise ValueError(
+                        "Import the directory before refreshing official hours."
+                    )
+                cached = db.get(OfficialHours, venue_id) or OfficialHours(
+                    venue_id=venue_id,
+                    official_url=MAPPINGS[venue_id][0],
+                    provider="crous-paris-html-v1",
+                    raw_schedule="",
+                    normalized="null",
+                    payload_sha256="",
+                    error="",
+                )
+                cached.attempted_at = now
+                try:
+                    document = provider.fetch(venue_id)
+>                   raw, schedule = website_schedule(
+                        venue_id,
+                        document.payload,
+                        now.astimezone(ZoneInfo("Europe/Paris")).date().isoformat(),
+                    )
+E                   TypeError: website_schedule() takes 2 positional arguments but 3 were given
+
+src/crous_queue/services/hours.py:223: TypeError
+=========================== short test summary info ============================
+FAILED tests/integration/test_hours.py::test_official_identity_dates_and_failure_recovery
+FAILED tests/integration/test_hours.py::test_weekend_exceptions_dst_unknown_and_conflict
+FAILED tests/integration/test_hours.py::test_daily_closure_badge_overrides_weekly_service
+========================= 3 failed, 2 passed in 2.25s ==========================

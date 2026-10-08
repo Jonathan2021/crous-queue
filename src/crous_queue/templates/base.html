@@ -6,10 +6,10 @@
   <title>{% block title %}Crous Queue · À table, au bon moment{% endblock %}</title>
   <link rel="manifest" href="/static/manifest.webmanifest"><link rel="icon" href="/static/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/app.css"><script src="/static/app.js" defer></script>
-</head>
+{% block head %}{% endblock %}</head>
 <body>
 <a href="#main" class="skip">Aller au contenu</a>
-<header class="header"><a href="/" class="brand"><span class="brand-icon" aria-hidden="true">q.</span>Crous Queue</a><nav aria-label="Navigation principale"><a href="/#favorites">Mes favoris <span aria-hidden="true">♡</span></a><a href="/privacy" class="nav-privacy">Confidentialité</a></nav></header>
+<header class="header"><a href="/" class="brand"><span class="brand-icon" aria-hidden="true">q.</span>Crous Queue</a><nav aria-label="Navigation principale"><a href="/map">Carte</a><a href="/#favorites">Mes favoris <span aria-hidden="true">♡</span></a><a href="/privacy" class="nav-privacy">Confidentialité</a></nav></header>
 {% if environment == 'demo' %}<div class="demo-banner">DÉMO · Les attentes sont fictives. Aucune donnée du pilote réel.</div>{% endif %}
 <main id="main">{% block content %}{% endblock %}</main>
 <footer><span>Crous Queue <span aria-hidden="true">·</span> Des signalements, pas des prédictions.</span><a href="/privacy">Vos données</a><span>Annuaire CNOUS / CROUS · Licence Ouverte</span></footer>

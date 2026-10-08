@@ -11,13 +11,20 @@ async function loadAdmin(reset=false) {
     const data=await adminApi(`/admin/reports?offset=${offset}`);
     for(const report of data.items){
       const card=document.createElement('article');card.className='venue-card';
-      const h=document.createElement('h2');h.textContent=`${report.venue_id} · ${report.minutes} min`;
+      const h=document.createElement('h2');h.textContent=`${report.venue_id} · ${report.minutes===null?"Observation sans attente":report.minutes+" min"}`;
       const p=document.createElement('p');p.textContent=`${report.kind} · ${report.queue_kind} · ${report.flag_count} abus · ${report.visibility} · ${report.received_at}`;
       const history=document.createElement('p');history.className='muted';history.textContent=report.history.map(h=>`${h.action} : ${h.rationale}`).join(' / ');
       const input=document.createElement('input');input.placeholder='Motif (sans donnée personnelle)';input.minLength=8;input.maxLength=500;input.setAttribute('aria-label','Motif de modération');
       const button=document.createElement('button');button.className='secondary';button.textContent='Masquer';button.disabled=report.visibility==='hidden';
       button.addEventListener('click',async()=>{try{await adminApi(`/admin/reports/${report.id}/hide`,{rationale:input.value,expected_version:report.version});status.textContent='Signalement masqué, historique enregistré.';await loadAdmin(true);}catch(error){status.textContent=error.message;}});
-      card.append(h,p,history,input,button);document.querySelector('#admin-list').append(card);
+      const comment=document.createElement('p');comment.className='admin-comment';comment.textContent=`Commentaire (${report.comment_status || 'none'}) : ${report.comment || 'aucun'}`;
+      const dimensions=document.createElement('p');dimensions.textContent=Object.entries(report.availability || {}).filter(([,v])=>v!==null).map(([k,v])=>`${k}: ${v}`).join(' · ');
+      card.append(h,p,dimensions,comment,history,input,button);
+      if(report.comment)for(const [action,label] of [['approve','Approuver le commentaire'],['hide','Masquer le commentaire'],['delete','Supprimer le texte']]){
+        if(report.visibility==='hidden' && action!=='delete')continue;
+        const control=document.createElement('button');control.className='secondary';control.textContent=label;
+        control.addEventListener('click',async()=>{try{await adminApi(`/admin/reports/${report.id}/comment`,{action,rationale:input.value,expected_version:report.version});status.textContent='Modération du commentaire enregistrée.';await loadAdmin(true);}catch(error){status.textContent=error.message;}});card.append(control);
+      }document.querySelector('#admin-list').append(card);
     }
     offset=data.next_offset;document.querySelector('#admin-more').hidden=offset===null;
     const metrics=await adminApi('/admin/metrics');document.querySelector('#admin-metrics').textContent=`${metrics.reports_total} retours conservés · ${metrics.fresh_venue_queues} files avec retour récent · ${metrics.returning_devices_7d} appareils revenus sur plusieurs jours`;

@@ -1,0 +1,60 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 3 items
+
+tests/integration/test_availability.py FFF                               [100%]
+
+=================================== FAILURES ===================================
+______________ test_dimensions_conflict_recovery_expiry_and_zero _______________
+
+application = (<fastapi.applications.FastAPI object at 0x7fa33017fe00>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_dimensions_conflict_recovery_expiry_and_zero(application):
+        app,clock=application
+        with TestClient(app) as a, TestClient(app) as b:
+            a.get('/');b.get('/')
+            first,payload=post(a,clock,vegetarian='unavailable',seating='unavailable',comment='Il reste des tables dehors.')
+>           assert first.status_code==201
+E           assert 422 == 201
+E            +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/integration/test_availability.py:29: AssertionError
+_______________ test_comment_review_escape_delete_hide_retention _______________
+
+application = (<fastapi.applications.FastAPI object at 0x7fa32ff03ed0>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_comment_review_escape_delete_hide_retention(application):
+        app,clock=application
+        with TestClient(app) as client:
+            client.get('/')
+            text='<img src=x onerror=alert(1)> https://unsafe.test contact@example.test'
+            report,_=post(client,clock,grill='unknown',comment=text)
+>           assert report.status_code==201
+E           assert 422 == 201
+E            +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/integration/test_availability.py:61: AssertionError
+___________________ test_validation_csrf_rates_and_old_retry ___________________
+
+application = (<fastapi.applications.FastAPI object at 0x7fa32febaad0>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_validation_csrf_rates_and_old_retry(application):
+        app,clock=application
+        with TestClient(app) as client:
+            client.get('/')
+            for fields in [dict(comment='x'*281),dict(vegetarian='bad'),dict(minutes=0),dict()]:
+                assert post(client,clock,**fields)[0].status_code==422
+            response,payload=post(client,clock,seating='available')
+>           assert response.status_code==201
+E           assert 422 == 201
+E            +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/integration/test_availability.py:98: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_availability.py::test_dimensions_conflict_recovery_expiry_and_zero
+FAILED tests/integration/test_availability.py::test_comment_review_escape_delete_hide_retention
+FAILED tests/integration/test_availability.py::test_validation_csrf_rates_and_old_retry
+============================== 3 failed in 2.10s ===============================

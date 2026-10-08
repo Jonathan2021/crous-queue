@@ -1,0 +1,27 @@
+uv run --locked ruff check src tests scripts alembic
+B905 `zip()` without an explicit `strict=` parameter
+  --> src/crous_queue/services/hours.py:70:36
+   |
+68 |         intervals.append((f"{h1:02}:{m1:02}", f"{h2:02}:{m2:02}"))
+69 |     intervals.sort()
+70 |     if any(a[1] > b[0] for a, b in zip(intervals, intervals[1:])):
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+71 |         return None
+72 |     return Schedule(weekly={str(i): intervals if first <= i <= last else [] for i in range(7)}, exceptions=exceptions)
+   |
+help: Add explicit value for parameter `strict=`
+
+B023 Function definition does not bind loop variable `response`
+   --> tests/integration/test_hours.py:110:80
+    |
+108 | def test_network_bounds_and_untrusted_content():
+109 |     for response in [httpx.Response(302, headers={'Location':'http://127.0.0.1/'}), httpx.Response(200, content=b'x'*500001)]:
+110 |         provider = HTTPHoursProvider(transport=httpx.MockTransport(lambda req: response))
+    |                                                                                ^^^^^^^^
+111 |         with pytest.raises((ValueError, httpx.HTTPError)):
+112 |             provider.fetch('paris:r177')
+    |
+
+Found 2 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+make: *** [Makefile:6: check] Error 1

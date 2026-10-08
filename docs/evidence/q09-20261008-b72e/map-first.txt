@@ -1,0 +1,42 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 1 item
+
+tests/integration/test_map.py F                                          [100%]
+
+=================================== FAILURES ===================================
+_____________ test_map_data_same_waits_identity_no_location_input ______________
+
+application = (<fastapi.applications.FastAPI object at 0x7ac9f5b542f0>, [datetime.datetime(2026, 10, 7, 10, 0, tzinfo=datetime.timezone.utc)])
+
+    def test_map_data_same_waits_identity_no_location_input(application):
+        app, clock = application
+        with TestClient(app) as client:
+            client.get("/")
+            result = client.get("/map-data?q=Cuvier&type=all")
+            assert result.status_code == 200
+            rows = result.json()["items"]
+            assert {r["id"] for r in rows} == {"paris:r177", "paris:r889"}
+            assert len({(r["latitude"], r["longitude"]) for r in rows}) == 1
+            assert all(r["waits"]["state"] == "unknown" for r in rows)
+            payload = dict(
+                kind="estimate",
+                minutes=0,
+                queue_kind="student",
+                observed_at=clock[0].isoformat(),
+                idempotency_key="map-zero-001",
+            )
+            response = client.post(
+                "/venues/paris:r177/reports", json=payload, headers={"X-CQ-Request": "1"}
+            )
+>           assert response.status_code == 200
+E           assert 201 == 200
+E            +  where 201 = <Response [201 Created]>.status_code
+
+tests/integration/test_map.py:26: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_map.py::test_map_data_same_waits_identity_no_location_input
+============================== 1 failed in 0.71s ===============================

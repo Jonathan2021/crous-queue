@@ -3,7 +3,7 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const networkStatus = $('#network-status');
 const number = value => new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(value);
-const stamp = date => new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
+const stamp = date => new Intl.DateTimeFormat('fr-FR',{timeZone:document.querySelector('[data-timezone]')?.dataset.timezone || 'UTC',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
 const read = (storage,key,fallback) => {try {return JSON.parse(storage.getItem(key)) ?? fallback;} catch {return fallback;}};
 const store = (storage,key,value) => {try {storage.setItem(key,JSON.stringify(value));} catch { /* Private browsing can disable storage. */ }};
 let favorites = read(localStorage,'cq-favorites',[]);
@@ -58,7 +58,7 @@ function currentState(state,now) {
   const detail=`${count} signalement${count>1?'s':''}${count===1?' · non confirmé':''} · dernier il y a ${age} min · actualisé au plus tard dans ${remaining} min`;
   if (high-low>15) return {text:`${low}–${high} min · avis divergents`,detail,kind:'conflicting'};
   const middle=count%2?values[Math.floor(count/2)]:(values[count/2-1]+values[count/2])/2;
-  return {text:`${number(middle)} min`,detail,kind:count===1?'single':'recent'};
+  return {text:`${number(middle)} min`,detail,kind:count===1?'single':'recent',minutes:middle};
 }
 const cardStates=[];
 $$('[data-card-wait]').forEach(async box=>{
@@ -144,3 +144,26 @@ window.addEventListener('offline',network);
 window.addEventListener('online',()=>{network();if(page){api(`/venues/${encodeURIComponent(venue)}/waits?queue_kind=${queue}`).then(displayState).catch(()=>{});loadTimers();}});
 setInterval(()=>{renderWait();renderCards();renderObservations();},1000);network();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+// Official hours use their own clock/source; no queue state can imply closure.
+async function refreshHours() {
+  for (const box of $$('[data-hours]')) {
+    try {
+      const h=await api(`/venues/${encodeURIComponent(box.dataset.hours)}/hours`);
+      box.dataset.expiry=h.expires_at || '';
+      box.querySelector('.hours-status').textContent=`${h.today==='open'?'Ouvert aujourd’hui':h.today==='closed'?'Fermé aujourd’hui':'Ouverture aujourd’hui inconnue'} · ${h.local_date} · ${h.timezone || 'Fuseau inconnu'}`;
+      box.querySelector('.hours-now').textContent=h.now==='open'?'Ouvert maintenant':h.now==='closed'?'Fermé maintenant':'Ouverture maintenant non vérifiée';
+      const intervals=box.querySelector('.hours-intervals');
+      intervals.hidden=!h.intervals.length;
+      intervals.textContent=`Service : ${h.intervals.join(' / ')}${h.freshness==='fresh'?'':' (horaire historique)'}`;
+      box.querySelector('.hours-checked').textContent=h.checked_at?`Dernier relevé : ${new Date(h.checked_at).toLocaleString('fr-FR',{timeZone:'UTC',dateStyle:'short',timeStyle:'short'})} UTC · `:'';
+      box.querySelector('a').href=h.official_url;
+      box.querySelector('.hours-caveat').textContent=h.caveat;
+    } catch {
+      box.querySelector('.hours-status').textContent='Ouverture aujourd’hui non vérifiée';
+      box.querySelector('.hours-now').textContent='Ouverture maintenant non vérifiée';
+    }
+  }
+}
+window.addEventListener('offline',refreshHours);
+window.addEventListener('online',refreshHours);
+setInterval(refreshHours,60000);

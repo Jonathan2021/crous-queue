@@ -49,6 +49,7 @@ def aggregate(reports: list[WaitReport], now: datetime) -> WaitState:
         r
         for r in latest.values()
         if r.visibility == "visible"
+        and r.minutes is not None
         and min(r.observed_at, r.received_at) > now - timedelta(minutes=15)
     ]
     valid.sort(key=lambda r: r.received_at, reverse=True)
@@ -66,7 +67,7 @@ def aggregate(reports: list[WaitReport], now: datetime) -> WaitState:
         estimates=[ReportView.model_validate(r) for r in valid],
     )
     if valid:
-        values = [r.minutes for r in valid]
+        values = [r.minutes for r in valid if r.minutes is not None]
         conflict = max(values) - min(values) > 15
         state.state = (
             "conflicting" if conflict else "single" if len(valid) == 1 else "recent"
@@ -159,7 +160,15 @@ class WaitService:
         now = self.clock()
         digest = sha256(
             json.dumps(
-                {"venue": venue, **payload.model_dump(mode="json")}, sort_keys=True
+                {
+                    "venue": venue,
+                    **payload.model_dump(
+                        mode="json",
+                        exclude_none=True,
+                        exclude={"comment"} if not payload.comment else set(),
+                    ),
+                },
+                sort_keys=True,
             ).encode()
         ).hexdigest()
         with Session(self.engine) as db, db.begin():
@@ -198,6 +207,12 @@ class WaitService:
                 queue_kind=payload.queue_kind,
                 kind=payload.kind,
                 minutes=payload.minutes,
+                grill=payload.grill,
+                vegetarian=payload.vegetarian,
+                standard=payload.standard,
+                seating=payload.seating,
+                comment=payload.comment,
+                comment_status="pending" if payload.comment else "none",
                 observed_at=observed,
                 received_at=now,
                 source_window_start=None,

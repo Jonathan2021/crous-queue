@@ -1,0 +1,7 @@
+<div class="official-hours" data-hours="{{ venue.id }}" data-expiry="{{ h.expires_at.isoformat() if h.expires_at else '' }}">
+<p class="hours-status"><strong>{% if h.today=='open' %}Ouvert aujourd’hui{% elif h.today=='closed' %}Fermé aujourd’hui{% else %}Ouverture aujourd’hui inconnue{% endif %}</strong> · {{ h.local_date }}{% if h.timezone %} · {{ h.timezone }}{% endif %}</p>
+<p class="hours-now">{% if h.now=='open' %}Ouvert maintenant{% elif h.now=='closed' %}Fermé maintenant{% else %}Ouverture maintenant non vérifiée{% endif %}</p>
+<p class="hours-intervals"{% if not h.intervals %} hidden{% endif %}>Service : {{ h.intervals|join(' / ') }}{% if h.freshness!='fresh' %} (horaire historique){% endif %}</p>
+<p class="micro hours-caveat">{{ h.caveat }}</p>
+<p class="micro"><span class="hours-checked">{% if h.checked_at %}Dernier relevé : {{ h.checked_at.strftime('%d/%m/%Y %H:%M') }} UTC · {% endif %}</span><a href="{{ h.official_url }}" rel="noreferrer">Source officielle ↗</a></p>
+</div>

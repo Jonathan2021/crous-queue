@@ -1,0 +1,5 @@
+ M tools/foundry_agent.py
+?? docs/evidence/q08-20261008-b72e/
+?? docs/mvp/REMARKS_HANDOFF.md
+?? remarks
+699eebf63f8a70eff02b961ae0d541cc2a271741

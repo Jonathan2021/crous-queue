@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 
 class VenueView(BaseModel):
@@ -30,15 +30,46 @@ VenueType = Literal["restaurant", "cafeteria", "administrative", "other", "all"]
 QueueKind = Literal["student", "staff", "unspecified"]
 
 
+AvailabilityValue = Literal["available", "unavailable", "not_offered", "unknown"]
+
+
 class ReportInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    kind: Literal["estimate", "completed"]
-    minutes: Annotated[int, Field(strict=True, ge=0, le=120)]
+    kind: Literal["estimate", "completed", "availability"]
+    minutes: Annotated[int, Field(strict=True, ge=0, le=120)] | None = None
     observed_at: AwareDatetime
     queue_kind: QueueKind
     idempotency_key: Annotated[
         str, Field(min_length=8, max_length=100, pattern=r"^[a-zA-Z0-9_-]+$")
     ]
+
+    grill: AvailabilityValue | None = None
+    vegetarian: AvailabilityValue | None = None
+    standard: AvailabilityValue | None = None
+    seating: AvailabilityValue | None = None
+    comment: Annotated[str, Field(max_length=280)] = ""
+
+    @model_validator(mode="after")
+    def independent_dimensions(self) -> "ReportInput":
+        self.comment = self.comment.strip()
+        if any(ord(c) < 32 and c not in "\n\t" for c in self.comment):
+            raise ValueError("Comment must be plain text without control characters.")
+        if (self.kind == "availability") != (self.minutes is None):
+            raise ValueError(
+                "Wait reports need minutes; availability-only reports must omit them."
+            )
+        if (
+            self.kind == "availability"
+            and not self.comment
+            and all(
+                v is None
+                for v in (self.grill, self.vegetarian, self.standard, self.seating)
+            )
+        ):
+            raise ValueError(
+                "Choose at least one observation or write a short comment."
+            )
+        return self
 
 
 class TimerInput(BaseModel):
@@ -60,7 +91,8 @@ class ReportView(BaseModel):
     venue_id: str
     queue_kind: str
     kind: str
-    minutes: int
+    minutes: int | None
+    comment_status: str | None = None
     observed_at: datetime
     received_at: datetime
     source_window_start: datetime | None
@@ -87,3 +119,7 @@ class HideInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     rationale: Annotated[str, Field(min_length=8, max_length=500)]
     expected_version: Annotated[int, Field(strict=True, ge=0)]
+
+
+class CommentModerationInput(HideInput):
+    action: Literal["approve", "hide", "delete"]

@@ -61,7 +61,13 @@ class WaitReport(Base):
     venue_id: Mapped[str] = mapped_column(ForeignKey("venues.id"), index=True)
     queue_kind: Mapped[str] = mapped_column(String(20))
     kind: Mapped[str] = mapped_column(String(20))
-    minutes: Mapped[int]
+    minutes: Mapped[int | None]
+    grill: Mapped[str | None] = mapped_column(String(20))
+    vegetarian: Mapped[str | None] = mapped_column(String(20))
+    standard: Mapped[str | None] = mapped_column(String(20))
+    seating: Mapped[str | None] = mapped_column(String(20))
+    comment: Mapped[str] = mapped_column(String(280), default="")
+    comment_status: Mapped[str] = mapped_column(String(20), default="none")
     observed_at: Mapped[datetime] = mapped_column(UTCDateTime)
     received_at: Mapped[datetime] = mapped_column(UTCDateTime, index=True)
     source_window_start: Mapped[datetime | None] = mapped_column(UTCDateTime)
@@ -116,3 +122,19 @@ class ModerationAudit(Base):
     rationale: Mapped[str] = mapped_column(String(500))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)
     version: Mapped[int]
+
+
+class OfficialHours(Base):
+    __tablename__ = "official_hours"
+    venue_id: Mapped[str] = mapped_column(ForeignKey("venues.id"), primary_key=True)
+    official_url: Mapped[str] = mapped_column(Text)
+    provider: Mapped[str] = mapped_column(String(40))
+    source_timestamp: Mapped[datetime | None] = mapped_column(UTCDateTime)
+    retrieved_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
+    attempted_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    raw_schedule: Mapped[str] = mapped_column(Text, default="")
+    last_attempt_raw: Mapped[str] = mapped_column(Text, default="")
+    last_attempt_sha256: Mapped[str] = mapped_column(String(64), default="")
+    normalized: Mapped[str] = mapped_column(Text, default="null")
+    payload_sha256: Mapped[str] = mapped_column(String(64), default="")
+    error: Mapped[str] = mapped_column(String(100), default="")

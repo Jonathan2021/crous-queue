@@ -1,4 +1,4 @@
-# Developer entry point — 0.1.2
+# Developer entry point — 0.2.0
 
 Start from the source kit/private repository with Python 3.13, uv 0.11.29 and make. `make install` checks `uv.lock` against the manifest, installs dev dependencies and creates private configuration if absent. `make migrate`, `uv run --locked crous-queue import-directory`, `make serve` starts the independent loopback app. No Foundry installation is needed. `make check` runs Ruff/format/strict mypy/core acceptance; `uv run --locked playwright install --with-deps chromium` then `make test-browser` exercises real browser flows.
 
@@ -24,4 +24,32 @@ Read-time and elapsed-browser-time expiry keep states honest without cleanup dep
 
 Author new migration revisions under `src/crous_queue/migrations/versions`; preserve previous upgrade bodies and IDs. Use the same packaged configuration helper for tests/tools. Root `alembic.ini` points at the package; historical root revision copies are not active. No test targets an existing application DB; external live refresh is an explicit opt-in operator action, excluded from CI.
 
-See [operations](OPERATIONS.md), [French first use](USER_GUIDE.md), [release contract](RELEASE.md) and [current readiness](mvp/RELEASE_READINESS.md). GitHub Actions provides commit-specific reproducibility; successful local tests alone do not claim remote CI or physical usefulness. Foundry bridge/outbox remain operator-local coordination, excluded from artifacts and runtime.
+See [operations](OPERATIONS.md), [French first use](USER_GUIDE.md), [release contract](RELEASE.md) and [current delivery](mvp/REMARKS_DELIVERY.md). GitHub Actions provides commit-specific reproducibility; successful local tests alone do not claim remote CI or physical usefulness. Foundry bridge/outbox remain operator-local coordination, excluded from artifacts and runtime.
+
+## Remarks module and policy map
+
+- `services/hours.py`: `HoursProvider`, fixed identity mappings, website/feed
+  normalization, dated exceptions, venue IANA timezone and injected-clock freshness.
+  `refresh-hours` is operator-triggered, never a page-view scrape. Migrations 0004
+  and 0006 retain good and rejected-attempt provenance separately. ADR-0006.
+- `api/map.py`, `static/map.js`, `static/vendor/leaflet`: shared wait aggregation
+  and accessible viewport list, color bands, coincident identities and optional
+  OSM adapter. `0,0` means missing source coordinates. Vendor hash regression and
+  recursive service-worker asset revision prevent incomplete packaging/cache. ADR-0007.
+- `services/availability.py`: latest per-device per-dimension observations,
+  2-minute conflict cohort, 10-minute meal/5-minute seat expiry, approved comments
+  up to 60 minutes. Migration 0005 extends reports without inventing wait values.
+  Existing contribution/auth/moderation boundaries remain shared. ADR-0008.
+- `scripts/artifact_browser.py`: actual synthetic browser flow used by **both**
+  installed-wheel and extracted-source harnesses. `verify_wheel.py` also restarts
+  and reads a restored store. `verify_upgrade.py` installs the actual retained
+  0.1.2 wheel, upgrades synthetic development/demo databases and verifies old-wheel
+  rollback against its restored old backup. CI always covers 0.1.2 schema/link/retry
+  upgrade; the optional historical-artifact command needs that archived wheel.
+
+All routine network providers are synthetic. Live two-page hours probes are dated
+separate evidence, not fixtures. Browser tiles are intercepted deterministically.
+Source schedule changes require a reviewed grammar/identity fixture. Use
+`CQ_MAP_TILES=none` for a strictly local runtime. Test helpers never import Foundry.
+The supported source/wheel migration head is 0006; PostgreSQL deployment remains
+unverified and separately gated.

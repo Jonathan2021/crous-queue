@@ -6,7 +6,7 @@ from starlette.responses import Response
 
 from crous_queue.api.pages import templates
 from crous_queue.api.waits import identity
-from crous_queue.contracts import FlagInput, HideInput
+from crous_queue.contracts import CommentModerationInput, FlagInput, HideInput
 from crous_queue.services.moderation import ModerationService
 
 router = APIRouter()
@@ -68,3 +68,12 @@ def privacy(request: Request) -> Response:
         name="privacy.html",
         context={"environment": request.app.state.settings.environment},
     )
+
+
+@router.post(
+    "/admin/reports/{report_id}/comment", dependencies=[Depends(require_admin)]
+)
+def moderate_comment(
+    report_id: str, payload: CommentModerationInput, request: Request
+) -> dict[str, object]:
+    return service(request).moderate_comment(report_id, payload)

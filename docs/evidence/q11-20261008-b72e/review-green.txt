@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 7 items
+
+tests/integration/test_delivery_review.py ..                             [ 28%]
+tests/integration/test_hours.py .....                                    [100%]
+
+============================== 7 passed in 3.64s ===============================

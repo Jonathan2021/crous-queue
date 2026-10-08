@@ -24,7 +24,19 @@ def main() -> None:
         if path.suffix == ".whl":
             with zipfile.ZipFile(path) as archive:
                 names = archive.namelist()
-            assert "crous_queue/migrations/env.py" in names
+            for required in [
+                "migrations/env.py",
+                "migrations/versions/0006_hours_attempts.py",
+                "services/hours.py",
+                "services/availability.py",
+                "static/map.js",
+                "static/availability.js",
+                "static/vendor/leaflet/leaflet.js",
+                "static/vendor/leaflet/leaflet.css",
+                "static/vendor/leaflet/LICENSE",
+                "templates/hours.html",
+            ]:
+                assert "crous_queue/" + required in names, required
             assert "crous_queue/resources/venues-2026-10-07.json" in names
             assert (
                 len(
@@ -35,7 +47,7 @@ def main() -> None:
                         and n.endswith(".py")
                     ]
                 )
-                == 3
+                == 6
             )
         else:
             with tarfile.open(path) as archive:

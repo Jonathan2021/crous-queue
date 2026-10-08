@@ -1,0 +1,8 @@
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+58 files already formatted
+uv run --locked mypy
+src/crous_queue/services/hours.py:54: error: Incompatible types in assignment (expression has type "Match[str] | None", variable has type "Match[str]")  [assignment]
+Found 1 error in 1 file (checked 28 source files)
+make: *** [Makefile:8: check] Error 1

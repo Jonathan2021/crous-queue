@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 4 items
+
+tests/integration/test_availability.py ...                               [ 75%]
+tests/integration/test_availability_upgrade.py .                         [100%]
+
+=============================== warnings summary ===============================
+tests/integration/test_availability_upgrade.py::test_012_upgrade_preserves_links_legacy_retry_and_recovery
+tests/integration/test_availability_upgrade.py::test_012_upgrade_preserves_links_legacy_retry_and_recovery
+tests/integration/test_availability_upgrade.py::test_012_upgrade_preserves_links_legacy_retry_and_recovery
+tests/integration/test_availability_upgrade.py::test_012_upgrade_preserves_links_legacy_retry_and_recovery
+tests/integration/test_availability_upgrade.py::test_012_upgrade_preserves_links_legacy_retry_and_recovery
+  /home/jonathan/startup_lab/crous-queue/.venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py:952: DeprecationWarning: The default datetime adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    cursor.execute(statement, parameters)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 4 passed, 5 warnings in 2.81s =========================

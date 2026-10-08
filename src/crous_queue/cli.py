@@ -14,6 +14,7 @@ from crous_queue.db import make_engine
 from crous_queue.distribution import directory_snapshot, migration_configuration
 from crous_queue.services.demo import seed_demo
 from crous_queue.services.directory import DirectoryImporter, HTTPDirectoryProvider
+from crous_queue.services.hours import MAPPINGS, HoursImporter, HTTPHoursProvider
 from crous_queue.services.maintenance import backup_sqlite, purge, restore_sqlite
 
 
@@ -27,6 +28,7 @@ def main() -> None:
             "migrate",
             "import-directory",
             "refresh-directory",
+            "refresh-hours",
             "retain",
             "backup",
             "restore",
@@ -40,6 +42,11 @@ def main() -> None:
     )
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--venue-id",
+        action="append",
+        help="Reviewed exact venue ID for refresh-hours; default: both Paris RUs",
+    )
     args = parser.parse_args()
     try:
         if args.command == "configure":
@@ -89,6 +96,16 @@ def main() -> None:
                     ).refresh(HTTPDirectoryProvider())
                 )
             )
+        elif args.command == "refresh-hours":
+            result = HoursImporter(
+                make_engine(settings.database_url), lambda: datetime.now(UTC)
+            ).refresh(HTTPHoursProvider(), args.venue_id or list(MAPPINGS))
+            print(json.dumps(result))
+            if any(value != "good" for value in result.values()):
+                parser.exit(
+                    1,
+                    "Hours refresh incomplete; last-known data retained. Inspect mapping/source and retry.\n",
+                )
         elif args.command == "retain":
             print(
                 json.dumps(purge(make_engine(settings.database_url), datetime.now(UTC)))

@@ -18,6 +18,7 @@ from starlette.middleware.base import RequestResponseEndpoint
 from starlette.responses import JSONResponse, Response
 
 from crous_queue import __version__
+from crous_queue.api.map import router as map_router
 from crous_queue.api.moderation import router as moderation_router
 from crous_queue.api.pages import router as pages_router
 from crous_queue.api.waits import router as waits_router
@@ -67,6 +68,7 @@ def create_app(
     app.state.clock = clock or (lambda: datetime.now(UTC))
 
     app.include_router(waits_router)
+    app.include_router(map_router)
     app.include_router(pages_router)
     app.include_router(moderation_router)
     app.mount(
@@ -109,7 +111,7 @@ def create_app(
             content={
                 "detail": {
                     "code": "invalid_payload",
-                    "message": "Valeurs invalides. Minutes entières 0–120, date avec fuseau horaire, champs autorisés uniquement.",
+                    "message": "Valeurs invalides : minutes entières 0–120 pour une attente, choix proposés pour repas/places, texte de 280 caractères maximum et date avec fuseau horaire.",
                 }
             },
         )
@@ -196,9 +198,9 @@ def create_app(
             )
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["Referrer-Policy"] = "same-origin"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+            "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
         )
         return response
 

@@ -34,3 +34,50 @@ PostgreSQL is not provisioned. Before a public release: use a private connection
 Released shell assets use a content-derived worker revision and refresh online. Cached offline navigation still shows the explanatory read-only page, never cached API waits. A restart is required to load changed Python handlers; browser reload/update handles changed static assets.
 
 Pilot logger v2 records bind environment, synthetic/real mode and storage identity. Never append demo, a different database, a restored-copy identity or old unversioned snapshots into an existing file. Retain the old file for review, choose a new matching plan/log, and never relabel it as observed real data. Blank records and schedule are in `PILOT_OPERATOR_SCHEDULE.md`; real intake/access remains unapproved.
+
+## Official hours refresh (Q08)
+
+After `migrate` and `import-directory`, run `crous-queue refresh-hours` once each
+local morning (and manually after a notice), or `--venue-id paris:r177` to repair
+one of the two reviewed Paris mappings. No scheduler or live fetch is enabled by
+installation. A failed/unknown refresh exits 1 with per-ID status; inspect the
+source URL and schedule in `GET /venues/{id}/hours`. Repeating safely replaces the
+cache. No credentials/account required. Runtime page views read local storage.
+
+If a source moves, verify the venue identity, update `MAPPINGS` in
+`services/hours.py`, add a sanitized synthetic shape fixture/test, review the
+allowlist, then refresh. Redirects are deliberately refused. Never insert a user
+URL. National feed `hours` text can supply a schedule only when the strict grammar
+is supported; legacy flags cannot. A stale or unavailable source displays unknown
+opening with historical intervals; there is no guarantee of exceptional opening.
+See ADR-0006 for timezones, cadence, bounds and provenance/license limits.
+
+## Availability/comment moderation (Q10)
+
+Open `/admin` locally and enter the independent `CQ_ADMIN_TOKEN`. The token stays
+in that tab's memory. Pending comments show alongside independent meal/seat
+observations. Review for names/contact details, links, abuse and relevance. Enter
+a short non-personal rationale, then “Approuver le commentaire” to publish,
+“Masquer le commentaire” to remove its public text, or “Supprimer le texte” to
+clear the stored comment. “Masquer” suppresses the entire report, including all
+structured dimensions. A version conflict means reload before reviewing again.
+Do not approve a comment merely to clear the queue. Hidden comments may be
+reapproved after review; deleted text cannot. Seven-day retention covers every
+state; rotate protected backups within seven days too.
+
+`seed-demo` supplies a synthetic vegetarian shortage, no seats and a pending safe
+comment in the isolated demo profile. Use the demo admin token to practice review,
+then refresh the venue page. Nothing sends an invitation or publishes externally.
+API: `POST /admin/reports/{id}/comment` with `action=approve|hide|delete`,
+`expected_version`, `rationale`, existing bearer/X-CQ-Request/JSON/Origin checks.
+Structured observations use the ordinary report endpoint and shared rate limit.
+
+Before 0.1.2 → current upgrade: stop the local server, create an integrity-checked
+backup, install the new artifact and run `migrate`. Check venue/report/comment
+reads and `/admin`. On failure preserve the failed store and restore into a new
+marked path. To return to 0.1.2, use the pre-upgrade backup and old artifact, never
+run a lossy schema downgrade. See ADR-0008 and the distribution rehearsal.
+
+A hidden whole report can still have its comment text deleted from the moderator
+view. It cannot be approved or republished. Deletion keeps only the moderation
+action and sanitized rationale, not the deleted comment.

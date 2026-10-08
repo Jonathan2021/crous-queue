@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Autour de vous · Crous Queue{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css"><script src="/static/vendor/leaflet/leaflet.js" defer></script><script src="/static/map.js" defer></script>{% endblock %}
+{% block content %}
+<section class="map-page" data-tiles="{{ map_tiles }}"><span class="eyebrow">LE MIDI, AUTOUR DE VOUS</span><h1>Trouvez votre resto.</h1><p>La couleur décrit les attentes signalées, indépendamment de l’ouverture.</p>
+<form id="map-search" class="search-form"><label class="search-input"><input name="q" aria-label="Ville, campus ou restaurant" maxlength="100" placeholder="Ville, campus ou restaurant…"></label><button class="primary">Rechercher sur la carte</button><div class="filters"><label>Région<select name="region"><option value="">Toute la France</option>{% for r in regions %}<option value="{{ r }}">{{ r|capitalize }}</option>{% endfor %}</select></label><label>Type de lieu<select name="type"><option value="all">Tous les lieux</option>{% for key,label in types.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></label></div></form>
+<div class="map-actions"><button class="secondary" id="locate">Autour de moi</button><button class="secondary" id="map-refresh">Actualiser les signalements</button><a href="/">Annuaire sans carte →</a></div><p id="location-status" role="status">Localisation facultative, utilisée uniquement pendant cette visite.</p>
+<div class="map-legend" aria-label="Légende des attentes"><span class="crowd-zero">0 min · sans attente</span><span class="crowd-low">1–5 min</span><span class="crowd-medium">&gt;5–10 min</span><span class="crowd-high">&gt;10–20 min</span><span class="crowd-busy">&gt;20 min · chargé</span><span class="crowd-unknown">Inconnu / expiré / divergent</span></div>
+<p class="micro">Signalements valables 15 minutes, pas une mesure officielle. Un repère numéroté réunit plusieurs lieux : cliquez pour choisir chacun.</p>
+<div id="venue-map" aria-label="Carte des établissements. Flèches pour déplacer, plus et moins pour zoomer." tabindex="0"></div>
+<p id="tile-status" role="status">Fond OpenStreetMap facultatif ; les repères et la liste restent disponibles sans fond.</p>
+<p class="micro">© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href="https://www.openstreetmap.org/fixthemap">Signaler un problème de carte</a>. Le fournisseur reçoit les tuiles de la zone affichée et votre adresse réseau.</p>
+<div class="section-title"><h2>Dans la zone / sans coordonnées</h2><span id="map-count" role="status"></span></div><p id="map-error" role="status"></p><div class="venue-grid" id="map-list"></div><noscript><p>Activez JavaScript pour la carte, ou utilisez <a href="/">l’annuaire accessible</a>.</p></noscript>
+</section>
+{% endblock %}

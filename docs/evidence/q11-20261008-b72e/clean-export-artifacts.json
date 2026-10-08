@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "source_commit": null,
+  "supported": [
+    "standalone-wheel",
+    "complete-source-kit"
+  ],
+  "artifacts": [
+    {
+      "name": "crous_queue-0.2.0-py3-none-any.whl",
+      "sha256": "f7e66d210c6c60483ae320a92f2527bca68e99c2279d4d89412ed606580ed2a7",
+      "bytes": 188804
+    },
+    {
+      "name": "crous-queue-0.2.0-local.tar.gz",
+      "sha256": "40da07077853287c34b549970177852e3589b8087017a3e085a6a14a4b7e0024",
+      "bytes": 322482
+    }
+  ]
+}

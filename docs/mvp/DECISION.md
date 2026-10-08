@@ -14,10 +14,18 @@ CNOUS feed license is fr-lo (Open Licence); all 26 current resource URLs returne
 
 National searchable directory; restaurant/cafeteria filters; manual city/search selection with optional one-time approximate geolocation; favorite venues stored locally; recent crowd-reported wait; report current estimated remaining wait or start/finish an own wait timer; freshness, report count and disagreement; report-abuse action and small admin moderation view. No signup to view or contribute in initial MVP; signed pseudonymous device session and strict throttles.
 
-Do not infer seats, menus, queue length, future wait or walking-time savings. Do not import Affluences live data without an authorized feed. Menus and predictions are later options. Keep private/staff-only venues visibly identified when source access information is available. Public reports contain no names, free text, photos or location traces.
+Do not infer seats, meal availability, menus, queue length, future wait or walking-time savings from waiting time. The 2026-10-08 user remarks authorize separate meal/seat observations and moderated comments. Do not import Affluences live data without an authorized feed. Menus and predictions are later options. Keep private/staff-only venues visibly identified when source access information is available. Public reports contain no names, photos or location traces. Short plain-text comments require moderator approval before publication; structured observations remain independent and expire.
 
 ## Build versus adoption
 
 Five lunch days at Cuvier/Châtelet after a usable app exists: freshness coverage at fixed checks, estimate versus own completed wait (clearly different measures), contribution friction and repeat contributors. No mandatory interviews before implementation. National venue availability does not imply national live data. If reporting stays sparse, keep honest unknowns and test distribution rather than adding fictitious prediction.
 
 These are implementation-ready plans, not a delivered application. Technical probes are explicitly scoped. Demand, launch and paid services are not assumed.
+
+## Updated scope — user remarks, 2026-10-08
+
+The unchanged root `remarks` explicitly authorizes official opening hours/status,
+a nearby crowding map, independent grill/vegetarian/standard meal and seat reports,
+and bounded moderated free text. This supersedes the earlier seat/free-text
+exclusions. These are timestamped observations, never inventory or seat guarantees.
+See ADR-0006 and Q08–Q11 in ROADMAP. Physical lunch/usefulness gates remain unpassed.

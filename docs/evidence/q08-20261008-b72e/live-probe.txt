@@ -1,0 +1,3 @@
+Bounded live read-only official-page probe. Not a fixture or physical-open validation. 2026-10-08 17:14:06.053516+00:00
+paris:r177 https://www.crous-paris.fr/restaurant/ru-cuvier/ 188462 2cd0b953b6051c587d1997c948896aed3dad12ad1204be175b3567b267135923 None None
+paris:r175 https://www.crous-paris.fr/restaurant/ru-chatelet/ 188545 3935a9cc5010587af9544598177e3f11e455a7c73ba85a2b4ac3cf9cc07ba441 None {'weekly': {'0': [('11:30', '14:00')], '1': [('11:30', '14:00')], '2': [('11:30', '14:00')], '3': [('11:30', '14:00')], '4': [('11:30', '14:00')], '5': [], '6': []}, 'exceptions': {}}

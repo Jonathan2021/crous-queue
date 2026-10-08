@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 
 import httpx
+from artifact_browser import exercise
 
 from crous_queue import __version__
 
@@ -59,7 +60,13 @@ with tempfile.TemporaryDirectory(prefix="crous-release-") as folder:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
     origin = f"http://127.0.0.1:{port}"
-    env = {**base_env, "CQ_PORT": str(port), "CQ_ORIGIN": origin}
+    admin_token = "source-synthetic-admin-" + "b" * 32
+    env = {
+        **base_env,
+        "CQ_PORT": str(port),
+        "CQ_ORIGIN": origin,
+        "CQ_ADMIN_TOKEN": admin_token,
+    }
     with (checkout / ".local/server.log").open("w") as log:
         server = subprocess.Popen(
             ["uv", "run", "crous-queue", "serve"],
@@ -90,6 +97,7 @@ with tempfile.TemporaryDirectory(prefix="crous-release-") as folder:
             )
             assert httpx.get(origin + "/privacy").status_code == 200
             assert httpx.get(origin + "/admin/reports").status_code == 401
+            print(json.dumps(exercise(origin, admin_token)), flush=True)
             print(
                 json.dumps(
                     {

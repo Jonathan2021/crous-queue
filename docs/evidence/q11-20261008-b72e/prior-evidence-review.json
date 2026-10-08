@@ -1,0 +1,9 @@
+{
+  "checked": 208,
+  "changed": [
+    "docs/evidence/latest-admin.png",
+    "docs/evidence/latest-mobile.png"
+  ],
+  "remarks_unchanged": true,
+  "explanation": "Legacy browser tests defaulted to rolling latest-* PNG paths and replaced three preexisting generated images. Desktop restored byte-for-byte from a retained identical copy. Original rolling mobile/admin copies were not found; their pre-run hashes are retained and current replay images saved separately. No historical text/checkpoint evidence or application data changed. Harness defaults now unique per run."
+}

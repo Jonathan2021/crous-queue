@@ -55,6 +55,11 @@ def seed_demo(
             ReportInput(
                 kind="estimate",
                 minutes=minutes,
+                vegetarian="unavailable" if label == "a" else None,
+                seating="unavailable" if label == "a" else None,
+                comment="Démonstration : réassort végétarien attendu, sans garantie."
+                if label == "a"
+                else "",
                 observed_at=observed,
                 queue_kind="student",
                 idempotency_key=f"demo_{label}_{slot}",
