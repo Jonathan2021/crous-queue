@@ -115,3 +115,10 @@ Evidence is retained separately under `docs/evidence/q08-20261008-b72e` through
 `q11-20261008-b72e`, including red specifications, green regressions, real browser
 replays and actual 0.1.2 wheel upgrade/backup recovery. Root remarks remain verbatim.
 No human trial, real lunch, demand or public deployment gate is cleared.
+
+Continuation: the first Q11 session ran out of usage after pushing `fdee14f` with
+green CI `37820375829` and submitting no Q11 result. Its claim was released with an
+attributed interruption rationale and reclaimed by `crous-queue-remarks-83413533`.
+Independent review found that co-located venues (152 of them, including RU Cuvier)
+could never show a crowding color on the map; segmented per-venue markers and a
+CSS specificity repair fix it. Evidence: `docs/evidence/q11c-20261008-8341`.

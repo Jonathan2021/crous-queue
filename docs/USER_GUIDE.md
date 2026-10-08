@@ -28,8 +28,9 @@ Une absence de signalements d’attente ne dit rien sur l’ouverture.
 Ouvrez **Carte**, recherchez une ville/campus/restaurant ou choisissez une région.
 Déplacez la carte avec les flèches, zoomez avec +/− ou les contrôles. La liste
 accessible reprend les mêmes lieux et valeurs. Un lieu sans coordonnées reste
-listé explicitement, sans faux repère. Un repère numéroté permet de choisir chacun
-des lieux à cette adresse, puis de consulter ou signaler.
+listé explicitement, sans faux repère. Plusieurs lieux à la même adresse partagent
+un repère découpé : chaque segment garde la couleur et les minutes de son lieu
+(« ? » si inconnu). Cliquez dessus pour choisir chacun, puis consulter ou signaler.
 
 Légende : vert clair **0 min**, puis 1–5 min, >5–10 min, >10–20 min et rouge foncé
 **>20 min**. Gris signifie inconnu, expiré ou avis divergents. Le texte et l’âge

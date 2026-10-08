@@ -59,7 +59,8 @@ explicit. Website coverage starts with **two Paris RUs**, not national live hour
 
 Open **Carte** for matching venues and an accessible list. Light green means a
 fresh 0-minute observation; dark red means >20 minutes. Unknown/expired/conflicting
-is gray. Numbered coincident markers let you choose each venue. “Autour de moi”
+is gray. Venues at one address share a segmented marker with one color per
+venue; select it to choose each venue. “Autour de moi”
 requests location only on click; city search and keyboard navigation work without
 it. Optional OpenStreetMap tiles can fail without losing the venue list. Set
 `CQ_MAP_TILES=none` to avoid external basemap requests.

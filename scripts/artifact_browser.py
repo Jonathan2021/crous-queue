@@ -52,7 +52,13 @@ def exercise(origin: str, admin_token: str) -> dict[str, str]:
         expect(
             page.locator('#map-list [data-map-venue="paris:r177"] .map-wait')
         ).to_have_text("0 min")
-        expect(page.locator(".crowd-marker")).to_have_text("2")
+        # Co-located RU and cafeteria keep separate colours in one shared marker.
+        marker = page.locator(".crowd-marker")
+        expect(marker).to_have_count(1)
+        expect(marker.locator('[data-segment-venue="paris:r177"]')).to_have_class(
+            "crowd-segment crowd-zero"
+        )
+        expect(marker.locator('[data-segment-venue="paris:r889"]')).to_have_text("?")
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         response = page.request.get(origin + "/v/paris:r177")
         assert "unsafe-eval" not in response.headers["content-security-policy"]

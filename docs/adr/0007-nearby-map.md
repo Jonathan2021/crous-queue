@@ -16,9 +16,19 @@ Wait palette: 0 min `#c8edb7`, (0,5] pale yellow-green, (5,10] yellow,
 (10,20] orange, >20 `#7f1727`. This is a visual scale for the existing wait median,
 not measured occupancy. Always show minutes/age/count/text; conflicting range,
 unknown, expired and offline are neutral gray. Completed waits remain separate.
-Coincident coordinates have a numbered neutral marker; its keyboard-accessible
-popup offers every distinct venue and queue. No pooling at an address. Close
-markers at small zoom also remain selectable through their individual list rows.
+Coincident coordinates share one marker split into one colored segment per venue
+(its own band and minutes or “?”); its keyboard-accessible popup offers every
+distinct venue and queue. No pooling at an address. Close markers at small zoom
+also remain selectable through their individual list rows. Markers with a fresh
+value are drawn above overlapping unknown markers.
+
+Q11 review amendment (2026-10-08): the original numbered neutral marker made 152
+co-located venues (66 addresses, at most four each, including RU Cuvier beside
+Cafétéria Cuvier and both Jussieu venues) unable to show any crowding color on
+the map. Segments keep identities separate; groups above four show the three
+venues with values first plus a neutral “+n” segment. Marker CSS is scoped under
+`#venue-map` because Leaflet's later `.leaflet-marker-icon{display:block}` would
+otherwise override centering.
 
 Default basemap: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`, best-effort,
 no account, no paid service. Visible copyright/ODbL attribution and map-issue link.

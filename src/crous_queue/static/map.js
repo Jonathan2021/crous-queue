@@ -24,7 +24,23 @@
   }
   function update() {
     for(const v of items){const row=rows.get(v.id);if(!row)continue;const val=value(v),wait=row.querySelector('.map-wait');wait.className=`map-wait crowd-${band(val)}`;wait.textContent=val.text+distance(v);row.querySelector('.map-age').textContent=val.detail;row.querySelector('.map-hours').textContent=hoursText(v);}
-    for(const g of groups){popupText(g);const values=g.items.map(value);const only=values.length===1;const b=only?band(values[0]):'unknown';const element=g.marker.getElement();if(element){element.className=`leaflet-marker-icon crowd-marker crowd-${b} leaflet-zoom-animated leaflet-interactive`;element.dataset.band=b;element.textContent=only?(values[0].minutes===undefined?'?':number(values[0].minutes)):String(values.length);element.setAttribute('aria-label',g.items.map((v,i)=>`${v.name}, ${values[i].text}`).join(' ; '));}}
+    for(const g of groups){popupText(g);paint(g);}
+  }
+  function label(val){return val.minutes===undefined?'?':number(val.minutes);}
+  function paint(g){
+    const values=g.items.map(value),element=g.marker.getElement();if(!element)return;
+    // Fresh observations stay on top of overlapping unknown markers.
+    const known=values.some(v=>v.minutes!==undefined);if(g.raised!==known){g.raised=known;g.marker.setZIndexOffset(known?1000:0);}
+    element.setAttribute('aria-label',g.items.map((v,i)=>`${v.name}, ${values[i].text}`).join(' ; '));
+    if(values.length===1){const b=band(values[0]);element.className=`leaflet-marker-icon crowd-marker crowd-${b} leaflet-zoom-animated leaflet-interactive`;element.dataset.band=b;element.textContent=label(values[0]);return;}
+    // One segment per venue at a shared address: distinct identities are never pooled.
+    element.className='leaflet-marker-icon crowd-marker crowd-shared leaflet-zoom-animated leaflet-interactive';delete element.dataset.band;
+    const order=values.map((_,i)=>i).sort((a,b)=>(values[a].minutes===undefined)-(values[b].minutes===undefined));
+    const shown=order.length>4?3:order.length;
+    const parts=order.slice(0,shown).map(i=>{const s=node('span',label(values[i]),`crowd-segment crowd-${band(values[i])}`);s.dataset.segmentVenue=g.items[i].id;return s;});
+    if(order.length>shown)parts.push(node('span',`+${order.length-shown}`,'crowd-segment crowd-unknown'));
+    const signature=parts.map(p=>`${p.dataset.segmentVenue}:${p.className}:${p.textContent}`).join('|');
+    if(element.dataset.segments!==signature){element.dataset.segments=signature;element.replaceChildren(...parts);}
   }
   function renderList(){
     const visible=items.filter(v=>!v.has_coordinates || !map || map.getBounds().contains([v.latitude,v.longitude]));
@@ -39,7 +55,8 @@
     for(const g of groups)g.marker.remove();groups=[];
     const grouped=new Map();for(const v of items.filter(v=>v.has_coordinates)){const key=`${v.latitude},${v.longitude}`;if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(v);}
     for(const venues of grouped.values()){
-      const first=venues[0];const marker=L.marker([first.latitude,first.longitude],{icon:L.divIcon({className:'crowd-marker crowd-unknown',html:'?',iconSize:[38,38],iconAnchor:[19,19]}),keyboard:true}).addTo(map);
+      const first=venues[0],segments=venues.length>1?Math.min(venues.length,4):0,size=segments?[segments*28+4,34]:[38,38];
+      const marker=L.marker([first.latitude,first.longitude],{icon:L.divIcon({className:'crowd-marker crowd-unknown',html:'?',iconSize:size,iconAnchor:[size[0]/2,size[1]/2]}),keyboard:true}).addTo(map);
       const group={items:venues,marker,popup:null};
       marker.bindPopup(()=>{const panel=node('div','','map-popup');for(const v of venues){const row=node('div','');row.dataset.popupVenue=v.id;const a=node('a',`${v.name} → voir / signaler`);a.href=`/v/${encodeURIComponent(v.id)}`;row.append(a,node('p','','popup-wait'),node('p','','micro popup-hours'));panel.append(row);}group.popup=panel;popupText(group);return panel;},{maxWidth:230,minWidth:160,maxHeight:200,autoPanPadding:[30,30]});
       groups.push(group);

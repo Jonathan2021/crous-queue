@@ -1,3 +1,4 @@
+import re
 from datetime import UTC, datetime
 from uuid import uuid4
 
@@ -51,6 +52,12 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
         page.locator('#map-list [data-map-venue="paris:r175"] .map-wait')
     ).to_have_class("map-wait crowd-busy")
     expect(page.locator("#tile-status")).to_contain_text("indisponible")
+    busy = page.locator('.crowd-marker[data-band="busy"]')
+    expect(busy).to_have_count(1)
+    expect(busy).to_have_text("40")
+    page.locator("#venue-map").screenshot(
+        path=f"docs/evidence/q09-20261008-b72e/map-paris-{uuid4().hex[:8]}.png"
+    )
     page.get_by_role("button", name="Autour de moi").click()
     expect(page.locator("#location-status")).to_contain_text("refusée")
     page.get_by_label("Ville, campus ou restaurant").fill("Cuvier")
@@ -58,7 +65,18 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
     expect(page.locator("#map-list .venue-card")).to_have_count(2)
     marker = page.locator(".crowd-marker")
     expect(marker).to_have_count(1)
-    expect(marker).to_have_text("2")
+    # A shared address keeps one colour per venue; nothing is pooled.
+    ru = marker.locator('[data-segment-venue="paris:r177"]')
+    cafeteria = marker.locator('[data-segment-venue="paris:r889"]')
+    expect(marker.locator(".crowd-segment")).to_have_count(2)
+    expect(ru).to_have_class("crowd-segment crowd-zero")
+    expect(ru).to_have_text("0")
+    expect(cafeteria).to_have_class("crowd-segment crowd-unknown")
+    expect(cafeteria).to_have_text("?")
+    expect(marker).to_have_attribute("aria-label", re.compile(r"RU Cuvier, 0 min"))
+    page.locator("#venue-map").screenshot(
+        path=f"docs/evidence/q09-20261008-b72e/map-shared-{uuid4().hex[:8]}.png"
+    )
     marker.focus()
     page.keyboard.press("Enter")
     expect(page.locator(".map-popup a")).to_have_count(2)
@@ -79,6 +97,8 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
     expect(
         page.locator('.map-popup [data-popup-venue="paris:r177"] .popup-wait')
     ).to_contain_text("Aucun signalement récent")
+    expect(ru).to_have_class("crowd-segment crowd-unknown")
+    expect(ru).to_have_text("?")
     page.set_viewport_size({"width": 1440, "height": 1000})
     page.locator("#venue-map").focus()
     page.keyboard.press("ArrowRight")

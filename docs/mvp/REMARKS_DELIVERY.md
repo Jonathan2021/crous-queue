@@ -11,16 +11,28 @@ historical 0.1.2 evidence. Root `remarks` is preserved verbatim.
 | Remark | Implemented behavior | Evidence |
 | --- | --- | --- |
 | Restaurant website, hours, open today inline | Replaceable bounded provider; exact RU identities, source/provenance, today versus now, local-date/DST/overseas semantics, explicit stale/unknown/conflict, last-good recovery | Q08 `core-final.txt` (30), `browser-first.txt` (8), dated `live-final.txt`; ADR-0006; Q11 review red/green regressions |
-| Nearby map, dark red crowded/light green no wait | Bundled Leaflet, independent opening/waits, identical map/list aggregation, text/minutes/age, coincident venue actions, location only on click, manual search/keyboard and tile failure fallback | Q09 `core-final.txt` (31), `browser-final.txt` (10), `browser-verified.txt`; ADR-0007; current missing-coordinate regression |
+| Nearby map, dark red crowded/light green no wait | Bundled Leaflet, independent opening/waits, identical map/list aggregation, text/minutes/age, segmented per-venue color for co-located venues, location only on click, manual search/keyboard and tile failure fallback | Q09 `core-final.txt` (31), `browser-final.txt` (10), `browser-verified.txt`; ADR-0007 and its Q11 amendment; continuation `q11c-20261008-8341` red/green map replay; missing-coordinate regression |
 | Grill/vegetarian/standard, no seats, other text | Independent fields, meal 10min/seats 5min, conflicts/recovery, 280-char pending comments with real moderator controls, shared abuse/retry protection | Q10 `core-final.txt` (36), `browser-final.txt` (12), actual browser/upgrade fixtures; ADR-0008 |
 
-Q11 final local verification: `core-final.txt` passes Ruff/format/strict mypy and
-**40 core tests**; `browser-final.txt` passes **14 Chromium tests**, including the
+Q11 first-session local verification: `core-final.txt` passes Ruff/format/strict mypy
+and **40 core tests**; `browser-final.txt` passes **14 Chromium tests**, including the
 strict service-worker controller-change regression. `clean-export-rehearsal.txt`
 records independent wheel/source install and recovery from the staged export.
 
+That session ran out of usage after pushing `fdee14f` (green CI `37820375829`)
+without a Q11 result. A continuation session released the interrupted claim with
+an attributed rationale and reclaimed Q11. Its independent review found co-located
+venues — 152 identities at 66 addresses, including RU Cuvier — could never show
+a crowding color on the map, and Leaflet CSS overrode marker label centering.
+Segmented per-venue markers repair both (red `spec-red.txt`, green `map-green.txt`).
+Continuation `core-final.txt` (40) and `browser-final.txt` (14) pass on that tree.
+A clean-clone rehearsal before push caught the installed-artifact browser harness
+still expecting the old numbered marker (`clean-rehearsal-red.txt`); it was updated
+before delivery, so no failing commit was pushed.
+`fdee14f` is therefore an intermediate push; the final delivered SHA is later.
+
 Paths are under `docs/evidence/q08-20261008-b72e`, `q09-20261008-b72e`,
-`q10-20261008-b72e` and `q11-20261008-b72e`. Initial red specification and interim
+`q10-20261008-b72e`, `q11-20261008-b72e` and continuation `q11c-20261008-8341`. Initial red specification and interim
 failed checks remain retained; only named successful final/verified exits establish
 acceptance. New browser screenshot paths are unique; text evidence can be checked
 from Git while PNGs remain local. Exact commands are in acceptance/q08–q11.md and

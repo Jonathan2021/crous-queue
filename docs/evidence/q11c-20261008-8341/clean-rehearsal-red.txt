@@ -1,0 +1,13 @@
+Clean-clone rehearsal of unpushed candidate 3368741 (not delivered):
+sha=3368741f540446b13b32a9729491e4edcceef0a5 work=/tmp/crous-clean-MmWdzG
+== sync
+== check
+============================= 40 passed in 22.68s ==============================
+== browser
+============================= 14 passed in 47.18s ==============================
+== build
+== wheel
+331:  File "<clean-clone>/crous-queue/scripts/artifact_browser.py", line 55, in exercise
+332-    expect(page.locator(".crowd-marker")).to_have_text("2")
+AssertionError: Locator expected to have text '2'
+exit=1

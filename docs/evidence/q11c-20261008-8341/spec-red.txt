@@ -1,0 +1,58 @@
+F
+=================================== FAILURES ===================================
+________ test_map_parity_coincident_location_denial_expiry_failed_tiles ________
+
+browser_page = (<Page url='http://127.0.0.1:54163/map?region=paris&type=all'>, <BrowserContext browser=<Browser type=<BrowserType nam...e/jonathan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome> version=153.0.8010.12>>, 'http://127.0.0.1:54163')
+engine = Engine(sqlite:////tmp/pytest-of-jonathan/pytest-162/test_map_parity_coincident_loc0/test-crous.db)
+
+    def test_map_parity_coincident_location_denial_expiry_failed_tiles(
+        browser_page, engine
+    ):
+        page, context, origin = browser_page
+        context.route("https://tile.openstreetmap.org/**", lambda route: route.abort())
+        page.add_init_script(
+            "navigator.geolocation.getCurrentPosition = (_success, error) => error({code:1});"
+        )
+        seed(engine, "paris:r177", 0)
+        seed(engine, "paris:r175", 40)
+        page.clock.install()
+        failures = []
+        page.on("pageerror", lambda error: failures.append(str(error)))
+        page.goto(origin + "/map?region=paris&type=all")
+        expect(
+            page.locator('#map-list [data-map-venue="paris:r177"] .map-wait')
+        ).to_have_text("0 min")
+        expect(
+            page.locator('#map-list [data-map-venue="paris:r177"] .map-wait')
+        ).to_have_class("map-wait crowd-zero")
+        expect(
+            page.locator('#map-list [data-map-venue="paris:r175"] .map-wait')
+        ).to_have_class("map-wait crowd-busy")
+        expect(page.locator("#tile-status")).to_contain_text("indisponible")
+        busy = page.locator('.crowd-marker[data-band="busy"]')
+        expect(busy).to_have_count(1)
+        expect(busy).to_have_text("40")
+        page.get_by_role("button", name="Autour de moi").click()
+        expect(page.locator("#location-status")).to_contain_text("refusée")
+        page.get_by_label("Ville, campus ou restaurant").fill("Cuvier")
+        page.get_by_role("button", name="Rechercher sur la carte").click()
+        expect(page.locator("#map-list .venue-card")).to_have_count(2)
+        marker = page.locator(".crowd-marker")
+        expect(marker).to_have_count(1)
+        # A shared address keeps one colour per venue; nothing is pooled.
+        ru = marker.locator('[data-segment-venue="paris:r177"]')
+        cafeteria = marker.locator('[data-segment-venue="paris:r889"]')
+>       expect(marker.locator(".crowd-segment")).to_have_count(2)
+E       AssertionError: Locator expected to have count '2'
+E       Actual value: 0 
+E       Call log:
+E         - Expect "to_have_count" locator(".crowd-marker").locator(".crowd-segment") with timeout 5000ms
+E         - waiting for locator(".crowd-marker").locator(".crowd-segment")
+E           14 × locator resolved to 0 elements
+E              - unexpected value "0"
+
+tests/browser/test_map.py:68: AssertionError
+=========================== short test summary info ============================
+FAILED tests/browser/test_map.py::test_map_parity_coincident_location_denial_expiry_failed_tiles
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 7.83s
