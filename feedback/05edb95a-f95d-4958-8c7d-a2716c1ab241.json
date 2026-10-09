@@ -1,0 +1,17 @@
+{
+  "actor": "implementer-crous-20261009",
+  "summary": "Work-item specs carry frozen literals that an earlier package in the same plan invalidates, and nothing flags the drift; P4's acceptance still says '0.2.0/schema 0006' after P3 shipped 0.2.1/0007.",
+  "expected": "When a package's accepted result changes facts that later work items quote (version, schema head), resume or start should show that the later item's description may be stale, or the work schema should support referencing 'current release' instead of a literal.",
+  "actual": "P4 d6baa01f (created 2026-10-09 14:24) says 'Refresh DEPLOYMENT_PROPOSAL and deploy/proposal.json to 0.2.0/schema 0006'. P3 (accepted earlier the same day) moved the code to 0.2.1 / migration 0007. The context for P4 (e7c64350) presented the stale text as the acceptance criteria. The coordinator's chat instruction ('document only') also differed from the work item's 'validate the PostgreSQL branch on a local disposable container'. I reconciled both explicitly in the result rather than silently.",
+  "reproduction": "python3 tools/foundry_agent.py start --actor X --work-id d6baa01f-cc8e-4e91-af1d-c42ea88b3f89 after P3 result be6bc8b6 was accepted; compare work.acceptance_criteria with pyproject version and migrations.",
+  "impact": "An agent following the work text literally would write a wrong version into an approval payload that a human signs.",
+  "suggestion": "Let a result propose 'revise' treatments for dependent work (description/acceptance) in the same review, or warn in start when a dependency completed after the work item's last revision.",
+  "id": "05edb95a-f95d-4958-8c7d-a2716c1ab241",
+  "venture_id": "f0b5abfe-0274-42f7-9c9a-72dcbe68c116",
+  "workspace_id": "81ee3117-de70-411e-9856-07420859ffad",
+  "kind": "friction",
+  "sources": [
+    "document: .foundry/runs/p4-start.json",
+    "document: deploy/PRIVATE_BETA_APPROVAL.md"
+  ]
+}

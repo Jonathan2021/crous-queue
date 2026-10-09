@@ -1,0 +1,19 @@
+$ make test-browser
+uv run --locked pytest tests/browser
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+plugins: anyio-4.15.1
+collected 16 items
+
+tests/browser/test_abuse.py .                                            [  6%]
+tests/browser/test_availability.py ..                                    [ 18%]
+tests/browser/test_honesty.py .                                          [ 25%]
+tests/browser/test_hours.py ..                                           [ 37%]
+tests/browser/test_map.py ...                                            [ 56%]
+tests/browser/test_mobile.py ......                                      [ 93%]
+tests/browser/test_release_cache.py .                                    [100%]
+
+============================= 16 passed in 55.69s ==============================
+exit 0

@@ -25,6 +25,10 @@ Check the resolution after any proxy change: two phones on different mobile netw
 
 `/admin/metrics` returns counts only: raw reports retained, venue/queue combinations with a fresh estimate, and pseudonymous devices contributing on >=2 UTC days within 7 days. These counts are contribution diagnostics, not evidence of real demand or verified accuracy. The operator should set the DB connection's PostgreSQL time zone to UTC before public use.
 
+## PostgreSQL branch check
+
+`scripts/verify_postgresql.py --url postgresql+psycopg://USER@HOST/NAME_test --restore-url postgresql+psycopg://USER@HOST/OTHER_test` exercises migrations up/down, concurrent retries and throttle races (advisory locks), the network budget, admin version conflicts, UTC, retention and `pg_dump`/`pg_restore`, with synthetic data on two disposable `*test*` databases (it refuses other names). It needs `pg_dump`/`pg_restore` on `PATH`. It is not part of CI. The 2026-10-09 run on a throwaway local 18.6 cluster is in `docs/evidence/p4-20261009/`.
+
 ## SQLite backup and restore
 
 ```bash

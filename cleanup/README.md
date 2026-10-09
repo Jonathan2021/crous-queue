@@ -6,7 +6,9 @@
   `docs/mvp/` (including the dated `*HANDOFF*.md`, `FIRST_TASK.md`, `spec.json`),
   `remarks` and `feedback/README.md` are package history. Do not trim or delete.
 - `deploy/` is a tracked NOT AUTHORIZED draft (`docs/DEPLOYMENT_PROPOSAL.md`);
-  `deploy/proposal.json` still says 0.1.2 / schema 0003. Updating it is a human call.
+  `deploy/proposal.json` was refreshed on 2026-10-09 (P3/P4) to 0.2.1 / schema 0007
+  with the exact approval payload in `deploy/PRIVATE_BETA_APPROVAL.md`; approving
+  it remains a human call.
 
 ## Looks dead, kept on purpose
 

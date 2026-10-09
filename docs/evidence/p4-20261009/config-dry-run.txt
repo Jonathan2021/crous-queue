@@ -1,0 +1,3 @@
+$ load_settings(deploy/production.env.example with generated dummy secrets)  # scratch copy, secrets discarded
+valid production 127.0.0.1:5432/crous_queue_production https://queue.example.invalid True (IPv4Network('127.0.0.1/32'),) x-forwarded-for 2 120 none
+rejected bad CQ_TRUSTED_PROXIES: Invalid Crous Queue configuration: Value error, Set CQ_TRUSTED_PROXIES to comma-separated proxy IP addresses or CIDR networks, or leave it e

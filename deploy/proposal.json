@@ -2,35 +2,55 @@
   "status": "draft_not_authorized",
   "application_version": "0.2.1",
   "schema_head": "0007",
-  "host_provider_account": null,
-  "region": null,
-  "public_origin": null,
-  "build_sha256": null,
-  "postgresql_version_and_digest": null,
+  "host_provider_account": "Scaleway; account is a human input (not created by the agent)",
+  "region": "fr-par-1 (Paris)",
+  "public_origin": "https://beta.<existing operator domain> (human input; no domain purchase)",
+  "build_sha256": "bafceb5bcf06cf18c75d0348ca36126226d64b543a7664cbcfd90c81a679f4e3",
+  "postgresql_version_and_digest": "PostgreSQL 16 from Ubuntu 24.04 packages on the same host; branch verified locally on 18.6 (docs/evidence/p4-20261009/postgresql-verify.txt); rerun on 16 before go-live",
   "operator_and_privacy_contact": null,
   "monthly_budget_ceiling_eur": 25,
   "approved_spend_eur": 0,
   "resources": [
-    "one EU host <=2 vCPU/4 GiB/20 GiB",
-    "one app process",
-    "one private PostgreSQL database",
-    "TLS proxy",
-    "private rotating backups",
-    "independent retention and health jobs"
+    "one Scaleway DEV1-S instance in fr-par-1",
+    "its public IPv4",
+    "its system volume",
+    "one DNS record under an existing operator domain"
   ],
   "retention": {
     "reports_days": 7,
     "backups_days": 7,
-    "rate_identifiers_hours_max": 24
+    "rate_identifiers_hours_max": 24,
+    "report_network_key_hours_max": 24,
+    "proxy_access_logs": "disabled"
   },
   "approval": null,
-  "provision_and_teardown_commands": null,
+  "provision_and_teardown_commands": "deploy/PRIVATE_BETA_APPROVAL.md section 6 (teardown) - verify scw CLI syntax at approval time",
   "remaining_gates": [
-    "exact provider quote and resource IDs",
-    "selected PostgreSQL integration/restore checks",
-    "operator privacy contact",
-    "exact public launch payload authorization",
-    "R011 ordinary eligibility and exact private trial/intake arrangement"
+    "R011 answer",
+    "human Android incumbent check (stop if an incumbent shows live Cuvier data)",
+    "operator name and privacy contact",
+    "hostname under an existing domain",
+    "Scaleway console quote <= EUR 20 incl. VAT",
+    "PostgreSQL 16 rerun of scripts/verify_postgresql.py",
+    "exact approval text naming this payload, commit and wheel sha256"
   ],
-  "build_manifest": "commit-specific release-manifest.json from successful private CI artifact"
+  "build_manifest": "release-manifest.json in CI artifact crous-queue-a4f048703ac7a98b68a44c583cb66ac6e35b977d (expires 2026-10-16)",
+  "payload_document": "deploy/PRIVATE_BETA_APPROVAL.md",
+  "build_commit": "a4f048703ac7a98b68a44c583cb66ac6e35b977d",
+  "build_ci_run": "https://github.com/Jonathan2021/crous-queue/actions/runs/37970042546",
+  "runtime_requirements_sha256": "1a6286b0f13a1d688f05d45775fc13a3643d09f3487f5ce2f88a3885473ffd68",
+  "instance": "DEV1-S, 2 vCPU, 2 GB RAM, Ubuntu 24.04 LTS",
+  "list_price_eur_per_hour_before_tax": {
+    "DEV1-S": 0.00898,
+    "source": "https://www.scaleway.com/en/pricing/virtual-instances/",
+    "read_on": "2026-10-09",
+    "excludes": [
+      "public IPv4",
+      "storage"
+    ]
+  },
+  "stop_if_console_quote_incl_vat_exceeds_eur": 20,
+  "max_lifetime_days": 21,
+  "access": "invite cookie set by /invite/<code> at the Caddy proxy; /admin limited to the operator IP plus the app bearer token",
+  "moderation": "operator checks /admin each lunch day 11:30-14:00 and at least every 24 h; stop the service if not possible for 48 h"
 }

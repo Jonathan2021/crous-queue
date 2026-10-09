@@ -2,8 +2,9 @@
 
 > Refreshed 2026-10-09 (P3): this text previously described 0.1.2 / schema 0003 and
 > must not have been approved in that state. The exact hosted private-beta approval
-> payload (host, region, cost ceiling, teardown, dry-run checklist) is Foundry
-> package P4 and will live under `deploy/`; until then this remains a draft.
+> payload (host, region, cost ceiling, teardown, dry-run checklist) is
+> [`deploy/PRIVATE_BETA_APPROVAL.md`](../deploy/PRIVATE_BETA_APPROVAL.md) (P4,
+> 2026-10-09), also NOT AUTHORIZED. Where the two differ, that file is current.
 
 Authorization: **NOT AUTHORIZED**. This is a concrete technical proposal for later exact approval, not a deployment instruction to execute now. No provider account, public hosting resource, domain, send or payment is authorized here. Q07 separately authorizes the private source repository and included-allowance Actions; that authorization does not approve this deployment.
 

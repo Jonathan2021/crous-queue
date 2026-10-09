@@ -1,0 +1,30 @@
+# DRAFT, NOT AUTHORIZED (deploy/PRIVATE_BETA_APPROVAL.md). Replace placeholders on
+# the host only; run `caddy validate` before use. Do not use proxy basic auth: the
+# app's admin API already uses the Authorization header for its bearer token.
+beta.REPLACE-WITH-EXISTING-OPERATOR-DOMAIN {
+	encode gzip
+
+	# Invite link handed out in person: sets an HttpOnly cookie, then redirects home.
+	@invite path /invite/REPLACE_WITH_RANDOM_INVITE_CODE
+	handle @invite {
+		header Set-Cookie "cq_invite=REPLACE_WITH_RANDOM_INVITE_CODE; Path=/; Max-Age=2592000; Secure; HttpOnly; SameSite=Lax"
+		redir / 302
+	}
+
+	# Everyone else gets a plain refusal (invite-only private beta).
+	@uninvited not header Cookie *cq_invite=REPLACE_WITH_RANDOM_INVITE_CODE*
+	respond @uninvited "Bêta privée sur invitation." 403
+
+	# Moderation only from the operator's current public IP (plus the app's bearer token).
+	@admin_elsewhere {
+		path /admin /admin/*
+		not remote_ip REPLACE_WITH_OPERATOR_PUBLIC_IP
+	}
+	respond @admin_elsewhere 404
+
+	# The app trusts X-Forwarded-For only from 127.0.0.1 and reads the rightmost
+	# untrusted hop, so a client-supplied prefix cannot choose its bucket (ADR-0009).
+	reverse_proxy 127.0.0.1:8000
+
+	# No `log` directive: access logs (IPs, query strings) are not written.
+}

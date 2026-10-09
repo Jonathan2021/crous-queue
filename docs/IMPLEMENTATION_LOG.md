@@ -149,3 +149,16 @@ slugs unchanged as query values); footer "relevé le 07/10/2026" computed from t
 retained directory, home count computed rather than hard-coded, and an "Annuaire
 ancien" banner beyond 30 days; one date format (DD/MM/YYYY) in hours text;
 meal/seat counts say "appareils", matching P3. Browser test at 390px.
+
+## P4 — hosted private-beta approval payload (2026-10-09)
+
+Foundry work `d6baa01f`. Document only; nothing provisioned, bought or sent.
+`deploy/PRIVATE_BETA_APPROVAL.md` names the build (0.2.1 wheel sha256 `bafceb5b…`
+from run 37970042546), Scaleway DEV1-S in fr-par-1 (list price €0.00898/h before
+tax, read 2026-10-09; IPv4/storage prices unknown), a €25/month ceiling with a
+€20 quote stop, at most 21 days, invite-cookie access, retention, moderation duty,
+secrets, rollback, teardown and a dry-run checklist, plus the human inputs needed.
+While drafting it, proxy basic auth turned out to collide with the admin bearer
+token, so access uses an invite cookie and an operator-IP rule for `/admin`. New
+operator-run `scripts/verify_postgresql.py` passed against a disposable local
+PostgreSQL 18.6 cluster (deleted afterwards). Production config draft validated.

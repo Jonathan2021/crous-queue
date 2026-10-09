@@ -1,0 +1,21 @@
+# DRAFT, NOT AUTHORIZED (deploy/PRIVATE_BETA_APPROVAL.md).
+[Unit]
+Description=Crous Queue private beta (loopback only, behind Caddy)
+After=network-online.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+User=crous-queue
+Group=crous-queue
+WorkingDirectory=/var/lib/crous-queue
+EnvironmentFile=/etc/crous-queue/production.env
+ExecStart=/opt/crous-queue/venv/bin/crous-queue serve
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/crous-queue
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
