@@ -15,6 +15,7 @@ from crous_queue.services.pilot_records import (
     FrictionObservation,
     PilotPlan,
     ScheduledCheck,
+    data_mode,
     store_id,
     summarize,
 )
@@ -111,9 +112,7 @@ def main() -> None:
             engine = make_engine(settings.database_url)
             value = PilotPlan(
                 environment=settings.environment,
-                data_mode="synthetic"
-                if settings.environment in {"test", "demo"}
-                else "real",
+                data_mode=data_mode(settings.environment),
                 store_id=store_id(engine),
                 pilot_id="pilot_" + uuid4().hex,
                 days=[date.fromisoformat(day) for day in args.days.split(",")],

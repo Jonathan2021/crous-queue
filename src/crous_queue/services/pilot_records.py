@@ -28,6 +28,11 @@ TIMES = ("11:45", "12:15", "12:45", "13:15")
 PARIS = ZoneInfo("Europe/Paris")
 
 
+def data_mode(environment: str) -> Literal["synthetic", "real"]:
+    """Only demo/test stores are synthetic; any other store holds real records."""
+    return "synthetic" if environment in {"demo", "test"} else "real"
+
+
 class Provenance(BaseModel):
     model_config = ConfigDict(extra="forbid")
     schema_version: Literal[2] = 2
@@ -37,9 +42,7 @@ class Provenance(BaseModel):
 
     @model_validator(mode="after")
     def consistent_mode(self) -> "Provenance":
-        if self.data_mode != (
-            "synthetic" if self.environment in {"demo", "test"} else "real"
-        ):
+        if self.data_mode != data_mode(self.environment):
             raise ValueError("Environment and synthetic/real provenance disagree.")
         return self
 
