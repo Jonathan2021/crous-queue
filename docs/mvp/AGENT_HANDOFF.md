@@ -3,8 +3,8 @@
 Prepared 2026-10-07. Current scope: Find a university restaurant and see or report a recent wait in seconds, with unknown/stale states that cannot be confused with zero waiting.
 
 Repository: `/home/jonathan/startup_lab/crous-queue`. Venture `f0b5abfe-0274-42f7-9c9a-72dcbe68c116`; workspace `81ee3117-de70-411e-9856-07420859ffad`.
-First ready work: `6b65e124-c511-4506-8258-f7774bed8498`. That ID is a starting reference; current
-Foundry state wins if a later accepted decision changes the queue.
+Package history (Q01–Q11) is in `ROADMAP.md` and `docs/IMPLEMENTATION_LOG.md`;
+`resume` shows the current next work.
 
 ## Start
 
@@ -103,13 +103,7 @@ not clutter another venture's decision map. Coordinator review is via Foundry
 Now/unreviewed evidence and `agent resume --venture-id v-foundry`. Triage recurring
 issues into bounded work, with explicit accepted/deferred/rejected rationale.
 
-## First package
-
-Q01 — Import and search the national directory
-
-Build strict importer from 26 declared feeds using the retained normalized snapshot and small XML fixtures. Save provenance, separate source fields and safe display fields.
-
-Acceptance: 972-row observed snapshot imports idempotently; Cuvier/Châtelet IDs resolve; coordinate duplicates remain distinct; malformed/failed region preserves last-good data; hostile CDATA is not executable.
+## Package rules
 
 Do not claim the app is built because its specification or synthetic fixture passes.
 Only add current-package tests. Keep real user trial gates distinct from build gates.
