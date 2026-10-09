@@ -16,7 +16,7 @@ from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from crous_queue.models import OfficialHours, Venue
-from crous_queue.services.directory import REGIONS, folded, plain_text
+from crous_queue.services.directory import REGIONS, bounded_get, folded, plain_text
 
 MAPPINGS = {
     "paris:r177": ("https://www.crous-paris.fr/restaurant/ru-cuvier/", "RU Cuvier"),
@@ -126,33 +126,22 @@ class HTTPHoursProvider:
     def fetch(self, venue_id: str) -> HoursDocument:
         if venue_id not in MAPPINGS:
             raise ValueError("No reviewed official website mapping for this venue ID.")
-        url = MAPPINGS[venue_id][0]
         # Redirect bound is zero; an operator must review any moved mapping.
-        with httpx.Client(
-            timeout=10,
-            follow_redirects=False,
-            trust_env=False,
+        body, headers = bounded_get(
+            MAPPINGS[venue_id][0],
+            MAX_BYTES,
+            "Official page exceeds 500 KB; last-good schedule retained.",
+            headers={"User-Agent": "CrousQueue/official-hours-local"},
             transport=self.transport,
-        ) as client:
-            with client.stream(
-                "GET", url, headers={"User-Agent": "CrousQueue/official-hours-local"}
-            ) as response:
-                response.raise_for_status()
-                body = bytearray()
-                for chunk in response.iter_bytes():
-                    body.extend(chunk)
-                    if len(body) > MAX_BYTES:
-                        raise ValueError(
-                            "Official page exceeds 500 KB; last-good schedule retained."
-                        )
-                modified = response.headers.get("last-modified")
-                try:
-                    timestamp = parsedate_to_datetime(modified) if modified else None
-                    if timestamp and timestamp.tzinfo is None:
-                        timestamp = None
-                except ValueError:
-                    timestamp = None
-                return HoursDocument(bytes(body), timestamp)
+        )
+        modified = headers.get("last-modified")
+        try:
+            timestamp = parsedate_to_datetime(modified) if modified else None
+            if timestamp and timestamp.tzinfo is None:
+                timestamp = None
+        except ValueError:
+            timestamp = None
+        return HoursDocument(body, timestamp)
 
 
 def website_schedule(

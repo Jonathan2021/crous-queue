@@ -147,3 +147,25 @@ def test_daily_closure_badge_overrides_weekly_service(application):
         "Du lundi au vendredi de 11h30 a 14h00 et de 18h00 a 20h00"
     )
     assert schedule.weekly["0"] == [("11:30", "14:00"), ("18:00", "20:00")]
+
+
+def test_official_page_request_and_last_modified_provenance():
+    requests = []
+
+    def provider(last_modified):
+        headers = {} if last_modified is None else {"Last-Modified": last_modified}
+
+        def respond(request):
+            requests.append(request)
+            return httpx.Response(200, content=HTML, headers=headers)
+
+        return HTTPHoursProvider(transport=httpx.MockTransport(respond))
+
+    document = provider("Wed, 07 Oct 2026 08:00:00 GMT").fetch("paris:r177")
+    assert document.payload == HTML
+    assert document.source_timestamp == datetime(2026, 10, 7, 8, tzinfo=UTC)
+    assert str(requests[0].url) == "https://www.crous-paris.fr/restaurant/ru-cuvier/"
+    assert requests[0].headers["user-agent"] == "CrousQueue/official-hours-local"
+    # Naive (-0000), malformed or absent dates are not invented as source times.
+    for value in ["Wed, 07 Oct 2026 08:00:00 -0000", "not a date", None]:
+        assert provider(value).fetch("paris:r177").source_timestamp is None

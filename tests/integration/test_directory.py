@@ -1,3 +1,4 @@
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -7,8 +8,10 @@ from crous_queue.app import create_app
 from crous_queue.config import Settings
 from crous_queue.models import Coverage, Venue
 from crous_queue.services.directory import (
+    ALLOWLIST,
     DirectoryImporter,
     FixtureProvider,
+    HTTPDirectoryProvider,
     parse_feed,
     plain_text,
     venue_query,
@@ -130,3 +133,33 @@ def test_one_search_definition_backs_api_pages_and_map(application):
         assert all(f"/v/{venue_id}" in page for venue_id in api)
         restaurants = client.get("/map-data", params={"q": "Cuvier"}).json()
         assert [v["id"] for v in restaurants["items"]] == ["paris:r177"]
+
+
+def test_http_feed_provider_is_bounded_allowlisted_and_never_redirected(engine):
+    feed = (ROOT / "fixtures/xml/paris.xml").read_bytes()
+    seen = []
+
+    def respond(request):
+        seen.append(str(request.url))
+        if "/feed/paris/" in request.url.path:
+            return httpx.Response(200, content=feed)
+        if "/feed/lyon/" in request.url.path:
+            return httpx.Response(302, headers={"Location": "http://127.0.0.1/"})
+        return httpx.Response(200, content=b"x" * 2_000_001)
+
+    provider = HTTPDirectoryProvider(transport=httpx.MockTransport(respond))
+    assert provider.fetch("paris") == feed
+    with pytest.raises(httpx.HTTPStatusError):
+        provider.fetch("lyon")
+    with pytest.raises(ValueError, match="2 MB"):
+        provider.fetch("nice")
+    with pytest.raises(KeyError):
+        provider.fetch("not-a-region")
+    assert seen == [ALLOWLIST["paris"], ALLOWLIST["lyon"], ALLOWLIST["nice"]]
+    importer = DirectoryImporter(engine, lambda: NOW)
+    importer.import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
+    assert importer.refresh(provider, regions=["paris", "lyon", "nice"]) == {
+        "paris": "good",
+        "lyon": "stale",
+        "nice": "stale",
+    }
