@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -13,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-BRIDGE_VERSION = "2026-10-08.1"
+BRIDGE_VERSION = "2026-10-09.1"
 
 
 def write_new(path: Path, value: dict[str, Any]) -> None:
@@ -104,6 +105,94 @@ def submit(
         return invoke(config, *args, "--input", str(path))
 
 
+def subject_args(config: dict[str, Any]) -> tuple[str, str]:
+    """Select by workspace ID, else by venture ID or alias (contract 2026-10-09.1)."""
+    if config.get("workspace_id"):
+        return ("--workspace-id", config["workspace_id"])
+    if config.get("venture_id"):
+        return ("--id", config["venture_id"])
+    raise ValueError("project.json needs workspace_id or venture_id")
+
+
+def resume_state(config: dict[str, Any]) -> dict[str, Any]:
+    return invoke(config, "agent", "resume", *subject_args(config), "--format", "json")
+
+
+def git_value(repository: Path, *args: str) -> str | None:
+    """Read local Git metadata only; never fetch or contact a remote."""
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(repository), *args],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    value = completed.stdout.strip()
+    return value if completed.returncode == 0 and value else None
+
+
+def recorded_delivery(state: dict[str, Any]) -> dict[str, Any] | None:
+    delivery = state.get("latest_delivery")
+    if isinstance(delivery, dict) and delivery.get("sha"):
+        return delivery
+    # Older Foundry: parse accepted results in the resume listing.
+    pattern = re.compile(
+        r"\bmain=([0-9a-f]{7,40})\b|\bsha[ \t:=]+([0-9a-f]{7,40})\b", re.I
+    )
+    for item in state.get("results", []):
+        if item.get("state") != "accept":
+            continue
+        proposal = item.get("proposal", {})
+        texts = [proposal.get("summary", ""), proposal.get("rationale", "")]
+        for finding in proposal.get("findings", []):
+            texts += [finding.get("summary", ""), finding.get("details", "")]
+        found = [a or b for a, b in pattern.findall("\n".join(texts))]
+        if found:
+            return {
+                "sha": found[-1].lower(),
+                "source_kind": "result",
+                "source_id": item.get("id"),
+            }
+    return None
+
+
+def repository_drift(
+    config: dict[str, Any], config_path: Path, state: dict[str, Any] | None
+) -> dict[str, Any]:
+    """Compare local HEAD/origin/main with the last delivery recorded in Foundry."""
+    repository = Path(config.get("repository") or config_path.parent.parent)
+    head = git_value(repository, "rev-parse", "HEAD")
+    origin = git_value(
+        repository, "rev-parse", "--verify", "--quiet", "refs/remotes/origin/main"
+    )
+    delivery = recorded_delivery(state) if state is not None else None
+    sha = delivery["sha"] if delivery else None
+
+    def same(commit: str | None) -> bool:
+        return bool(commit and sha and commit.lower().startswith(sha))
+
+    moved = bool(sha) and any(
+        commit is not None and not same(commit) for commit in (head, origin)
+    )
+    return {
+        "path": str(repository),
+        "head": head,
+        "origin_main": origin,
+        "origin_main_note": "local remote-tracking ref; the bridge never fetches",
+        "recorded_delivery": delivery,
+        "moved_past_delivery": moved,
+        "warning": "repository moved past the last recorded delivery "
+        f"(main={sha}); record the new delivery as "
+        "`Delivery: main=<sha> ci=<run id>` in a result finding"
+        if moved
+        else None
+        if sha
+        else "no delivery recorded in Foundry; use `Delivery: main=<sha> ci=<run id>`",
+    }
+
+
 def start_work(
     config: dict[str, Any],
     actor: str,
@@ -111,11 +200,12 @@ def start_work(
     budget: int,
     *,
     resume_owned: bool = False,
+    observed: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    workspace = config["workspace_id"]
-    state = invoke(
-        config, "agent", "resume", "--workspace-id", workspace, "--format", "json"
-    )
+    state = resume_state(config)
+    if observed is not None:
+        observed.update(state)
+    workspace = config.get("workspace_id") or state["workspace_id"]
     review = state.get("current_review") or {}
     selected = work_id or review.get("next_work_item_id")
     work = next((w for w in state["work"] if w["id"] == selected), None)
@@ -213,10 +303,9 @@ def send_feedback(config: dict[str, Any], report: dict[str, Any]) -> dict[str, A
         raise ValueError(
             "Feedback is missing: " + ", ".join(sorted(required - report.keys()))
         )
-    if (
-        report["venture_id"] != config["venture_id"]
-        or report["workspace_id"] != config["workspace_id"]
-    ):
+    if report["venture_id"] != config["venture_id"] or report[
+        "workspace_id"
+    ] != config.get("workspace_id"):
         raise ValueError("Feedback belongs to another project; use its configuration")
     if report["kind"] not in {"bug", "friction", "idea", "positive"}:
         raise ValueError("Feedback kind must be bug, friction, idea or positive")
@@ -259,8 +348,14 @@ def main() -> int:
     )
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("resume")
-    commands.add_parser(
-        "doctor", help="Check bridge, public contract and store configuration"
+    doctor = commands.add_parser(
+        "doctor",
+        help="Check bridge, contract, configuration and repository drift",
+    )
+    doctor.add_argument(
+        "--offline",
+        action="store_true",
+        help="Do not read the store; skip the recorded-delivery comparison",
     )
     command = commands.add_parser(
         "cli", help="Use the configured public CLI; start with: cli agent guide"
@@ -276,7 +371,22 @@ def main() -> int:
         "feedback", help="Retain and send one sanitized feedback report"
     )
     feedback.add_argument("--input", required=True)
-    args = parser.parse_args()
+    argv = sys.argv[1:]
+    # Everything after `cli` belongs to Foundry, including --help.
+    split = next(
+        (
+            i
+            for i, value in enumerate(argv)
+            if value == "cli"
+            and (i == 0 or argv[i - 1] not in {"--config", "--timeout-seconds"})
+        ),
+        None,
+    )
+    if split is not None:
+        args = parser.parse_args(argv[: split + 1])
+        args.arguments = argv[split + 1 :]
+    else:
+        args = parser.parse_args(argv)
     try:
         config_path = Path(args.config).resolve()
         config = json.loads(config_path.read_text())
@@ -300,7 +410,7 @@ def main() -> int:
                 ),
                 "kit_sha256": kit_hash,
                 "manifest_hash_matches": config.get("kit_sha256") == kit_hash,
-                "workspace_id": config["workspace_id"],
+                "workspace_id": config.get("workspace_id"),
                 "venture_id": config["venture_id"],
                 "configured_cli": argv,
                 "timeout_seconds": command_timeout(config),
@@ -308,30 +418,36 @@ def main() -> int:
                     arg == "--store" or arg.startswith("--store=") for arg in argv
                 ),
                 "database_opened": False,
-                "next_check": "Run resume to verify workspace records; "
-                "doctor checks configuration only",
+                "next_check": "Run resume to verify workspace records",
             }
+            state = None
+            if not args.offline:
+                try:
+                    state = resume_state(config)
+                    result["database_opened"] = True
+                except (OSError, ValueError, RuntimeError) as exc:
+                    result["store_error"] = str(exc)[-500:]
+            result["repository"] = repository_drift(config, config_path, state)
         elif args.command == "resume":
-            result = invoke(
-                config,
-                "agent",
-                "resume",
-                "--workspace-id",
-                config["workspace_id"],
-                "--format",
-                "json",
-            )
+            result = resume_state(config)
+            result["repository"] = repository_drift(config, config_path, result)
         elif args.command == "start":
+            observed: dict[str, Any] = {}
             result = start_work(
                 config,
                 args.actor,
                 args.work_id,
                 args.budget_bytes,
                 resume_owned=args.resume_owned,
+                observed=observed,
             )
             path = config_path.parent / "runs" / (result["id"] + ".json")
             write_new(path, result)
-            result = {"saved_context": str(path), **result}
+            result = {
+                "saved_context": str(path),
+                "repository": repository_drift(config, config_path, observed),
+                **result,
+            }
         elif args.command == "feedback-template":
             result = {
                 key: "Describe " + key
@@ -348,7 +464,7 @@ def main() -> int:
             result.update(
                 id=str(uuid4()),
                 venture_id=config["venture_id"],
-                workspace_id=config["workspace_id"],
+                workspace_id=config.get("workspace_id"),
                 kind="friction",
                 sources=[],
             )
@@ -372,6 +488,9 @@ def main() -> int:
             if not receipt.exists():
                 write_new(receipt, result)
             result = {"feedback_file": str(destination), "receipt": result}
+        drift = result.get("repository") if isinstance(result, dict) else None
+        if isinstance(drift, dict) and drift.get("moved_past_delivery"):
+            print("Foundry bridge warning: " + drift["warning"], file=sys.stderr)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
     except (
