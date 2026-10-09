@@ -11,7 +11,7 @@ from uuid import uuid4
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy import Engine, select
+from sqlalchemy import Engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.middleware.base import RequestResponseEndpoint
@@ -27,7 +27,7 @@ from crous_queue.contracts import VenueType, VenueView
 from crous_queue.db import make_engine
 from crous_queue.models import Venue
 from crous_queue.security import COOKIE, coarse_ip_hash, device_session
-from crous_queue.services.directory import folded
+from crous_queue.services.directory import venue_query
 from crous_queue.services.maintenance import purge
 from crous_queue.services.waits import DomainError
 
@@ -216,17 +216,11 @@ def create_app(
         offset: Annotated[int, Query(ge=0)] = 0,
     ) -> dict[str, object]:
         with Session(engine) as db:
-            query = select(Venue)
-            if q:
-                query = query.where(
-                    Venue.search_text.contains(folded(q), autoescape=True)
-                )
-            if region:
-                query = query.where(Venue.region == region)
-            if type != "all":
-                query = query.where(Venue.venue_type == type)
             items = db.scalars(
-                query.order_by(Venue.name, Venue.id).offset(offset).limit(51)
+                venue_query(q, region, type)
+                .order_by(Venue.name, Venue.id)
+                .offset(offset)
+                .limit(51)
             ).all()
             return {
                 "items": [VenueView.model_validate(item) for item in items[:50]],

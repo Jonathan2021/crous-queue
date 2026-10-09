@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 from crous_queue.contracts import VenueType
 from crous_queue.models import Coverage, Venue
-from crous_queue.services.directory import REGIONS, folded
+from crous_queue.services.directory import REGIONS, venue_query
 from crous_queue.services.hours import HoursState, hours_state
 from crous_queue.services.waits import queues_for
 
@@ -35,13 +35,7 @@ def home(
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Response:
     with Session(request.app.state.engine) as db:
-        query = select(Venue)
-        if q:
-            query = query.where(Venue.search_text.contains(folded(q), autoescape=True))
-        if region:
-            query = query.where(Venue.region == region)
-        if type != "all":
-            query = query.where(Venue.venue_type == type)
+        query = venue_query(q, region, type)
         total = db.scalar(select(func.count()).select_from(query.subquery())) or 0
         venues = db.scalars(
             query.order_by(Venue.name, Venue.id).offset(offset).limit(24)

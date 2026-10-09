@@ -14,7 +14,7 @@ from typing import Any, Protocol
 
 import httpx
 from defusedxml import ElementTree
-from sqlalchemy import Engine
+from sqlalchemy import Engine, Select, select
 from sqlalchemy.orm import Session
 
 from crous_queue.models import Coverage, Venue
@@ -89,6 +89,20 @@ def folded(value: str) -> str:
         for c in unicodedata.normalize("NFKD", value.lower())
         if not unicodedata.combining(c)
     )
+
+
+def venue_query(
+    q: str = "", region: str = "", venue_type: str = "all"
+) -> Select[tuple[Venue]]:
+    """Shared directory search: folded literal substring, exact region, type unless "all"."""
+    query = select(Venue)
+    if q:
+        query = query.where(Venue.search_text.contains(folded(q), autoescape=True))
+    if region:
+        query = query.where(Venue.region == region)
+    if venue_type != "all":
+        query = query.where(Venue.venue_type == venue_type)
+    return query
 
 
 @dataclass(frozen=True)

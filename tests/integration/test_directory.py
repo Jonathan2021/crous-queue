@@ -11,6 +11,7 @@ from crous_queue.services.directory import (
     FixtureProvider,
     parse_feed,
     plain_text,
+    venue_query,
 )
 from tests.conftest import NOW, ROOT
 
@@ -102,3 +103,30 @@ def test_catalog_attribute_shape_and_plain_infos():
     assert "personnels" in rows[0].access
     assert "11h30" in rows[0].hours
     assert rows[0].address == "4 place Jussieu"
+
+
+def test_one_search_definition_backs_api_pages_and_map(application):
+    app, _ = application
+    with Session(app.state.engine) as db:
+
+        def ids(**filters):
+            return {v.id for v in db.scalars(venue_query(**filters))}
+
+        assert len(ids()) == 972
+        assert "paris:r175" in ids(q="CHÂTELET")  # case and accents are folded
+        assert ids(q="Cuvier") == {"paris:r177", "paris:r889"}
+        assert ids(q="Cuvier", venue_type="restaurant") == {"paris:r177"}
+        assert ids(q="%") == set()  # user text is a literal, never a LIKE pattern
+        lyon = ids(region="lyon")
+        assert lyon and all(venue_id.startswith("lyon:") for venue_id in lyon)
+    with TestClient(app) as client:
+        params = {"q": "Cuvier", "type": "all"}
+        api = {v["id"] for v in client.get("/venues", params=params).json()["items"]}
+        mapped = {
+            v["id"] for v in client.get("/map-data", params=params).json()["items"]
+        }
+        page = client.get("/", params=params).text
+        assert api == mapped == {"paris:r177", "paris:r889"}
+        assert all(f"/v/{venue_id}" in page for venue_id in api)
+        restaurants = client.get("/map-data", params={"q": "Cuvier"}).json()
+        assert [v["id"] for v in restaurants["items"]] == ["paris:r177"]
