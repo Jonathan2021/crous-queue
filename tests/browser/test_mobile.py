@@ -1,13 +1,10 @@
-import os
-from uuid import uuid4
-
 from playwright.sync_api import expect
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
+from tests.browser.support import evidence
 from tests.browser.worker import wait_for_worker_control
-from tests.conftest import ROOT
 
 
 def select_cuvier(page, origin):
@@ -31,10 +28,7 @@ def test_mobile_three_taps_favorites_expiry_offline(browser_page, engine):
     expect(page.locator("#wait-detail")).to_contain_text("non confirmé")
     page.get_by_role("button", name="Ajouter aux favoris").click()
     page.screenshot(
-        path=str(
-            ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-mobile.png"
-        ),
+        path=evidence("mobile"),
         full_page=True,
     )
     page.reload()
@@ -78,10 +72,7 @@ def test_lost_response_retry_does_not_duplicate(browser_page, engine):
     page.set_viewport_size({"width": 1440, "height": 1000})
     page.goto(origin + "/")
     page.screenshot(
-        path=str(
-            ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-desktop.png"
-        ),
+        path=evidence("desktop"),
         full_page=True,
     )
 
@@ -121,10 +112,7 @@ def test_flag_and_admin_hide_in_browser(browser_page):
     page.get_by_role("button", name="Masquer", exact=True).click()
     expect(page.locator("#admin-status")).to_contain_text("Signalement masqué")
     page.screenshot(
-        path=str(
-            ROOT
-            / f"docs/evidence/{os.getenv('CQ_EVIDENCE_PREFIX', 'run-' + uuid4().hex[:8])}-admin.png"
-        ),
+        path=evidence("admin"),
         full_page=True,
     )
     page.goto(origin + "/v/paris:r177")

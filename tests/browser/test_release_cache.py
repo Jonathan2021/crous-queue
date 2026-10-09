@@ -1,15 +1,10 @@
 """Real worker + changed disposable assets: retain no application data."""
 
-import os
 import shutil
-import socket
-import subprocess
-import sys
-import time
 
-import httpx
 from playwright.sync_api import expect, sync_playwright
 
+from tests.browser.support import free_origin, server_env, start_server
 from tests.browser.worker import wait_for_worker_control
 from tests.conftest import ROOT
 
@@ -35,49 +30,13 @@ def create_app():
         return Response(source,media_type='application/javascript',headers={'Service-Worker-Allowed':'/'})
     return app
 """)
-    with socket.socket() as sock:
-        sock.bind(("127.0.0.1", 0))
-        port = sock.getsockname()[1]
-    origin = f"http://127.0.0.1:{port}"
-    env = {
-        **os.environ,
-        "CQ_ENVIRONMENT": "test",
-        "CQ_DATABASE_URL": str(engine.url),
-        "CQ_SESSION_SECRET": "a" * 40,
-        "CQ_IP_SECRET": "b" * 40,
-        "CQ_ADMIN_TOKEN": "c" * 40,
-        "CQ_ORIGIN": origin,
-    }
+    origin = free_origin()
+    env = server_env(str(engine.url), origin)
 
     def start():
-        process = subprocess.Popen(
-            [
-                sys.executable,
-                "-m",
-                "uvicorn",
-                "release_app:create_app",
-                "--factory",
-                "--app-dir",
-                str(tmp_path),
-                "--host",
-                "127.0.0.1",
-                "--port",
-                str(port),
-                "--no-access-log",
-            ],
-            env=env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+        return start_server(
+            "release_app:create_app", origin, env, app_dir=str(tmp_path)
         )
-        for _ in range(100):
-            try:
-                if httpx.get(origin + "/health").status_code == 200:
-                    return process
-            except httpx.TransportError:
-                time.sleep(0.05)
-        process.terminate()
-        process.wait(timeout=10)
-        raise RuntimeError("Disposable release server did not start.")
 
     process = start()
     try:

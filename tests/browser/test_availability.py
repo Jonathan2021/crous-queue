@@ -1,11 +1,11 @@
 from datetime import UTC, datetime, timedelta
-from uuid import uuid4
 
 from playwright.sync_api import expect
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
+from tests.browser.support import evidence
 
 
 def submit_shortage(page, origin):
@@ -43,7 +43,7 @@ def test_availability_comment_review_expiry_and_recovery(browser_page, engine):
     page.goto(origin + "/v/paris:r177")
     expect(page.locator("#comments")).to_contain_text("réassort")
     page.screenshot(
-        path=f"docs/evidence/q10-20261008-b72e/availability-mobile-{uuid4().hex[:8]}.png",
+        path=evidence("availability-mobile"),
         full_page=True,
     )
     # Advance retained synthetic observations, not production app clock/API.
@@ -76,7 +76,7 @@ def test_availability_comment_review_expiry_and_recovery(browser_page, engine):
     )
     page.set_viewport_size({"width": 1440, "height": 1000})
     page.screenshot(
-        path=f"docs/evidence/q10-20261008-b72e/availability-desktop-{uuid4().hex[:8]}.png",
+        path=evidence("availability-desktop"),
         full_page=True,
     )
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
