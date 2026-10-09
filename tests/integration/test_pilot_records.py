@@ -1,6 +1,10 @@
+import argparse
+import csv
 import os
 import subprocess
 import sys
+
+import pytest
 
 from crous_queue.config import Settings
 from crous_queue.services.demo import seed_demo
@@ -109,3 +113,24 @@ def test_disposable_five_lunch_rehearsal_and_demo_recovery():
         result["demo_restore_and_exact_expiry"] == "passed"
         and result["other_store_reports"] == 0
     )
+
+
+def test_blank_pilot_sheets_stay_local_and_are_never_reset(tmp_path, monkeypatch):
+    from scripts.pilot_records import local_path, prepare_blanks
+
+    monkeypatch.chdir(tmp_path)
+    for outside in ["records.jsonl", ".local/../records.jsonl", "/tmp/records"]:
+        with pytest.raises(argparse.ArgumentTypeError):
+            local_path(outside)
+    folder = local_path(".local/pilot-blank")
+    prepare_blanks(folder)
+    with (folder / "fixed-checks.csv").open() as stream:
+        header, *rows = list(csv.reader(stream))
+    assert len(rows) == 40  # 5 days x 4 fixed times x 2 selected sites
+    assert len({(row[2], row[4]) for row in rows}) == 40
+    # Nothing is pre-filled: an unperformed check must stay visibly missing.
+    assert all(row[1] == "" and row[6:] == [""] * 5 for row in rows)
+    original = {path.name: path.read_bytes() for path in folder.iterdir()}
+    with pytest.raises(FileExistsError):
+        prepare_blanks(folder)
+    assert {path.name: path.read_bytes() for path in folder.iterdir()} == original
