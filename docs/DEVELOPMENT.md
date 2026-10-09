@@ -8,7 +8,7 @@ Start from the source kit/private repository with Python 3.13, uv 0.11.29 and ma
 | `config.py`, `configuration.py` | Explicit profile/secret validation; non-overwriting private development/demo files |
 | `db.py`, `models.py`, `migrations/` | UTC persistence, SQLite transaction serialization, schema/model invariants and explicit versioned migrations |
 | `distribution.py`, `resources/` | Installed migration/snapshot resolution; dated attributed directory, independently of caller cwd |
-| `services/directory.py` | Replaceable provider protocol; bounded allowlist/XML parser/plain-text import; retain last-good failed region |
+| `services/directory.py` | Replaceable provider protocol; bounded allowlist/XML parser/plain-text import; retain last-good failed region; the one venue search query (`venue_query`) and no-redirect bounded fetch (`bounded_get`) shared with hours |
 | `services/waits.py` | Injected UTC clock; idempotency, throttles, timer ownership and honest aggregation; DB authorization boundary |
 | `services/moderation.py`, `maintenance.py` | Admin versioned hide audit/enum flags, scoped aggregate diagnostics, exact deletion and isolated recovery |
 | `services/pilot*.py` | Aggregate provenance-bound scheduled measurements; fixed denominator, missingness, scoped repeat-device proxy and separate friction |

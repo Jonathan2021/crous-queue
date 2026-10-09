@@ -5,9 +5,11 @@ import pytest
 from crous_queue.services.pilot_records import (
     FrictionObservation,
     PilotPlan,
+    Provenance,
     ScheduledCheck,
     Snapshot,
     append_record,
+    data_mode,
     summarize,
 )
 
@@ -124,3 +126,11 @@ def test_duplicate_wrong_day_and_mixed_trials_rejected(tmp_path):
     with pytest.raises(ValueError, match="Legacy"):
         append_record(legacy, record.snapshot)
     assert legacy.read_text() == '{"environment":"test"}\n'
+
+
+def test_only_demo_and_test_stores_may_claim_synthetic_provenance():
+    assert [data_mode(env) for env in ["demo", "test"]] == ["synthetic"] * 2
+    assert [data_mode(env) for env in ["development", "production"]] == ["real"] * 2
+    for environment, mode in [("production", "synthetic"), ("demo", "real")]:
+        with pytest.raises(ValueError, match="provenance disagree"):
+            Provenance(environment=environment, data_mode=mode, store_id="a" * 64)

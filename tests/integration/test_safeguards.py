@@ -1,8 +1,10 @@
+import stat
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 from threading import Barrier
 from uuid import uuid4
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -10,10 +12,8 @@ from sqlalchemy.orm import Session
 from crous_queue.db import make_engine
 from crous_queue.models import ModerationAudit, RateBucket, ReportFlag, WaitReport
 from crous_queue.services.maintenance import backup_sqlite, purge, restore_sqlite
-from tests.conftest import NOW
-from tests.integration.test_reports import HEADERS, report
-
-ADMIN = {**HEADERS, "Authorization": "Bearer " + "z" * 40}
+from tests.conftest import ADMIN, HEADERS, NOW
+from tests.integration.test_reports import report
 
 
 def test_concurrent_duplicate_and_conflicting_hide(application, engine):
@@ -134,8 +134,6 @@ def test_exact_retention_backup_restore(application, engine, tmp_path):
     restore_sqlite(backup, target, environment="test")
     with Session(make_engine(f"sqlite:///{target}")) as db:
         assert db.get(WaitReport, second) is not None
-    import pytest
-
     with pytest.raises(ValueError):
         restore_sqlite(backup, target, environment="test")
     with pytest.raises(ValueError):
@@ -180,3 +178,25 @@ def test_bounds_origin_and_redacted_request_logs(application, caplog):
         and "attacker.test" not in caplog.text
     )
     assert '"route"' in caplog.text and '"status"' in caplog.text
+
+
+def test_backup_restore_refuse_unsafe_sources_overwrites_and_tampering(
+    engine, tmp_path
+):
+    for url in ["postgresql+psycopg://app@db/crous", "sqlite:///:memory:"]:
+        with pytest.raises(ValueError, match="SQLite file required"):
+            backup_sqlite(url, tmp_path / "test-x.db", environment="test")
+    missing = f"sqlite:///{tmp_path / 'test-absent.db'}"
+    with pytest.raises(ValueError, match="no files are overwritten"):
+        backup_sqlite(missing, tmp_path / "test-y.db", environment="test")
+    backup = tmp_path / "test-backup.db"
+    backup_sqlite(str(engine.url), backup, environment="test")
+    manifest = tmp_path / "test-backup.db.json"
+    for path in [backup, manifest]:
+        assert stat.S_IMODE(path.stat().st_mode) == 0o600
+    with pytest.raises(ValueError, match="matching environment"):
+        restore_sqlite(backup, tmp_path / "demo-restored.db", environment="demo")
+    backup.write_bytes(backup.read_bytes() + b"tampered")
+    with pytest.raises(ValueError, match="checksum"):
+        restore_sqlite(backup, tmp_path / "test-restored.db", environment="test")
+    assert not (tmp_path / "test-restored.db").exists()

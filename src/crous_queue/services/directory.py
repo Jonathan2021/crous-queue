@@ -14,7 +14,7 @@ from typing import Any, Protocol
 
 import httpx
 from defusedxml import ElementTree
-from sqlalchemy import Engine
+from sqlalchemy import Engine, Select, select
 from sqlalchemy.orm import Session
 
 from crous_queue.models import Coverage, Venue
@@ -89,6 +89,20 @@ def folded(value: str) -> str:
         for c in unicodedata.normalize("NFKD", value.lower())
         if not unicodedata.combining(c)
     )
+
+
+def venue_query(
+    q: str = "", region: str = "", venue_type: str = "all"
+) -> Select[tuple[Venue]]:
+    """Shared directory search: folded literal substring, exact region, type unless "all"."""
+    query = select(Venue)
+    if q:
+        query = query.where(Venue.search_text.contains(folded(q), autoescape=True))
+    if region:
+        query = query.where(Venue.region == region)
+    if venue_type != "all":
+        query = query.where(Venue.venue_type == venue_type)
+    return query
 
 
 @dataclass(frozen=True)
@@ -199,21 +213,40 @@ class FixtureProvider:
         return self.payloads[region]
 
 
+def bounded_get(
+    url: str,
+    limit: int,
+    too_large: str,
+    *,
+    headers: dict[str, str] | None = None,
+    transport: httpx.BaseTransport | None = None,
+) -> tuple[bytes, httpx.Headers]:
+    """Fetch one fixed public URL; never follow redirects or environment proxies."""
+    with httpx.Client(
+        timeout=10, follow_redirects=False, trust_env=False, transport=transport
+    ) as client:
+        with client.stream("GET", url, headers=headers) as response:
+            response.raise_for_status()
+            body = bytearray()
+            for chunk in response.iter_bytes():
+                body.extend(chunk)
+                if len(body) > limit:
+                    raise ValueError(too_large)
+            return bytes(body), response.headers
+
+
 class HTTPDirectoryProvider:
+    def __init__(self, *, transport: httpx.BaseTransport | None = None) -> None:
+        self.transport = transport
+
     def fetch(self, region: str) -> bytes:
-        url = ALLOWLIST[region]
-        # No redirects, environment proxies or embedded links; fixed public host only.
-        with httpx.Client(
-            timeout=10, follow_redirects=False, trust_env=False
-        ) as client:
-            with client.stream("GET", url) as response:
-                response.raise_for_status()
-                body = bytearray()
-                for chunk in response.iter_bytes():
-                    body.extend(chunk)
-                    if len(body) > MAX_BYTES:
-                        raise ValueError("Regional feed exceeds 2 MB.")
-                return bytes(body)
+        # Embedded links are never fetched; only the catalog-declared feed URL.
+        return bounded_get(
+            ALLOWLIST[region],
+            MAX_BYTES,
+            "Regional feed exceeds 2 MB.",
+            transport=self.transport,
+        )[0]
 
 
 class DirectoryImporter:

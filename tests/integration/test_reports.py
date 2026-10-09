@@ -7,9 +7,7 @@ from sqlalchemy.orm import Session
 
 from crous_queue.app import create_app
 from crous_queue.models import WaitReport
-from tests.conftest import NOW
-
-HEADERS = {"X-CQ-Request": "1"}
+from tests.conftest import HEADERS, NOW
 
 
 def report(

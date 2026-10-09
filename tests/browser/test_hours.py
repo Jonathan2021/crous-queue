@@ -1,9 +1,9 @@
 from datetime import UTC, datetime
-from uuid import uuid4
 
 from playwright.sync_api import expect
 
 from crous_queue.services.hours import FixtureHoursProvider, HoursImporter
+from tests.browser.support import evidence
 from tests.integration.test_hours import HTML
 
 
@@ -22,12 +22,12 @@ def test_hours_inline_and_identity(browser_page, engine):
     expect(page.locator(".official-hours")).to_contain_text("Dernier relevé")
     expect(page.locator("#wait-value")).to_have_text("Aucun signalement récent")
     page.screenshot(
-        path=f"docs/evidence/q08-20261008-b72e/hours-mobile-{uuid4().hex[:8]}.png",
+        path=evidence("hours-mobile"),
         full_page=True,
     )
     page.set_viewport_size({"width": 1440, "height": 1000})
     page.screenshot(
-        path=f"docs/evidence/q08-20261008-b72e/hours-desktop-{uuid4().hex[:8]}.png",
+        path=evidence("hours-desktop"),
         full_page=True,
     )
 

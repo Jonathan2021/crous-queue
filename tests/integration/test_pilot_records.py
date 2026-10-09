@@ -1,31 +1,27 @@
+import argparse
+import csv
 import os
 import subprocess
 import sys
 
-from alembic import command
-from alembic.config import Config
+import pytest
 
 from crous_queue.config import Settings
 from crous_queue.services.demo import seed_demo
 from crous_queue.services.directory import DirectoryImporter
-from tests.conftest import NOW, ROOT
+from tests.conftest import NOW, ROOT, SNAPSHOT, migrated
 
 
 def test_pilot_logger_cannot_mix_demo_and_other_store(engine, tmp_path):
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
     demo = tmp_path / "demo-pilot.db"
-    config = Config(str(ROOT / "alembic.ini"))
-    config.set_main_option("sqlalchemy.url", f"sqlite:///{demo}")
-    command.upgrade(config, "head")
     settings = Settings(
         environment="demo",
-        database_url=f"sqlite:///{demo}",
+        database_url=migrated(demo),
         session_secret="a" * 40,
         ip_secret="b" * 40,
     )
-    seed_demo(settings, ROOT / "fixtures/venues-2026-10-07.json", lambda: NOW)
+    seed_demo(settings, SNAPSHOT, lambda: NOW)
     output = tmp_path / ".local/checks.jsonl"
 
     def run(environment, url):
@@ -66,9 +62,7 @@ def test_only_selected_sites_count_as_returning_devices(engine):
     from crous_queue.services.pilot import pilot_check
     from crous_queue.services.waits import WaitService
 
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
     current = [NOW]
     for day in range(2):
         current[0] = NOW + timedelta(days=day)
@@ -119,3 +113,24 @@ def test_disposable_five_lunch_rehearsal_and_demo_recovery():
         result["demo_restore_and_exact_expiry"] == "passed"
         and result["other_store_reports"] == 0
     )
+
+
+def test_blank_pilot_sheets_stay_local_and_are_never_reset(tmp_path, monkeypatch):
+    from scripts.pilot_records import local_path, prepare_blanks
+
+    monkeypatch.chdir(tmp_path)
+    for outside in ["records.jsonl", ".local/../records.jsonl", "/tmp/records"]:
+        with pytest.raises(argparse.ArgumentTypeError):
+            local_path(outside)
+    folder = local_path(".local/pilot-blank")
+    prepare_blanks(folder)
+    with (folder / "fixed-checks.csv").open() as stream:
+        header, *rows = list(csv.reader(stream))
+    assert len(rows) == 40  # 5 days x 4 fixed times x 2 selected sites
+    assert len({(row[2], row[4]) for row in rows}) == 40
+    # Nothing is pre-filled: an unperformed check must stay visibly missing.
+    assert all(row[1] == "" and row[6:] == [""] * 5 for row in rows)
+    original = {path.name: path.read_bytes() for path in folder.iterdir()}
+    with pytest.raises(FileExistsError):
+        prepare_blanks(folder)
+    assert {path.name: path.read_bytes() for path in folder.iterdir()} == original

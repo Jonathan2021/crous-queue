@@ -6,6 +6,7 @@ from playwright.sync_api import expect
 from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
+from tests.browser.support import evidence
 
 
 def seed(engine, venue, minutes, queue="student"):
@@ -55,9 +56,7 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
     busy = page.locator('.crowd-marker[data-band="busy"]')
     expect(busy).to_have_count(1)
     expect(busy).to_have_text("40")
-    page.locator("#venue-map").screenshot(
-        path=f"docs/evidence/q09-20261008-b72e/map-paris-{uuid4().hex[:8]}.png"
-    )
+    page.locator("#venue-map").screenshot(path=evidence("map-paris"))
     page.get_by_role("button", name="Autour de moi").click()
     expect(page.locator("#location-status")).to_contain_text("refusée")
     page.get_by_label("Ville, campus ou restaurant").fill("Cuvier")
@@ -74,15 +73,13 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
     expect(cafeteria).to_have_class("crowd-segment crowd-unknown")
     expect(cafeteria).to_have_text("?")
     expect(marker).to_have_attribute("aria-label", re.compile(r"RU Cuvier, 0 min"))
-    page.locator("#venue-map").screenshot(
-        path=f"docs/evidence/q09-20261008-b72e/map-shared-{uuid4().hex[:8]}.png"
-    )
+    page.locator("#venue-map").screenshot(path=evidence("map-shared"))
     marker.focus()
     page.keyboard.press("Enter")
     expect(page.locator(".map-popup a")).to_have_count(2)
     expect(page.locator(".map-popup")).to_contain_text("Cafétéria Cuvier")
     page.screenshot(
-        path=f"docs/evidence/q09-20261008-b72e/map-mobile-{uuid4().hex[:8]}.png",
+        path=evidence("map-mobile"),
         full_page=True,
     )
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -103,7 +100,7 @@ def test_map_parity_coincident_location_denial_expiry_failed_tiles(
     page.locator("#venue-map").focus()
     page.keyboard.press("ArrowRight")
     page.screenshot(
-        path=f"docs/evidence/q09-20261008-b72e/map-desktop-{uuid4().hex[:8]}.png",
+        path=evidence("map-desktop"),
         full_page=True,
     )
     page.get_by_label("Ville, campus ou restaurant").fill("no-such-place-000")

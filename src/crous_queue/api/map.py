@@ -11,7 +11,7 @@ from starlette.responses import Response
 from crous_queue.api.pages import TYPE_LABELS, templates
 from crous_queue.contracts import VenueType
 from crous_queue.models import Venue, WaitReport
-from crous_queue.services.directory import REGIONS, folded
+from crous_queue.services.directory import REGIONS, venue_query
 from crous_queue.services.hours import hours_state
 from crous_queue.services.waits import aggregate, queues_for
 
@@ -41,14 +41,9 @@ def map_data(
 ) -> dict[str, object]:
     now = request.app.state.clock()
     with Session(request.app.state.engine) as db:
-        query = select(Venue)
-        if q:
-            query = query.where(Venue.search_text.contains(folded(q), autoescape=True))
-        if region:
-            query = query.where(Venue.region == region)
-        if type != "all":
-            query = query.where(Venue.venue_type == type)
-        venues = db.scalars(query.order_by(Venue.name, Venue.id).limit(2001)).all()
+        venues = db.scalars(
+            venue_query(q, region, type).order_by(Venue.name, Venue.id).limit(2001)
+        ).all()
         by_venue: dict[str, list[WaitReport]] = {}
         reports = db.scalars(
             select(WaitReport).where(

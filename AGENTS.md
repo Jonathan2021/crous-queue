@@ -2,12 +2,13 @@
 
 Read `/home/jonathan/startup_lab/AGENTS.md`, then this file and `docs/mvp/AGENT_HANDOFF.md`. This is product implementation, not a learner slice.
 
-- Product scope and constraints: `docs/mvp/DECISION.md` and `ARCHITECTURE.md`; work order: `ROADMAP.md`. Do not silently widen scope.
+- Product scope and constraints: `docs/mvp/DECISION.md` and `docs/mvp/ARCHITECTURE.md`; work order: `docs/mvp/ROADMAP.md`. Do not silently widen scope.
 - Resume Foundry and claim only the next eligible package before editing. Never use live application data as a fixture. Keep immutable results and exact test evidence.
-- Use explicit Python interfaces, typed inputs, migrations, deterministic tests and actionable errors. Write current-package acceptance first; label red specification tests versus green regressions.
+- Write current-package acceptance first; label red specification tests versus green regressions. Gates: `make check`, `make test-browser`; CI also builds and verifies both distributions (`docs/RELEASE.md`).
+- Schema changes are new revisions in `src/crous_queue/migrations/versions`; never edit earlier ones. Root `alembic/` and `fixtures/venues-2026-10-07.json` are retained historical copies (ADR-0005), not the active schema or shipped snapshot.
 - Keep this app independently runnable. Foundry is coordination tooling via CLI, never a runtime import. Do not change other venture repositories as a side effect.
 - No real sends, payments, external provider account creation, public hosting, cloud provisioning, Git pushes or irreversible actions without exact authorization. Local fake providers and synthetic data are expected.
-- No credentials, personal traces, databases or generated environments in Git. Preserve unrelated/staged changes. Local Git repository exists; do not commit/push unless asked.
+- No credentials, personal traces, databases or generated environments in Git. Preserve unrelated/staged changes. Do not commit/push unless asked.
 - At each checkpoint report evidence/unknowns and Foundry friction using `tools/foundry_agent.py`. Do not wait for a perfect platform; retain feedback locally if Foundry is unavailable and continue independent work only when ownership is already established.
 - If a needed decision is missing, record a bounded blocker with alternatives and continue independent accepted work. Never pretend synthetic tests validate demand or physical advice.
 
@@ -58,5 +59,3 @@ A receipt means recorded, not fixed. For failed delivery, retry the identical
 outbox file with `feedback --input feedback/<UUID>.json`; use a new template/UUID
 for a different report. Continue independent work during an outage only when its
 ownership and scope are already established; reconcile on reconnection.
-
-Foundry is coordination tooling, not an application runtime dependency.

@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from fastapi.testclient import TestClient
 
+from tests.conftest import HEADERS
+
 
 def test_map_data_same_waits_identity_no_location_input(application):
     app, clock = application
@@ -21,7 +23,7 @@ def test_map_data_same_waits_identity_no_location_input(application):
             idempotency_key="map-zero-001",
         )
         response = client.post(
-            "/venues/paris:r177/reports", json=payload, headers={"X-CQ-Request": "1"}
+            "/venues/paris:r177/reports", json=payload, headers=HEADERS
         )
         assert response.status_code == 201
         row = next(

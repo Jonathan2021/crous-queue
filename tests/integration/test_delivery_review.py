@@ -38,7 +38,8 @@ def test_zero_coordinates_and_overseas_missing_coverage(application):
 
 
 def test_hidden_report_comment_can_be_deleted_but_never_approved(application):
-    from tests.integration.test_availability import ADMIN, post
+    from tests.conftest import ADMIN
+    from tests.integration.test_availability import post
 
     app, clock = application
     with TestClient(app) as client:

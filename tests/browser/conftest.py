@@ -1,65 +1,29 @@
-import os
-import socket
-import subprocess
-import sys
-import time
-
-import httpx
 import pytest
 from playwright.sync_api import sync_playwright
 
 from crous_queue.services.directory import DirectoryImporter
-from tests.conftest import NOW, ROOT
+from tests.browser.support import free_origin, server_env, start_server
+from tests.conftest import NOW, SNAPSHOT
 
 
 @pytest.fixture
 def browser_page(engine, tmp_path, request):
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
-    with socket.socket() as sock:
-        sock.bind(("127.0.0.1", 0))
-        port = sock.getsockname()[1]
-    origin = f"http://127.0.0.1:{port}"
-    env = {
-        **os.environ,
-        "CQ_ENVIRONMENT": "test",
-        "CQ_DATABASE_URL": str(engine.url),
-        "CQ_SESSION_SECRET": "a" * 40,
-        "CQ_IP_SECRET": "b" * 40,
-        "CQ_ADMIN_TOKEN": "c" * 40,
-        "CQ_ORIGIN": origin,
-    }
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
+    origin = free_origin()
     with (tmp_path / "server.log").open("w") as log:
-        process = subprocess.Popen(
-            [
-                sys.executable,
-                "-m",
-                "uvicorn",
-                "crous_queue.app:create_app",
-                "--factory",
-                "--host",
-                "127.0.0.1",
-                "--port",
-                str(port),
-                "--no-access-log",
-            ],
-            env=env,
-            stdout=log,
-            stderr=log,
-        )
         try:
-            for _ in range(100):
-                try:
-                    if httpx.get(origin + "/health").status_code == 200:
-                        break
-                except httpx.TransportError:
-                    time.sleep(0.05)
-            else:
-                pytest.fail(
-                    "Local browser server failed to start: "
-                    + (tmp_path / "server.log").read_text()
-                )
+            process = start_server(
+                "crous_queue.app:create_app",
+                origin,
+                server_env(str(engine.url), origin),
+                log=log,
+            )
+        except RuntimeError:
+            pytest.fail(
+                "Local browser server failed to start: "
+                + (tmp_path / "server.log").read_text()
+            )
+        try:
             with sync_playwright() as p:
                 browser = p.chromium.launch()
                 context = browser.new_context(
