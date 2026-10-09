@@ -1,0 +1,18 @@
+{
+  "actor": "implementer-crous-20261009",
+  "summary": "decision-map revise that only adds a gate question and cancels one legacy item marks every other current work item (including the reviser's own in_progress claim) as needs_review and blocked, requiring a second 'keep' revision; it also stales the reviser's saved context.",
+  "expected": "Adding a question node/edges, changing focus and cancelling one named legacy item (dbbfbb3d) should leave unrelated current work (P3 in_progress by the same actor, P4/P5 todo, P6 blocked) claimable and not in needs_review, or the CLI should say up front which work needs explicit keep treatment.",
+  "actual": "After revision 252496e4, resume showed 'Blocked: Decision review required: <full map rationale repeated>' on P3, P4, P5 and P6 and needs_review listed all four. Clearing it took a second revise (7318ce7b) with identical map content and four 'keep' work_treatments carrying the current versions (3,2,2,2), which bumped every work version again. The P3 saved context 41cb0530 (map 5a9efd49, work v2) is now stale against map 7318ce7b / work v4, so the package needs fresh context before submitting.",
+  "reproduction": "In crous-queue: python3 tools/foundry_agent.py cli decision-map revise --workspace-id 81ee3117-de70-411e-9856-07420859ffad --input .foundry/runs/p3-map.json (adds question node five_lunch_coverage_gate, edges, focus, cancel dbbfbb3d v3), then resume. Then revise again with .foundry/runs/p3-map-keep.json.",
+  "impact": "Two revisions and four version bumps for one hygiene change; the full rationale is repeated per item in resume (noisy); an agent following the brief literally (pin expected_head from saved context) would submit a stale result.",
+  "suggestion": "Have revise accept a default treatment ('keep unmentioned current work') or compute needs_review only for work whose map node/edges changed; print the list of work needing treatment in the revise response; truncate repeated rationale in resume.",
+  "id": "ab89b18a-8302-4f4c-9104-8a7e44b420cb",
+  "venture_id": "f0b5abfe-0274-42f7-9c9a-72dcbe68c116",
+  "workspace_id": "81ee3117-de70-411e-9856-07420859ffad",
+  "kind": "friction",
+  "sources": [
+    "document: .foundry/runs/p3-map.json",
+    "document: .foundry/runs/p3-map-keep.json",
+    "document: docs/evidence/p3-20261009/"
+  ]
+}
