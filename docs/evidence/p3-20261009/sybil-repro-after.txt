@@ -1,0 +1,5 @@
+# P3 reproduction after repair, 2026-10-09 (working tree on cfd094c + P3 changes, version 0.2.1)
+# Fresh scratch copy of .local/development.db migrated to 0007 in the agent scratchpad (real DB untouched); same script; defaults: CQ_NETWORK_ESTIMATE_CAP=2, CQ_TRUSTED_PROXIES empty
+post_status [201, 201, 201, 201, 201, 201]
+waits {"state": "recent", "minutes": 120.0, "count": 2, "range": [120, 120], "sources": 1, "excluded": 4}
+# Writes are still accepted (NAT tolerance); only 2 of the 6 count; sources=1 network; excluded=4.

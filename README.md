@@ -1,6 +1,6 @@
 # Crous Queue
 
-Local MVP **0.2.0**: find a university restaurant and see or report a recent wait, with unknown/stale states that cannot be confused with zero waiting. French responsive PWA, national search, local favorites, anonymous signed sessions, estimates, own wait timer, moderation and private operations. Source-linked official hours, a nearby crowding map, independent meal/seating observations and moderated short comments now implement the root remarks. **No public deployment or real-user demand/accuracy validation.**
+Local MVP **0.2.1**: find a university restaurant and see or report a recent wait, with unknown/stale states that cannot be confused with zero waiting. French responsive PWA, national search, local favorites, anonymous signed sessions, estimates, own wait timer, moderation and private operations. Source-linked official hours, a nearby crowding map, independent meal/seating observations and moderated short comments now implement the root remarks. **No public deployment or real-user demand/accuracy validation.**
 
 ## Run locally
 
@@ -16,6 +16,8 @@ make serve
 Open **http://127.0.0.1:8000**. `make install` creates independent random secrets in an ignored 0600 `.env`; it never overwrites an existing file. The development DB is ignored `.local/development.db`. Imports contain directory data only: 972 identities observed on 2026-10-07 across 26 regions. Every venue initially has unknown waiting time. Opening/access coverage is incomplete. Run `uv run --locked crous-queue refresh-hours` explicitly to refresh the two mapped official Paris pages (RU Cuvier and RU Châtelet); other venues use feed hours only when interpretable. Status becomes unknown after the local date changes or refresh fails. No page-view scraping. Search defaults to restaurant types; cafés, administrative and other venues are available in filters. No signup or location permission.
 
 At Cuvier select **Signaler une attente → 10 min → Confirmer**. Estimates expire at exactly 15 minutes; zero is a real contribution. Conflicting values show a range. Completed personal waits are separate observations. One contribution per device/venue per 2 minutes; retries reuse their original key and cannot add a vote. Corrupt/expired sessions require reloading.
+
+**Abuse model, honestly:** a new cookie is a new "device", so the app cannot count people. At most two live estimates per coarse network (same Wi-Fi/NAT, IPv4 /24) count toward the displayed value; the page says "N appareils · K réseaux" and how many same-network reports were not counted. This limits repeats and bursts from one network, **not identities**: someone with several networks can still add several votes. Behind a reverse proxy set `CQ_TRUSTED_PROXIES`; by default forwarding headers are ignored. See [ADR-0009](docs/adr/0009-network-budget-and-trusted-proxy.md).
 
 ## Separate synthetic demo
 

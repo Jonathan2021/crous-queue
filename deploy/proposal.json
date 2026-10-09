@@ -1,7 +1,7 @@
 {
   "status": "draft_not_authorized",
-  "application_version": "0.1.2",
-  "schema_head": "0003",
+  "application_version": "0.2.1",
+  "schema_head": "0007",
   "host_provider_account": null,
   "region": null,
   "public_origin": null,

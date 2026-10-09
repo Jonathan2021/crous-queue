@@ -1,0 +1,20 @@
+$ uv run --locked pytest tests/integration/test_abuse.py tests/unit/test_client_address.py -q  (HEAD cfd094c, before implementation)
+>           assert db.scalar(select(WaitReport.network_hash)) is not None
+                                    ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: type object 'WaitReport' has no attribute 'network_hash'
+
+tests/integration/test_abuse.py:176: AttributeError
+=========================== short test summary info ============================
+FAILED tests/integration/test_abuse.py::test_six_fresh_cookies_from_one_network_cannot_fake_consensus
+FAILED tests/integration/test_abuse.py::test_network_cap_is_configurable_and_distinct_networks_all_count
+FAILED tests/integration/test_abuse.py::test_admin_bulk_hide_by_network_bucket_frees_its_budget
+FAILED tests/integration/test_abuse.py::test_hourly_network_ceiling_is_configurable
+FAILED tests/integration/test_abuse.py::test_forwarded_headers_are_ignored_by_default
+FAILED tests/integration/test_abuse.py::test_trusted_proxy_restores_distinct_client_networks
+FAILED tests/integration/test_abuse.py::test_rfc7239_forwarded_header_when_selected
+FAILED tests/integration/test_abuse.py::test_network_identifier_is_dropped_within_24_hours
+8 failed in 5.45s
+=========================== short test summary info ============================
+ERROR tests/unit/test_client_address.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.14s

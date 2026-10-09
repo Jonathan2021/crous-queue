@@ -122,3 +122,18 @@ attributed interruption rationale and reclaimed by `crous-queue-remarks-83413533
 Independent review found that co-located venues (152 of them, including RU Cuvier)
 could never show a crowding color on the map; segmented per-venue markers and a
 CSS specificity repair fix it. Evidence: `docs/evidence/q11c-20261008-8341`.
+
+## P3 — cookie-churn budget and trusted proxy (2026-10-09)
+
+Foundry work `92380c5c`, actor `implementer-crous-20261009`, narrowed venture (no
+feature expansion). Reproduced first on a scratch copy of the development database:
+six fresh cookies from one script → six 201s and `recent, 120 min, count 6`
+(`docs/evidence/p3-20261009/sybil-repro-before.txt`). Red specification tests
+(`spec-red.txt`: 8 integration failures, unit import error) preceded the change.
+Version 0.2.1 / migration 0007: per-network counting budget (default 2) for waits
+and meal/seat observations, `count`/`sources`/`excluded` semantics and "N appareils ·
+K réseaux" wording, trusted-proxy resolution (default none), configurable network
+hourly ceiling, admin bulk-hide by network bucket, 24-hour network-key retention
+(ADR-0009). After repair the same script yields six 201s and `count 2, sources 1,
+excluded 4` (`sybil-repro-after.txt`). Limits repeats and bursts from one network,
+not identities. Gate outputs: `check.txt`, `browser.txt`.

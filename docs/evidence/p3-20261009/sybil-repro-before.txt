@@ -1,0 +1,4 @@
+# P3 reproduction before repair, 2026-10-09, HEAD cfd094c
+# Scratch copy of .local/development.db migrated 0003->0006 in the agent scratchpad (real DB untouched); app on 127.0.0.1:18091; script: six fresh cookie jars, one host, POST 120 min for paris:r177
+post_status [201, 201, 201, 201, 201, 201]
+waits {"state": "recent", "minutes": 120.0, "count": 6, "range": [120, 120], "sources": null, "excluded": null}

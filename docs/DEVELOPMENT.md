@@ -1,4 +1,4 @@
-# Developer entry point — 0.2.0
+# Developer entry point — 0.2.1
 
 Start from the source kit/private repository with Python 3.13, uv 0.11.29 and make. `make install` checks `uv.lock` against the manifest, installs dev dependencies and creates private configuration if absent. `make migrate`, `uv run --locked crous-queue import-directory`, `make serve` starts the independent loopback app. No Foundry installation is needed. `make check` runs Ruff/format/strict mypy/core acceptance; `uv run --locked playwright install --with-deps chromium` then `make test-browser` exercises real browser flows.
 
@@ -9,7 +9,8 @@ Start from the source kit/private repository with Python 3.13, uv 0.11.29 and ma
 | `db.py`, `models.py`, `migrations/` | UTC persistence, SQLite transaction serialization, schema/model invariants and explicit versioned migrations |
 | `distribution.py`, `resources/` | Installed migration/snapshot resolution; dated attributed directory, independently of caller cwd |
 | `services/directory.py` | Replaceable provider protocol; bounded allowlist/XML parser/plain-text import; retain last-good failed region; the one venue search query (`venue_query`) and no-redirect bounded fetch (`bounded_get`) shared with hours |
-| `services/waits.py` | Injected UTC clock; idempotency, throttles, timer ownership and honest aggregation; DB authorization boundary |
+| `services/waits.py` | Injected UTC clock; idempotency, throttles, timer ownership and honest aggregation with per-network counting budget (ADR-0009); DB authorization boundary |
+| `network.py` | Trusted-proxy client address resolution (rightmost untrusted hop of one configured header) |
 | `services/moderation.py`, `maintenance.py` | Admin versioned hide audit/enum flags, scoped aggregate diagnostics, exact deletion and isolated recovery |
 | `services/pilot*.py` | Aggregate provenance-bound scheduled measurements; fixed denominator, missingness, scoped repeat-device proxy and separate friction |
 | `templates/`, `static/` | French server-rendered pages; small same-origin JS; local favorites/retries and content-versioned offline shell |

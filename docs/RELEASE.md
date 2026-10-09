@@ -1,6 +1,6 @@
-# Supported local release — 0.2.0
+# Supported local release — 0.2.1
 
-Complete distributions: `crous_queue-0.2.0-py3-none-any.whl` **with runtime dependencies**, and `crous-queue-0.2.0-local.tar.gz` **full source kit**. Linux/Python 3.13 is the tested support target. The older 0.1.1 bare wheel cannot bootstrap; its dated evidence remains unchanged. No GitHub Release/PyPI/public package or deployment is created.
+Complete distributions: `crous_queue-0.2.1-py3-none-any.whl` **with runtime dependencies**, and `crous-queue-0.2.1-local.tar.gz` **full source kit**. Linux/Python 3.13 is the tested support target. The older 0.1.1 bare wheel cannot bootstrap; its dated evidence remains unchanged. No GitHub Release/PyPI/public package or deployment is created.
 
 ## Source kit or private checkout
 
@@ -42,6 +42,15 @@ For rollback, stop the app, install the previously verified wheel/dependency set
 
 `release-manifest.json` ties filenames, sizes and SHA-256 values to a build. The matching private Actions run and commit are recorded in [delivery report](mvp/REMARKS_DELIVERY.md)/Foundry. Artifact retention is seven days; builds can be reproduced from the private commit after expiry. This is local technical readiness, not real usefulness or PostgreSQL/public-concurrency validation.
 
+## 0.2.1 abuse budget and trusted proxy (2026-10-09)
+
+Migration `0007` adds a nullable, 24-hour network key to reports; existing reports
+keep a null key and each counts as its own source. Upgrade from 0.2.0 with the same
+stop → backup → `migrate` → `retain` sequence below. New optional settings:
+`CQ_TRUSTED_PROXIES`, `CQ_FORWARDED_HEADER`, `CQ_NETWORK_ESTIMATE_CAP` and
+`CQ_NETWORK_HOURLY_LIMIT` ([operations](OPERATIONS.md), ADR-0009). Defaults trust no
+proxy and count at most two live estimates per coarse network.
+
 ## Evolved 0.2.0 behavior and upgrade from 0.1.2
 
 This continuation adds source-linked opening status, nearby map/list and meal/seat
@@ -63,7 +72,7 @@ To reproduce the separate real-old-artifact check (all application data syntheti
 ```bash
 uv run --locked python scripts/verify_upgrade.py \
   --old-wheel /absolute/path/crous_queue-0.1.2-py3-none-any.whl \
-  --new-wheel dist/crous_queue-0.2.0-py3-none-any.whl \
+  --new-wheel dist/crous_queue-0.2.1-py3-none-any.whl \
   --requirements dist/runtime-requirements.txt
 ```
 
