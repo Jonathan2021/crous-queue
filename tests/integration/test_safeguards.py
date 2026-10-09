@@ -10,10 +10,8 @@ from sqlalchemy.orm import Session
 from crous_queue.db import make_engine
 from crous_queue.models import ModerationAudit, RateBucket, ReportFlag, WaitReport
 from crous_queue.services.maintenance import backup_sqlite, purge, restore_sqlite
-from tests.conftest import NOW
-from tests.integration.test_reports import HEADERS, report
-
-ADMIN = {**HEADERS, "Authorization": "Bearer " + "z" * 40}
+from tests.conftest import ADMIN, HEADERS, NOW
+from tests.integration.test_reports import report
 
 
 def test_concurrent_duplicate_and_conflicting_hide(application, engine):

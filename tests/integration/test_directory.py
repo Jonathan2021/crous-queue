@@ -16,13 +16,13 @@ from crous_queue.services.directory import (
     plain_text,
     venue_query,
 )
-from tests.conftest import NOW, ROOT
+from tests.conftest import NOW, ROOT, SNAPSHOT
 
 
 def test_observed_snapshot_idempotent_search_and_provenance(engine):
     importer = DirectoryImporter(engine, lambda: NOW)
-    importer.import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
-    importer.import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
+    importer.import_snapshot(SNAPSHOT)
+    importer.import_snapshot(SNAPSHOT)
     with Session(engine) as db:
         venues = db.scalars(select(Venue)).all()
         assert len(venues) == 972
@@ -60,7 +60,7 @@ def test_observed_snapshot_idempotent_search_and_provenance(engine):
 
 def test_failed_malformed_and_missing_feed_retain_last_good(engine):
     importer = DirectoryImporter(engine, lambda: NOW)
-    importer.import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
+    importer.import_snapshot(SNAPSHOT)
     bad = FixtureProvider({"paris": b"<broken", "lyon": b"<root/>"})
     results = importer.refresh(bad, regions=["paris", "lyon"])
     assert results == {"paris": "stale", "lyon": "stale"}
@@ -157,7 +157,7 @@ def test_http_feed_provider_is_bounded_allowlisted_and_never_redirected(engine):
         provider.fetch("not-a-region")
     assert seen == [ALLOWLIST["paris"], ALLOWLIST["lyon"], ALLOWLIST["nice"]]
     importer = DirectoryImporter(engine, lambda: NOW)
-    importer.import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
+    importer.import_snapshot(SNAPSHOT)
     assert importer.refresh(provider, regions=["paris", "lyon", "nice"]) == {
         "paris": "good",
         "lyon": "stale",

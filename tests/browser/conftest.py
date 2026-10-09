@@ -9,14 +9,12 @@ import pytest
 from playwright.sync_api import sync_playwright
 
 from crous_queue.services.directory import DirectoryImporter
-from tests.conftest import NOW, ROOT
+from tests.conftest import NOW, SNAPSHOT
 
 
 @pytest.fixture
 def browser_page(engine, tmp_path, request):
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]

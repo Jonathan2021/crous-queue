@@ -2,30 +2,22 @@ import os
 import subprocess
 import sys
 
-from alembic import command
-from alembic.config import Config
-
 from crous_queue.config import Settings
 from crous_queue.services.demo import seed_demo
 from crous_queue.services.directory import DirectoryImporter
-from tests.conftest import NOW, ROOT
+from tests.conftest import NOW, ROOT, SNAPSHOT, migrated
 
 
 def test_pilot_logger_cannot_mix_demo_and_other_store(engine, tmp_path):
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
     demo = tmp_path / "demo-pilot.db"
-    config = Config(str(ROOT / "alembic.ini"))
-    config.set_main_option("sqlalchemy.url", f"sqlite:///{demo}")
-    command.upgrade(config, "head")
     settings = Settings(
         environment="demo",
-        database_url=f"sqlite:///{demo}",
+        database_url=migrated(demo),
         session_secret="a" * 40,
         ip_secret="b" * 40,
     )
-    seed_demo(settings, ROOT / "fixtures/venues-2026-10-07.json", lambda: NOW)
+    seed_demo(settings, SNAPSHOT, lambda: NOW)
     output = tmp_path / ".local/checks.jsonl"
 
     def run(environment, url):
@@ -66,9 +58,7 @@ def test_only_selected_sites_count_as_returning_devices(engine):
     from crous_queue.services.pilot import pilot_check
     from crous_queue.services.waits import WaitService
 
-    DirectoryImporter(engine, lambda: NOW).import_snapshot(
-        ROOT / "fixtures/venues-2026-10-07.json"
-    )
+    DirectoryImporter(engine, lambda: NOW).import_snapshot(SNAPSHOT)
     current = [NOW]
     for day in range(2):
         current[0] = NOW + timedelta(days=day)

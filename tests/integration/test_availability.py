@@ -7,9 +7,7 @@ from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
 from crous_queue.services.maintenance import purge
-
-HEADERS = {"X-CQ-Request": "1"}
-ADMIN = {**HEADERS, "Authorization": "Bearer " + "z" * 40}
+from tests.conftest import ADMIN, HEADERS
 
 
 def post(client, clock, **fields):

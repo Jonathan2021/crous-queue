@@ -8,13 +8,13 @@ from hashlib import sha256
 from pathlib import Path
 
 from alembic import command
-from alembic.config import Config
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from crous_queue.config import Settings
 from crous_queue.contracts import ReportInput, TimerInput
 from crous_queue.db import make_engine
+from crous_queue.distribution import migration_configuration
 from crous_queue.models import WaitReport
 from crous_queue.security import Identity
 from crous_queue.services.demo import seed_demo
@@ -41,9 +41,8 @@ def rehearse() -> dict[str, object]:
 
         def migrate(name: str) -> str:
             url = f"sqlite:///{folder / name}"
-            config = Config(str(ROOT / "alembic.ini"))
-            config.set_main_option("sqlalchemy.url", url)
-            command.upgrade(config, "head")
+            with migration_configuration(url) as config:
+                command.upgrade(config, "head")
             DirectoryImporter(
                 make_engine(url), lambda: datetime(2026, 10, 12, tzinfo=UTC)
             ).import_snapshot(ROOT / "fixtures/venues-2026-10-07.json")
