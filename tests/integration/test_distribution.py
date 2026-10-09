@@ -41,10 +41,14 @@ def test_missing_package_or_operator_resources_have_actionable_errors(
 
 
 def test_manifest_drift_fails_locked_install_without_network(tmp_path):
+    import os
     import subprocess
 
     from tests.conftest import ROOT
 
+    # An inherited UV_PROJECT_ENVIRONMENT would sync the synthetic package into
+    # the caller's own environment; keep the throwaway project self-contained.
+    env = {k: v for k, v in os.environ.items() if k != "UV_PROJECT_ENVIRONMENT"}
     original = (ROOT / "pyproject.toml").read_text()
     (tmp_path / "pyproject.toml").write_text(original)
     (tmp_path / "uv.lock").write_bytes((ROOT / "uv.lock").read_bytes())
@@ -57,6 +61,7 @@ def test_manifest_drift_fails_locked_install_without_network(tmp_path):
     control = subprocess.run(
         ["uv", "sync", "--locked", "--offline"],
         cwd=tmp_path,
+        env=env,
         capture_output=True,
         text=True,
     )
@@ -67,6 +72,7 @@ def test_manifest_drift_fails_locked_install_without_network(tmp_path):
     result = subprocess.run(
         ["uv", "sync", "--locked", "--offline"],
         cwd=tmp_path,
+        env=env,
         capture_output=True,
         text=True,
     )
