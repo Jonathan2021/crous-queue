@@ -23,7 +23,7 @@ jobs:
       CQ_EVIDENCE_PREFIX: ci-${{ github.run_id }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version: '0.11.29'
           python-version: '3.13'
@@ -35,7 +35,7 @@ jobs:
       - name: Install explicit Chromium prerequisites
         run: uv run --locked playwright install --with-deps chromium
       - name: Actual mobile, retry, expiry, moderation and release-cache flows
-        run: uv run --locked pytest tests/browser
+        run: make test-browser
       - name: Build both supported distributions
         run: |
           mkdir -p dist
@@ -49,12 +49,12 @@ jobs:
       - name: Inspect distributions and emit checksums
         run: uv run --locked python scripts/release_manifest.py --output dist/release-manifest.json
       - name: Retain private artifacts briefly
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: crous-queue-${{ github.sha }}
           path: |
-            dist/crous_queue-0.2.0-py3-none-any.whl
-            dist/crous-queue-0.2.0-local.tar.gz
+            dist/crous_queue-*-py3-none-any.whl
+            dist/crous-queue-*-local.tar.gz
             dist/release-manifest.json
             dist/runtime-requirements.txt
             wheel-verification.json
