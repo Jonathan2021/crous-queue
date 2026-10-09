@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from starlette.responses import Response
 
-from crous_queue.api.pages import templates
+from crous_queue.api.pages import page_context, templates
 from crous_queue.api.waits import identity
 from crous_queue.contracts import (
     CommentModerationInput,
@@ -75,7 +75,7 @@ def admin_page(request: Request) -> Response:
     return templates.TemplateResponse(
         request=request,
         name="admin.html",
-        context={"environment": request.app.state.settings.environment},
+        context=page_context(request),
     )
 
 
@@ -84,7 +84,7 @@ def privacy(request: Request) -> Response:
     return templates.TemplateResponse(
         request=request,
         name="privacy.html",
-        context={"environment": request.app.state.settings.environment},
+        context=page_context(request),
     )
 
 

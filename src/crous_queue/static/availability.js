@@ -15,7 +15,7 @@
       const cohort=fresh.filter(o=>Date.parse(o.observed_at)>=newest-120000),values=new Set(cohort.map(o=>o.value));
       const kind=!navigator.onLine || !cohort.length?'unknown':values.size>1?'conflicting':[...values][0];
       box.querySelector('.dimension-value').textContent=names[kind];box.dataset.state=kind;
-      box.querySelector('.dimension-age').textContent=!navigator.onLine?'Hors ligne · non vérifié':!cohort.length?'Aucune observation récente':`${cohort.length} observation${cohort.length>1?'s':''} · il y a ${Math.max(0,Math.floor((instant-newest)/60000))} min · valable ${dimension==='seating'?5:10} min`;
+      box.querySelector('.dimension-age').textContent=!navigator.onLine?'Hors ligne · non vérifié':!cohort.length?'Aucune observation récente':`${cohort.length} appareil${cohort.length>1?'s':''} · il y a ${Math.max(0,Math.floor((instant-newest)/60000))} min · valable ${dimension==='seating'?5:10} min`;
     }
     const comments=navigator.onLine?data.comments.filter(c=>Date.parse(c.expires_at)>instant):[];
     const next=comments.map(c=>c.id).join(',');const list=document.querySelector('#comments');

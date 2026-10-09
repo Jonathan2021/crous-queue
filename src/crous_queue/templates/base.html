@@ -11,7 +11,9 @@
 <a href="#main" class="skip">Aller au contenu</a>
 <header class="header"><a href="/" class="brand"><span class="brand-icon" aria-hidden="true">q.</span>Crous Queue</a><nav aria-label="Navigation principale"><a href="/map">Carte</a><a href="/#favorites">Mes favoris <span aria-hidden="true">♡</span></a><a href="/privacy" class="nav-privacy">Confidentialité</a></nav></header>
 {% if environment == 'demo' %}<div class="demo-banner">DÉMO · Les attentes sont fictives. Aucune donnée du pilote réel.</div>{% endif %}
+{% set directory = directory or {"label": "non vérifié", "stale": False} %}
+{% if directory.stale %}<div class="directory-notice" role="note">{{ directory.notice }}</div>{% endif %}
 <main id="main">{% block content %}{% endblock %}</main>
-<footer><span>Crous Queue <span aria-hidden="true">·</span> Des signalements, pas des prédictions.</span><a href="/privacy">Vos données</a><span>Annuaire CNOUS / CROUS · Licence Ouverte</span></footer>
+<footer><span>Crous Queue <span aria-hidden="true">·</span> Des signalements, pas des prédictions.</span><a href="/privacy">Vos données</a><span>Annuaire CNOUS / CROUS {{ directory.label }} · Licence Ouverte</span></footer>
 <div id="network-status" class="network-status" role="status" hidden>Hors ligne · lecture seule. Les attentes récentes ne sont plus vérifiées.</div>
 </body></html>

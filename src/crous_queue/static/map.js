@@ -11,7 +11,7 @@
   function hoursText(v) {
     const h=v.hours,now=serverNow+performance.now()-received;
     if(!navigator.onLine || (h.expires_at && Date.parse(h.expires_at)<=now))return 'Ouverture aujourd’hui non vérifiée';
-    return `${h.today==='open'?'Ouvert aujourd’hui':h.today==='closed'?'Fermé aujourd’hui':'Ouverture aujourd’hui inconnue'} · ${h.local_date} · ${h.intervals.join(' / ') || 'horaires non renseignés'}${h.freshness==='stale'?' (historiques)':''} · ${h.timezone || 'fuseau inconnu'} · dernier relevé ${h.checked_at ? h.checked_at.slice(0,10) : 'inconnu'}. ${h.caveat}`;
+    return `${h.today==='open'?'Ouvert aujourd’hui':h.today==='closed'?'Fermé aujourd’hui':'Ouverture aujourd’hui inconnue'} · ${frDate(h.local_date)} · ${h.intervals.join(' / ') || 'horaires non renseignés'}${h.freshness==='stale'?' (anciens, non vérifiés)':h.freshness==='conflict'?' (sources divergentes)':''} · ${h.timezone || 'fuseau inconnu'} · dernier relevé ${h.checked_at ? frDate(h.checked_at) : 'inconnu'}. ${h.caveat}`;
   }
   function distance(v) {if(!v.has_coordinates)return ' · coordonnées indisponibles';if(!loc)return '';return ` · environ ${number(L.latLng(loc).distanceTo([v.latitude,v.longitude])/1000)} km`;}
   function card(v) {

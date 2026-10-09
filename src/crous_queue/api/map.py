@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from starlette.responses import Response
 
-from crous_queue.api.pages import TYPE_LABELS, templates
+from crous_queue.api.pages import TYPE_LABELS, page_context, templates
 from crous_queue.contracts import VenueType
 from crous_queue.models import Venue, WaitReport
 from crous_queue.services.directory import REGIONS, venue_query
@@ -23,8 +23,8 @@ def map_page(request: Request) -> Response:
     return templates.TemplateResponse(
         request=request,
         name="map.html",
-        context=dict(
-            environment=request.app.state.settings.environment,
+        context=page_context(
+            request,
             regions=REGIONS,
             types=TYPE_LABELS,
             map_tiles=request.app.state.settings.map_tiles,

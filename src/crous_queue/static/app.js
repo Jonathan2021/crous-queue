@@ -2,6 +2,7 @@
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const networkStatus = $('#network-status');
+const frDate = iso => iso ? iso.slice(0,10).split('-').reverse().join('/') : '';
 const number = value => new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(value);
 const stamp = date => new Intl.DateTimeFormat('fr-FR',{timeZone:document.querySelector('[data-timezone]')?.dataset.timezone || 'UTC',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
 const read = (storage,key,fallback) => {try {return JSON.parse(storage.getItem(key)) ?? fallback;} catch {return fallback;}};
@@ -155,11 +156,13 @@ async function refreshHours() {
     try {
       const h=await api(`/venues/${encodeURIComponent(box.dataset.hours)}/hours`);
       box.dataset.expiry=h.expires_at || '';
-      box.querySelector('.hours-status').textContent=`${h.today==='open'?'Ouvert aujourd’hui':h.today==='closed'?'Fermé aujourd’hui':'Ouverture aujourd’hui inconnue'} · ${h.local_date} · ${h.timezone || 'Fuseau inconnu'}`;
+      box.querySelector('.hours-status').textContent=`${h.today==='open'?'Ouvert aujourd’hui':h.today==='closed'?'Fermé aujourd’hui':'Ouverture aujourd’hui inconnue'} · ${frDate(h.local_date)} · ${h.timezone || 'fuseau inconnu'}`;
       box.querySelector('.hours-now').textContent=h.now==='open'?'Ouvert maintenant':h.now==='closed'?'Fermé maintenant':'Ouverture maintenant non vérifiée';
       const intervals=box.querySelector('.hours-intervals');
       intervals.hidden=!h.intervals.length;
-      intervals.textContent=`Service : ${h.intervals.join(' / ')}${h.freshness==='fresh'?'':' (horaire historique)'}`;
+      // No intervals: no "Service :" text at all, not just a hidden line.
+      const note=h.freshness==='fresh'?'':h.freshness==='stale'?' (horaire ancien, non vérifié)':h.freshness==='conflict'?' (sources divergentes)':' (non vérifié)';
+      intervals.textContent=h.intervals.length?`Service : ${h.intervals.join(' / ')}${note}`:'';
       box.querySelector('.hours-checked').textContent=h.checked_at?`Dernier relevé : ${new Date(h.checked_at).toLocaleString('fr-FR',{timeZone:'UTC',dateStyle:'short',timeStyle:'short'})} UTC · `:'';
       box.querySelector('a').href=h.official_url;
       box.querySelector('.hours-caveat').textContent=h.caveat;

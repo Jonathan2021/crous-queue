@@ -47,6 +47,41 @@ REGIONS = (
     "amiens",
     "aix.marseille",
 )
+# Display names for the regional CROUS feeds; slugs stay the stable query values.
+REGION_LABELS = {
+    "versailles": "Versailles",
+    "toulouse": "Toulouse",
+    "strasbourg": "Strasbourg",
+    "normandie": "Normandie",
+    "reunion": "La Réunion",
+    "rennes": "Rennes",
+    "reims": "Reims",
+    "poitiers": "Poitiers",
+    "paris": "Paris",
+    "orleans.tours": "Orléans-Tours",
+    "nice": "Nice",
+    "nantes": "Nantes",
+    "nancy.metz": "Nancy-Metz",
+    "montpellier": "Montpellier",
+    "lyon": "Lyon",
+    "limoges": "Limoges",
+    "lille": "Lille",
+    "grenoble": "Grenoble",
+    "bfc": "Bourgogne-Franche-Comté",
+    "creteil": "Créteil",
+    "corte": "Corse",
+    "clermont.ferrand": "Clermont-Ferrand",
+    "bordeaux": "Bordeaux",
+    "antilles.guyane": "Antilles-Guyane",
+    "amiens": "Amiens",
+    "aix.marseille": "Aix-Marseille",
+}
+
+
+def region_label(region: str) -> str:
+    return REGION_LABELS.get(region, region.replace(".", "-").title())
+
+
 ALLOWLIST = {
     region: f"http://webservices-v2.crous-mobile.fr/feed/{region}/externe/resto.xml"
     for region in REGIONS
