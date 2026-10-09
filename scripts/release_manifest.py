@@ -27,6 +27,8 @@ def main() -> None:
             for required in [
                 "migrations/env.py",
                 "migrations/versions/0006_hours_attempts.py",
+                "migrations/versions/0007_report_network.py",
+                "network.py",
                 "services/hours.py",
                 "services/availability.py",
                 "static/map.js",
@@ -47,7 +49,7 @@ def main() -> None:
                         and n.endswith(".py")
                     ]
                 )
-                == 6
+                == 7
             )
         else:
             with tarfile.open(path) as archive:
