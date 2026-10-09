@@ -6,7 +6,12 @@ from starlette.responses import Response
 
 from crous_queue.api.pages import templates
 from crous_queue.api.waits import identity
-from crous_queue.contracts import CommentModerationInput, FlagInput, HideInput
+from crous_queue.contracts import (
+    CommentModerationInput,
+    FlagInput,
+    HideInput,
+    NetworkHideInput,
+)
 from crous_queue.services.moderation import ModerationService
 
 router = APIRouter()
@@ -27,7 +32,11 @@ def require_admin(request: Request) -> None:
 
 
 def service(request: Request) -> ModerationService:
-    return ModerationService(request.app.state.engine, request.app.state.clock)
+    return ModerationService(
+        request.app.state.engine,
+        request.app.state.clock,
+        network_limit=request.app.state.settings.network_hourly_limit,
+    )
 
 
 @router.post("/reports/{report_id}/flags", status_code=201)
@@ -45,6 +54,15 @@ def reports(
 @router.post("/admin/reports/{report_id}/hide", dependencies=[Depends(require_admin)])
 def hide(report_id: str, payload: HideInput, request: Request) -> dict[str, object]:
     return service(request).hide(report_id, payload)
+
+
+@router.post(
+    "/admin/reports/{report_id}/hide-network", dependencies=[Depends(require_admin)]
+)
+def hide_network(
+    report_id: str, payload: NetworkHideInput, request: Request
+) -> dict[str, int]:
+    return service(request).hide_network(report_id, payload)
 
 
 @router.get("/admin/metrics", dependencies=[Depends(require_admin)])

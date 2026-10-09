@@ -1,6 +1,6 @@
 import json
 import math
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from statistics import median
@@ -40,19 +40,54 @@ def require_venue(db: Session, venue_id: str, queue: str) -> Venue:
     return venue
 
 
-def aggregate(reports: list[WaitReport], now: datetime) -> WaitState:
+DEFAULT_NETWORK_CAP = 2
+DEFAULT_NETWORK_HOURLY_LIMIT = 120
+
+
+def source_key(report: WaitReport) -> str:
+    # Reports from before migration 0007 or after the 24 h purge have no
+    # network key; each such device then counts as its own source.
+    return report.network_hash or "device:" + report.device_hash
+
+
+def network_budget[R](
+    reports: Sequence[R], cap: int, key: Callable[[R], str]
+) -> tuple[list[R], dict[str, str]]:
+    """Keep the newest ``cap`` reports per network; label sources s1, s2, ...
+
+    Input must already be one fresh visible report per device, newest first.
+    Labels are per-response ordinals, never network or device hashes.
+    """
+    used: dict[str, int] = {}
+    labels: dict[str, str] = {}
+    kept = []
+    for report in reports:
+        source = key(report)
+        if used.get(source, 0) >= cap:
+            continue
+        used[source] = used.get(source, 0) + 1
+        labels.setdefault(source, f"s{len(labels) + 1}")
+        kept.append(report)
+    return kept, labels
+
+
+def aggregate(
+    reports: list[WaitReport], now: datetime, *, network_cap: int = DEFAULT_NETWORK_CAP
+) -> WaitState:
     latest: dict[str, WaitReport] = {}
     for report in sorted(reports, key=lambda r: (r.received_at, r.id)):
         if report.kind == "estimate":
             latest[report.device_hash] = report
-    valid = [
+    fresh = [
         r
         for r in latest.values()
         if r.visibility == "visible"
         and r.minutes is not None
         and min(r.observed_at, r.received_at) > now - timedelta(minutes=15)
     ]
-    valid.sort(key=lambda r: r.received_at, reverse=True)
+    fresh.sort(key=lambda r: (r.received_at, r.id), reverse=True)
+    # Cookie churn makes devices free: count at most network_cap per network.
+    valid, labels = network_budget(fresh, network_cap, source_key)
     completed = [
         ReportView.model_validate(r)
         for r in reports
@@ -64,7 +99,12 @@ def aggregate(reports: list[WaitReport], now: datetime) -> WaitState:
         state="unknown",
         server_now=now,
         completed=completed[:10],
-        estimates=[ReportView.model_validate(r) for r in valid],
+        estimates=[
+            ReportView.model_validate(r).model_copy(
+                update={"source": labels[source_key(r)]}
+            )
+            for r in valid
+        ],
     )
     if valid:
         values = [r.minutes for r in valid if r.minutes is not None]
@@ -74,6 +114,11 @@ def aggregate(reports: list[WaitReport], now: datetime) -> WaitState:
         )
         state.minutes = None if conflict else float(median(values))
         state.count, state.range = len(valid), [min(values), max(values)]
+        state.sources, state.excluded = len(labels), len(fresh) - len(valid)
+        counted = {r.id for r in valid}
+        state.excluded_observed = [
+            min(r.observed_at, r.received_at) for r in fresh if r.id not in counted
+        ]
         state.newest_at = max(min(r.observed_at, r.received_at) for r in valid)
         # Earliest contributing expiry forces recomputation when any vote expires.
         state.expires_at = min(
@@ -91,11 +136,18 @@ def lock_writes(db: Session, identity: Identity) -> None:
             db.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": lock_id})
 
 
-def rate_limit(db: Session, identity: Identity, now: datetime, action: str) -> None:
+def rate_limit(
+    db: Session,
+    identity: Identity,
+    now: datetime,
+    action: str,
+    *,
+    network_limit: int = DEFAULT_NETWORK_HOURLY_LIMIT,
+) -> None:
     hour = now.replace(minute=0, second=0, microsecond=0)
     for scope, key, maximum in [
         ("device", identity.device_hash, 30),
-        ("network", identity.ip_hash, 120),
+        ("network", identity.ip_hash, network_limit),
     ]:
         bucket_key = f"{action}:{scope}:{key}:{hour.isoformat()}"
         bucket = db.get(RateBucket, bucket_key)
@@ -130,8 +182,16 @@ def contribution_limit(db: Session, device: str, venue: str, now: datetime) -> N
 
 
 class WaitService:
-    def __init__(self, engine: Engine, clock: Callable[[], datetime]) -> None:
+    def __init__(
+        self,
+        engine: Engine,
+        clock: Callable[[], datetime],
+        *,
+        network_cap: int = DEFAULT_NETWORK_CAP,
+        network_limit: int = DEFAULT_NETWORK_HOURLY_LIMIT,
+    ) -> None:
         self.engine, self.clock = engine, clock
+        self.network_cap, self.network_limit = network_cap, network_limit
 
     def state(self, venue_id: str, queue: str | None = None) -> WaitState:
         now = self.clock()
@@ -152,7 +212,7 @@ class WaitService:
                     .order_by(WaitReport.received_at.desc())
                 )
             )
-            return aggregate(reports, now)
+            return aggregate(reports, now, network_cap=self.network_cap)
 
     def submit(
         self, identity: Identity, venue: str, payload: ReportInput
@@ -200,7 +260,9 @@ class WaitService:
                     "Observation autorisée : dernières 60 minutes, au plus 2 minutes dans le futur.",
                 )
             contribution_limit(db, identity.device_hash, venue, now)
-            rate_limit(db, identity, now, "contribution")
+            rate_limit(
+                db, identity, now, "contribution", network_limit=self.network_limit
+            )
             report = WaitReport(
                 id=str(uuid4()),
                 venue_id=venue,
@@ -217,6 +279,7 @@ class WaitService:
                 received_at=now,
                 source_window_start=None,
                 device_hash=identity.device_hash,
+                network_hash=identity.ip_hash,
                 idempotency_key=payload.idempotency_key,
                 payload_digest=digest,
                 visibility="visible",
@@ -258,7 +321,9 @@ class WaitService:
                 raise DomainError(
                     409, "timer_already_active", "Terminez le chronomètre déjà démarré."
                 )
-            rate_limit(db, identity, now, "timer_start")
+            rate_limit(
+                db, identity, now, "timer_start", network_limit=self.network_limit
+            )
             timer = WaitTimer(
                 id=str(uuid4()),
                 venue_id=payload.venue_id,
@@ -294,7 +359,9 @@ class WaitService:
                     422, "timer_expired", "Ce chronomètre a expiré (maximum 2 heures)."
                 )
             contribution_limit(db, identity.device_hash, timer.venue_id, now)
-            rate_limit(db, identity, now, "contribution")
+            rate_limit(
+                db, identity, now, "contribution", network_limit=self.network_limit
+            )
             report = WaitReport(
                 id=str(uuid4()),
                 venue_id=timer.venue_id,
@@ -305,6 +372,7 @@ class WaitService:
                 received_at=now,
                 source_window_start=timer.started_at,
                 device_hash=identity.device_hash,
+                network_hash=identity.ip_hash,
                 idempotency_key="timer_" + timer.id,
                 payload_digest=sha256(timer.id.encode()).hexdigest(),
                 visibility="visible",

@@ -7,6 +7,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+from crous_queue import __version__
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -143,7 +145,7 @@ def main() -> None:
             json.dumps(
                 dict(
                     old="0.1.2",
-                    new="0.2.0",
+                    new=__version__,
                     old_artifact_install="passed",
                     upgrade="passed",
                     old_backup_restore_and_old_wheel_rollback="passed",

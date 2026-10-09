@@ -20,7 +20,7 @@ from crous_queue.models import (
 
 def purge(engine: Engine, now: datetime) -> dict[str, int]:
     cutoff = now - timedelta(days=7)
-    removed = {}
+    removed: dict[str, int] = {}
     with Session(engine) as db, db.begin():
         # Explicit child cleanup works with either database dialect.
         old_ids = select(WaitReport.id).where(WaitReport.received_at <= cutoff)
@@ -34,6 +34,16 @@ def purge(engine: Engine, now: datetime) -> dict[str, int]:
             .where(WaitTimer.report_id.in_(old_ids))
             .values(report_id=None)
         )
+        # Network keys serve live budgets and bulk moderation only: <=24 h.
+        cleared = db.execute(
+            update(WaitReport)
+            .where(
+                WaitReport.received_at <= now - timedelta(hours=24),
+                WaitReport.network_hash.is_not(None),
+            )
+            .values(network_hash=None)
+        )
+        removed["network_keys"] = int(getattr(cleared, "rowcount", 0))
         for label, model, predicate in [
             ("timers", WaitTimer, WaitTimer.started_at <= cutoff),
             ("reports", WaitReport, WaitReport.received_at <= cutoff),

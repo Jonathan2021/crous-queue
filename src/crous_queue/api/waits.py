@@ -11,7 +11,21 @@ router = APIRouter()
 
 
 def service(request: Request) -> WaitService:
-    return WaitService(request.app.state.engine, request.app.state.clock)
+    settings = request.app.state.settings
+    return WaitService(
+        request.app.state.engine,
+        request.app.state.clock,
+        network_cap=settings.network_estimate_cap,
+        network_limit=settings.network_hourly_limit,
+    )
+
+
+def availability_service(request: Request) -> AvailabilityService:
+    return AvailabilityService(
+        request.app.state.engine,
+        request.app.state.clock,
+        network_cap=request.app.state.settings.network_estimate_cap,
+    )
 
 
 def identity(request: Request) -> Identity:
@@ -31,9 +45,9 @@ def submit(venue_id: str, payload: ReportInput, request: Request) -> dict[str, o
     return {
         "report": report,
         "waits": service(request).state(venue_id, payload.queue_kind),
-        "availability": AvailabilityService(
-            request.app.state.engine, request.app.state.clock
-        ).state(venue_id, payload.queue_kind),
+        "availability": availability_service(request).state(
+            venue_id, payload.queue_kind
+        ),
     }
 
 
@@ -65,6 +79,4 @@ def availability(
         if venue is None:
             raise DomainError(404, "venue_not_found", "Restaurant introuvable.")
         queue = queue_kind or queues_for(venue)[0]
-    return AvailabilityService(request.app.state.engine, request.app.state.clock).state(
-        venue_id, queue
-    )
+    return availability_service(request).state(venue_id, queue)

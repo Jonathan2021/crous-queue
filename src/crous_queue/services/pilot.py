@@ -5,14 +5,18 @@ from sqlalchemy import Engine
 
 from crous_queue.services.moderation import ModerationService
 from crous_queue.services.pilot_records import VENUES, Snapshot, data_mode, store_id
-from crous_queue.services.waits import WaitService
+from crous_queue.services.waits import DEFAULT_NETWORK_CAP, WaitService
 
 
 def pilot_check(
-    engine: Engine, clock: Callable[[], datetime], *, environment: str
+    engine: Engine,
+    clock: Callable[[], datetime],
+    *,
+    environment: str,
+    network_cap: int = DEFAULT_NETWORK_CAP,
 ) -> dict[str, object]:
     now = clock()
-    service = WaitService(engine, lambda: now)
+    service = WaitService(engine, lambda: now, network_cap=network_cap)
     checks = []
     fresh = 0
     for venue in VENUES:

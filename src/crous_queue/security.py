@@ -7,6 +7,16 @@ from secrets import token_urlsafe
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 
 from crous_queue.config import Settings
+from crous_queue.network import client_address, parse_address, parse_trusted_proxies
+
+__all__ = [
+    "COOKIE",
+    "Identity",
+    "client_address",
+    "coarse_ip_hash",
+    "device_session",
+    "parse_trusted_proxies",
+]
 
 COOKIE = "cq_device"
 
@@ -35,14 +45,15 @@ def device_session(settings: Settings, cookie: str | None) -> tuple[str, str, bo
 
 
 def coarse_ip_hash(settings: Settings, ip: str, day: str) -> str:
-    try:
-        address = ipaddress.ip_address(ip)
-        prefix = ipaddress.ip_network(
-            f"{address}/{24 if address.version == 4 else 56}", strict=False
-        )
-        value = str(prefix)
-    except ValueError:
+    address = parse_address(ip)
+    if address is None:
         value = "local-unknown"
+    else:
+        value = str(
+            ipaddress.ip_network(
+                f"{address}/{24 if address.version == 4 else 56}", strict=False
+            )
+        )
     return hmac.new(
         settings.ip_secret.encode(), f"{day}:{value}".encode(), sha256
     ).hexdigest()

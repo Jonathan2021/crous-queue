@@ -36,6 +36,7 @@ def main() -> None:
         make_engine(settings.database_url),
         lambda: datetime.now(UTC),
         environment=settings.environment,
+        network_cap=settings.network_estimate_cap,
     )
     try:
         record: Snapshot | ScheduledCheck = Snapshot.model_validate(result)

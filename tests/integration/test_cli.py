@@ -45,6 +45,7 @@ def test_bootstrap_operate_and_recover_from_empty_directory(run, tmp_path, capsy
     with Session(make_engine(f"sqlite:///{database}")) as db:
         assert db.scalar(select(func.count()).select_from(Venue)) == 972
     assert set(json.loads(run("retain"))) == {
+        "network_keys",
         "timers",
         "reports",
         "flags",

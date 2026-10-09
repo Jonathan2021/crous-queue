@@ -96,12 +96,20 @@ class ReportView(BaseModel):
     observed_at: datetime
     received_at: datetime
     source_window_start: datetime | None
+    # Per-response ordinal of the coarse network ("s1", "s2"); never a hash.
+    source: str | None = None
 
 
 class WaitState(BaseModel):
     state: Literal["unknown", "single", "recent", "conflicting"]
     minutes: float | None = None
+    # Counted devices, distinct coarse networks among them, and fresh
+    # estimates left out because their network exceeded its budget.
     count: int = 0
+    sources: int = 0
+    excluded: int = 0
+    # Freshness times of excluded estimates so clients can expire the notice.
+    excluded_observed: list[datetime] = []
     range: list[int] | None = None
     newest_at: datetime | None = None
     expires_at: datetime | None = None
@@ -119,6 +127,11 @@ class HideInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     rationale: Annotated[str, Field(min_length=8, max_length=500)]
     expected_version: Annotated[int, Field(strict=True, ge=0)]
+
+
+class NetworkHideInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    rationale: Annotated[str, Field(min_length=8, max_length=500)]
 
 
 class CommentModerationInput(HideInput):

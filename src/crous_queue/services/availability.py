@@ -8,7 +8,12 @@ from sqlalchemy import Engine, select
 from sqlalchemy.orm import Session
 
 from crous_queue.models import WaitReport
-from crous_queue.services.waits import require_venue
+from crous_queue.services.waits import (
+    DEFAULT_NETWORK_CAP,
+    network_budget,
+    require_venue,
+    source_key,
+)
 
 EXPIRY = {"grill": 10, "vegetarian": 10, "standard": 10, "seating": 5}
 
@@ -45,11 +50,29 @@ def effective(report: WaitReport) -> datetime:
     return min(report.observed_at, report.received_at)
 
 
-def dimension(reports: list[WaitReport], name: str, now: datetime) -> DimensionState:
+def dimension(
+    reports: list[WaitReport],
+    name: str,
+    now: datetime,
+    *,
+    network_cap: int = DEFAULT_NETWORK_CAP,
+) -> DimensionState:
     latest: dict[str, WaitReport] = {}
     for report in sorted(reports, key=lambda r: (effective(r), r.received_at, r.id)):
         if getattr(report, name) is not None:
             latest[report.device_hash] = report
+    fresh = sorted(
+        (
+            r
+            for r in latest.values()
+            if r.visibility == "visible"
+            and effective(r) > now - timedelta(minutes=EXPIRY[name])
+        ),
+        key=lambda r: (effective(r), r.received_at, r.id),
+        reverse=True,
+    )
+    # Same cookie-churn budget as waits: at most network_cap per network.
+    counted, _ = network_budget(fresh, network_cap, source_key)
     observations = [
         Observation(
             id=r.id,
@@ -57,9 +80,7 @@ def dimension(reports: list[WaitReport], name: str, now: datetime) -> DimensionS
             observed_at=effective(r),
             expires_at=effective(r) + timedelta(minutes=EXPIRY[name]),
         )
-        for r in latest.values()
-        if r.visibility == "visible"
-        and effective(r) > now - timedelta(minutes=EXPIRY[name])
+        for r in counted
     ]
     if not observations:
         return DimensionState()
@@ -76,8 +97,14 @@ def dimension(reports: list[WaitReport], name: str, now: datetime) -> DimensionS
 
 
 class AvailabilityService:
-    def __init__(self, engine: Engine, clock: Callable[[], datetime]) -> None:
-        self.engine, self.clock = engine, clock
+    def __init__(
+        self,
+        engine: Engine,
+        clock: Callable[[], datetime],
+        *,
+        network_cap: int = DEFAULT_NETWORK_CAP,
+    ) -> None:
+        self.engine, self.clock, self.network_cap = engine, clock, network_cap
 
     def state(self, venue: str, queue: str) -> AvailabilityState:
         now = self.clock()
@@ -106,7 +133,10 @@ class AvailabilityService:
                 and effective(r) > now - timedelta(minutes=60)
             ]
             return AvailabilityState(
-                dimensions={name: dimension(reports, name, now) for name in EXPIRY},
+                dimensions={
+                    name: dimension(reports, name, now, network_cap=self.network_cap)
+                    for name in EXPIRY
+                },
                 comments=comments[:20],
                 server_now=now,
             )

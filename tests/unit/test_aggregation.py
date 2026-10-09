@@ -38,3 +38,21 @@ def test_latest_device_does_not_resurrect_after_hiding():
     newest = sample("a", 10)
     newest.visibility = "hidden"
     assert aggregate([old, newest], NOW).state == "unknown"
+
+
+def test_network_budget_keeps_newest_per_network_and_labels_ordinals():
+    burst = [sample(f"x{i}", 120, i) for i in range(4)]
+    for report in burst:
+        report.network_hash = "n" * 64
+    honest = sample("h", 10, 1)
+    honest.network_hash = "m" * 64
+    legacy = sample("l", 12, 2)  # pre-0007 or purged: its own source
+    state = aggregate([*burst, honest, legacy], NOW, network_cap=2)
+    assert (state.count, state.sources, state.excluded) == (4, 3, 2)
+    assert [e.id for e in state.estimates] == ["x0-0", "x1-1", "h-1", "l-2"]
+    assert [e.source for e in state.estimates] == ["s1", "s1", "s2", "s3"]
+    assert state.excluded_observed == [
+        NOW - timedelta(minutes=2),
+        NOW - timedelta(minutes=3),
+    ]
+    assert "n" * 64 not in state.model_dump_json()

@@ -26,7 +26,13 @@ from crous_queue.config import Settings, load_settings
 from crous_queue.contracts import VenueType, VenueView
 from crous_queue.db import make_engine
 from crous_queue.models import Venue
-from crous_queue.security import COOKIE, coarse_ip_hash, device_session
+from crous_queue.security import (
+    COOKIE,
+    client_address,
+    coarse_ip_hash,
+    device_session,
+    parse_trusted_proxies,
+)
 from crous_queue.services.directory import venue_query
 from crous_queue.services.maintenance import purge
 from crous_queue.services.waits import DomainError
@@ -40,6 +46,7 @@ def create_app(
 ) -> FastAPI:
     settings = settings or load_settings()
     engine = engine or make_engine(settings.database_url)
+    trusted_proxies = parse_trusted_proxies(settings.trusted_proxies)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -122,9 +129,15 @@ def create_app(
     ) -> Response:
         device, cookie, valid = device_session(settings, request.cookies.get(COOKIE))
         request.state.device_hash = device
+        # Forwarding headers count only from a configured proxy (default: none).
         request.state.ip_hash = coarse_ip_hash(
             settings,
-            request.client.host if request.client else "",
+            client_address(
+                request.client.host if request.client else "",
+                request.headers,
+                trusted_proxies,
+                settings.forwarded_header,
+            ),
             app.state.clock().date().isoformat(),
         )
         if request.method in {"POST", "PUT", "PATCH", "DELETE"}:

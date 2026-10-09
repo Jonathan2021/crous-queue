@@ -55,7 +55,12 @@ function currentState(state,now) {
   const newest=Math.max(...estimates.map(r=>Math.min(Date.parse(r.observed_at),Date.parse(r.received_at))));
   const age=Math.max(0,Math.floor((now-newest)/60000));
   const remaining=Math.max(1,Math.ceil((Math.min(...estimates.map(r=>Math.min(Date.parse(r.observed_at),Date.parse(r.received_at))))+900000-now)/60000));
-  const detail=`${count} signalement${count>1?'s':''}${count===1?' · non confirmé':''} · dernier il y a ${age} min · actualisé au plus tard dans ${remaining} min`;
+  // Counts devices, not people; a network (≈ same Wi-Fi/NAT) counts at most a few.
+  const sources=new Set(estimates.map(r=>r.source)).size;
+  const origin=count===1?'1 appareil · non confirmé':`${count} appareils · ${sources===1?'1 seul réseau':sources+' réseaux'}`;
+  const others=(state.excluded_observed || []).filter(t=>Date.parse(t)+900000>now).length;
+  const excluded=others?` · ${others} autre${others>1?'s':''} du même réseau non compté${others>1?'s':''}`:'';
+  const detail=`${origin}${excluded} · dernier il y a ${age} min · actualisé au plus tard dans ${remaining} min`;
   if (high-low>15) return {text:`${low}–${high} min · avis divergents`,detail,kind:'conflicting'};
   const middle=count%2?values[Math.floor(count/2)]:(values[count/2-1]+values[count/2])/2;
   return {text:`${number(middle)} min`,detail,kind:count===1?'single':'recent',minutes:middle};

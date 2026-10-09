@@ -5,6 +5,8 @@ from pydantic import Field, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import make_url
 
+from crous_queue.network import parse_trusted_proxies
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="CQ_", env_file=".env", extra="ignore")
@@ -17,6 +19,13 @@ class Settings(BaseSettings):
     secure_cookies: bool = False
     map_tiles: Literal["osm", "none"] = "osm"
     port: int = Field(default=8000, ge=1024, le=65535)
+    # Reverse proxies whose forwarding header is believed; empty trusts none.
+    trusted_proxies: str = ""
+    forwarded_header: Literal["x-forwarded-for", "forwarded"] = "x-forwarded-for"
+    # Live estimates/observations counted per coarse network per freshness window.
+    network_estimate_cap: int = Field(default=2, ge=1, le=10)
+    # Hard ceiling per coarse network per hour and action (NAT-tolerant).
+    network_hourly_limit: int = Field(default=120, ge=10, le=10000)
 
     @model_validator(mode="after")
     def safe_configuration(self) -> "Settings":
@@ -29,6 +38,12 @@ class Settings(BaseSettings):
             and self.admin_token in {self.session_secret, self.ip_secret}
         ):
             raise ValueError("Session and IP secrets must differ.")
+        try:
+            parse_trusted_proxies(self.trusted_proxies)
+        except ValueError:
+            raise ValueError(
+                "Set CQ_TRUSTED_PROXIES to comma-separated proxy IP addresses or CIDR networks, or leave it empty to trust none."
+            ) from None
         parsed_url = make_url(self.database_url)
         if parsed_url.drivername not in {"sqlite", "postgresql+psycopg"}:
             raise ValueError(

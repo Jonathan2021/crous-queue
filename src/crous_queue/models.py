@@ -72,6 +72,8 @@ class WaitReport(Base):
     received_at: Mapped[datetime] = mapped_column(UTCDateTime, index=True)
     source_window_start: Mapped[datetime | None] = mapped_column(UTCDateTime)
     device_hash: Mapped[str] = mapped_column(String(64), index=True)
+    # Daily-rotating keyed hash of the coarse network; cleared after 24 hours.
+    network_hash: Mapped[str | None] = mapped_column(String(64), index=True)
     idempotency_key: Mapped[str] = mapped_column(String(100))
     payload_digest: Mapped[str] = mapped_column(String(64))
     visibility: Mapped[str] = mapped_column(String(20), default="visible")

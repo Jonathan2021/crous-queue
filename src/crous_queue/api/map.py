@@ -70,6 +70,7 @@ def map_data(
                             if r.queue_kind == queues_for(v)[0]
                         ],
                         now,
+                        network_cap=request.app.state.settings.network_estimate_cap,
                     ),
                     hours=hours_state(db, v, now),
                 )

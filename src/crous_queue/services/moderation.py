@@ -10,17 +10,32 @@ from crous_queue.contracts import (
     CommentModerationInput,
     FlagInput,
     HideInput,
+    NetworkHideInput,
     ReportView,
 )
 from crous_queue.models import ModerationAudit, ReportFlag, WaitReport
 from crous_queue.security import Identity
 from crous_queue.services.directory import plain_text
-from crous_queue.services.waits import DomainError, aggregate, lock_writes, rate_limit
+from crous_queue.services.waits import (
+    DEFAULT_NETWORK_HOURLY_LIMIT,
+    DomainError,
+    aggregate,
+    lock_writes,
+    rate_limit,
+)
+
+BULK_HIDE_WINDOW = timedelta(hours=2)
 
 
 class ModerationService:
-    def __init__(self, engine: Engine, clock: Callable[[], datetime]) -> None:
-        self.engine, self.clock = engine, clock
+    def __init__(
+        self,
+        engine: Engine,
+        clock: Callable[[], datetime],
+        *,
+        network_limit: int = DEFAULT_NETWORK_HOURLY_LIMIT,
+    ) -> None:
+        self.engine, self.clock, self.network_limit = engine, clock, network_limit
 
     def flag(
         self, identity: Identity, report_id: str, payload: FlagInput
@@ -38,7 +53,9 @@ class ModerationService:
             )
             if previous:
                 return {"id": previous.id, "status": "recorded"}
-            rate_limit(db, identity, self.clock(), "flag")
+            rate_limit(
+                db, identity, self.clock(), "flag", network_limit=self.network_limit
+            )
             flag = ReportFlag(
                 id=str(uuid4()),
                 report_id=report_id,
@@ -85,6 +102,55 @@ class ModerationService:
                 visibility=report.visibility,
                 version=report.moderation_version,
             )
+
+    def hide_network(self, report_id: str, payload: NetworkHideInput) -> dict[str, int]:
+        """Hide every visible report sharing this report's network bucket.
+
+        Scope: received within BULK_HIDE_WINDOW of now, all venues. The bucket is a
+        coarse /24 or /56 on one UTC day, so shared NAT neighbours are included;
+        each hidden report gets its own versioned audit row.
+        """
+        now = self.clock()
+        with Session(self.engine) as db, db.begin():
+            anchor = db.get(WaitReport, report_id)
+            if anchor is None:
+                raise DomainError(404, "report_not_found", "Signalement introuvable.")
+            if not anchor.network_hash:
+                raise DomainError(
+                    422,
+                    "network_unavailable",
+                    "Réseau inconnu ou effacé après 24 h : masquez ce signalement seul.",
+                )
+            rationale = plain_text(payload.rationale)
+            if len(rationale) < 8:
+                raise DomainError(
+                    422,
+                    "rationale_required",
+                    "Expliquez le motif de modération (8 caractères minimum).",
+                )
+            reports = db.scalars(
+                select(WaitReport)
+                .where(
+                    WaitReport.network_hash == anchor.network_hash,
+                    WaitReport.visibility == "visible",
+                    WaitReport.received_at > now - BULK_HIDE_WINDOW,
+                )
+                .with_for_update()
+            ).all()
+            for report in reports:
+                report.visibility = "hidden"
+                report.moderation_version += 1
+                db.add(
+                    ModerationAudit(
+                        id=str(uuid4()),
+                        report_id=report.id,
+                        action="hide_network",
+                        rationale=rationale,
+                        created_at=now,
+                        version=report.moderation_version,
+                    )
+                )
+            return {"hidden": len(reports)}
 
     def moderate_comment(
         self, report_id: str, payload: CommentModerationInput
@@ -165,6 +231,8 @@ class ModerationService:
                             for name in ("grill", "vegetarian", "standard", "seating")
                         },
                         "version": report.moderation_version,
+                        # Opaque grouping label for one day's coarse network bucket.
+                        "network_label": (report.network_hash or "")[:8] or None,
                         "flag_count": flags,
                         "history": [
                             dict(
