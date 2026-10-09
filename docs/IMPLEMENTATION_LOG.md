@@ -137,3 +137,15 @@ hourly ceiling, admin bulk-hide by network bucket, 24-hour network-key retention
 (ADR-0009). After repair the same script yields six 201s and `count 2, sources 1,
 excluded 4` (`sybil-repro-after.txt`). Limits repeats and bursts from one network,
 not identities. Gate outputs: `check.txt`, `browser.txt`.
+
+## P5 — UI honesty polish (2026-10-09)
+
+Foundry work `724cd024`. Red first (`docs/evidence/p5-20261009/spec-red.txt`): the
+footer read "Annuaire CNOUS / CROUS · Licence Ouverte" without a dataset date and
+region labels were raw slugs. Changes: no "Service :" text when hours are unknown
+(the hidden line previously still carried the text); stale/conflicting intervals
+say why instead of "(horaire historique)"; human region labels (`REGION_LABELS`,
+slugs unchanged as query values); footer "relevé le 07/10/2026" computed from the
+retained directory, home count computed rather than hard-coded, and an "Annuaire
+ancien" banner beyond 30 days; one date format (DD/MM/YYYY) in hours text;
+meal/seat counts say "appareils", matching P3. Browser test at 390px.

@@ -1,0 +1,38 @@
+$ make check
+uv run --locked ruff check src tests scripts alembic
+All checks passed!
+uv run --locked ruff format --check src tests scripts alembic
+81 files already formatted
+uv run --locked mypy
+Success: no issues found in 34 source files
+uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/jonathan/startup_lab/crous-queue
+configfile: pyproject.toml
+testpaths: tests/unit, tests/integration
+plugins: anyio-4.15.1
+collected 90 items
+
+tests/unit/test_aggregation.py ...                                       [  3%]
+tests/unit/test_client_address.py ............                           [ 16%]
+tests/unit/test_pilot_summary.py ...                                     [ 20%]
+tests/unit/test_settings_security.py .............                       [ 34%]
+tests/integration/test_abuse.py .........                                [ 44%]
+tests/integration/test_assets.py .                                       [ 45%]
+tests/integration/test_availability.py ....                              [ 50%]
+tests/integration/test_availability_upgrade.py .                         [ 51%]
+tests/integration/test_cli.py ...                                        [ 54%]
+tests/integration/test_delivery_review.py ...                            [ 57%]
+tests/integration/test_directory.py ......                               [ 64%]
+tests/integration/test_distribution.py ....                              [ 68%]
+tests/integration/test_honesty.py .....                                  [ 74%]
+tests/integration/test_hours.py ......                                   [ 81%]
+tests/integration/test_map.py .                                          [ 82%]
+tests/integration/test_pilot_records.py ....                             [ 86%]
+tests/integration/test_release.py ...                                    [ 90%]
+tests/integration/test_reports.py ....                                   [ 94%]
+tests/integration/test_safeguards.py .....                               [100%]
+
+======================== 90 passed in 60.56s (0:01:00) =========================
+exit 0

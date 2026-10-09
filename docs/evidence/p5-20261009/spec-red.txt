@@ -1,0 +1,11 @@
+$ uv run --locked pytest tests/integration/test_honesty.py tests/browser/test_honesty.py -q  (HEAD 092bba2, before P5 implementation)
+=========================== short test summary info ============================
+ERROR tests/integration/test_honesty.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.40s
+E       AssertionError: Locator expected to contain text 'Annuaire CNOUS / CROUS relevé le 07/10/2026'
+E       Actual value: Crous Queue · Des signalements, pas des prédictions.Vos donnéesAnnuaire CNOUS / CROUS · Licence Ouverte 
+E       Call log:
+E         - Expect "to_contain_text" locator("footer") with timeout 5000ms
+E         - waiting for locator("footer")
+E           14 × locator resolved to <footer>…</footer>

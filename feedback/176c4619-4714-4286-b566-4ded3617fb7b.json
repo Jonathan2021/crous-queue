@@ -1,0 +1,17 @@
+{
+  "actor": "implementer-crous-20261009",
+  "summary": "start --resume-owned cleanly re-prepared context for my own claim after my map revisions staled it; result submit/show/preview/resolve accepted P3 first time with no stale reasons.",
+  "expected": "A way to refresh context for an owned claim without releasing it, and a resolution that pins the refreshed versions.",
+  "actual": "start --resume-owned --actor implementer-crous-20261009 --work-id 92380c5c returned fresh context 43eed577 (map 7318ce7b, work v4); the result be6bc8b6 showed stale_reasons [] and resolved to decision 0121e9b0. Claiming P5 afterwards was one start command. No Foundry defect blocked P5.",
+  "reproduction": "See .foundry/runs/p3-start2.json, result-p3.json, resolution-p3.json, p3-receipt.json in crous-queue.",
+  "impact": "Recovery after self-induced staleness took one command; the brief's instruction to pin the original saved context would have failed, so this path should be documented in the brief.",
+  "suggestion": "Mention start --resume-owned in implementation briefs as the standard step after any map revision made by the claiming agent.",
+  "id": "176c4619-4714-4286-b566-4ded3617fb7b",
+  "venture_id": "f0b5abfe-0274-42f7-9c9a-72dcbe68c116",
+  "workspace_id": "81ee3117-de70-411e-9856-07420859ffad",
+  "kind": "positive",
+  "sources": [
+    "document: .foundry/runs/p3-receipt.json",
+    "document: docs/evidence/p5-20261009/"
+  ]
+}
